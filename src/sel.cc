@@ -26,4 +26,8 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "internal.h"
+#include "mach.h"
+
+Sel GetSel(const char* value) {
+    
+}

@@ -26,11 +26,20 @@
  
  ---------------------------------------------------------------------------- */
 
-#ifndef mach_object_h
-#define mach_object_h
-
-#include "ivar.h"
 #include "mach.h"
+#include <stdlib.h>
+
+union ivar {
+public:
+    id obj;
+    int_t i64;
+    flt_t f64;
+    Imp imp;
+    Sel sel;
+    
+    operator id() { return this->obj; }
+    ivar operator=(id x) { this->obj = x; return *this; }
+};
 
 struct object {
 public:
@@ -40,4 +49,43 @@ public:
     ivar ivars[0];
 };
 
-#endif
+ObjectType GetType(id x) {
+    return x->type;
+}
+
+int_t GetRefs(id x) {
+    return x->refs;
+}
+
+void SetRefs(id x, int_t r) {
+    x->refs = r;
+}
+
+void IncRefs(id x) {
+    x->refs++;
+}
+
+void DecRefs(id x) {
+    x->refs--;
+}
+
+Class GetClass(id x) {
+    return x->isa;
+}
+
+bool IsOfKind(id x, Class c) {
+    for (; c != NULL; c = ClassSuper(c)) {
+        if (c == x->isa) {
+            return true;
+        }
+    }
+    return false;
+}
+
+MACH_MTHD(ObjectAlloc) {
+    id rv = (id) malloc(sizeof(struct object) + (ClassIVarc((Class) self) * sizeof(ivar)));
+    rv->isa = (Class) self;
+    rv->refs = 1;
+    rv->type = ObjectTypeObj;
+    return rv;
+}

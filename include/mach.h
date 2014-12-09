@@ -41,6 +41,11 @@
 
 #define MACH_DEPRECATED __attribute__((deprecated))
 
+#define MACH_API_VERSION_MAJOR 0
+#define MACH_API_VERSION_MINOR 1
+#define MACH_API_VERSION_PATCH 0
+#define MACH_API_VERSION_PREREL ""
+
 typedef long long int_t;
 typedef double flt_t;
 
@@ -74,11 +79,9 @@ Sel GetSel(const char* value);
  of the method. */
 id SendMsg(id target, Sel cmd, ...);
 /** Returns the value of the specified ivar from the specified object. */
-#define ivar(c, of, o) \
-o->ivars[(((Class)c)->super != NULL ? ((Class)c)->super->ivarc : 0) + of]
+id IVar(id x, Class c, int_t of);
 /** Sets the specified ivar of the specified object to the specified value. */
-#define setivar(c, of, o, v) \
-o->ivars[(((Class)c)->super != NULL ? ((Class)c)->super->ivarc : 0) + of] = v;
+void SetIVar(id x, Class c, int_t of, id v);
 /** Creates a class with the specified name, superclass, method count, metaclass
  method count, and ivar count. */
 Class CreateClass(const char* name, Class super, int_t mthdc, int_t imthdc,
@@ -89,6 +92,8 @@ int_t ClassMthdc(Class c);
 int_t ClassIVarc(Class c);
 /** Returns the specified Class's name. */
 const char* ClassName(Class c);
+/** Returns the specified Class's superclass. */
+Class ClassSuper(Class c);
 /** Returns the specified object's (or class's) type. */
 ObjectType GetType(id x);
 /** Returns the specified object's refrence count. */
@@ -118,9 +123,8 @@ id BoolLit(bool bl);
 /** Returns a Range object representing a range starting and ending with the
     specified values. Start and end are both inclusive. */
 id RangeLit(int_t start, int_t end);
-/** Returns a Closure object representing a closure, with the specified 
-    implementation, and the specified number of variables and values. */
-id ClosureLit(Imp imp, int_t vars, ...);
+/** Returns a Function object representing a the specified function; */
+id FunctionLit(Imp imp);
 /** Returns a Selector object representing the specified Sel. */
 id SelectorLit(Sel sel);
 
@@ -136,8 +140,10 @@ flt_t FloatCvt(id f);
 int_t CharCvt(id c);
 /** Converts the specified Bool object into an equivalent C++ bool. */
 bool BoolCvt(id b);
-/** Returns the variable count for the specified Closure object. */
-int_t ClosureVarc(id c);
+/** Returns the Imp of the specified Function. */
+id FunctionImp(id c);
+/** Sets the Imp of the specified Function to the specified value. */
+void FunctionSetImp(id c, Imp i);
 /** Converts the specified Selector object into a C Sel. */
 Sel SelectorCvt(id s);
 
