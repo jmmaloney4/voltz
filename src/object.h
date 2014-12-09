@@ -26,5 +26,18 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "internal.h"
+#ifndef mach_object_h
+#define mach_object_h
 
+#include "ivar.h"
+#include "mach.h"
+
+struct object {
+public:
+    int_t refs;
+    Class isa;
+    ObjectType type;
+    ivar ivars[0];
+};
+
+#endif

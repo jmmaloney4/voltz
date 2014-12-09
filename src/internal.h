@@ -26,5 +26,12 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "internal.h"
+#ifndef mach_internal_h
+#define mach_internal_h
 
+#include "mach.h"
+#include "ivar.h"
+#include "object.h"
+#include "sel.h"
+
+#endif

@@ -26,5 +26,14 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "internal.h"
+#ifndef mach_sel_h
+#define mach_sel_h
 
+struct sel {
+public:
+    const char* val;
+    int_t args;
+    bool rets;
+};
+
+#endif

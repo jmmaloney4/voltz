@@ -26,5 +26,23 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "internal.h"
+#ifndef mach_ivar_h
+#define mach_ivar_h
 
+#include "mach.h"
+
+union ivar {
+public:
+    id obj;
+    Class c;
+    int_t i64;
+    flt_t f64;
+    Imp imp;
+    Sel sel;
+    void* data;
+    
+    operator id() { return this->obj; }
+    ivar operator=(id x) { this->obj = x; return *this; }
+};
+
+#endif
