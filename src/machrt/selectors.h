@@ -26,46 +26,17 @@
  
  ---------------------------------------------------------------------------- */
 
-#ifndef MACHRT_MACHRT_H
-#define MACHRT_MACHRT_H
+#ifndef MACHRT_SELECTORS_H
+#define MACHRT_SELECTORS_H
 
-#include "include-private/config.h"
+#include "machrt.h"
 
-#ifndef NULL
-#define NULL __null
-#endif
+void InitializeSelectors();
 
-#define MACH_IMP(name) extern "C" id name (id self, Sel cmd, id* argv)
-
-typedef struct mach_object* id;
-typedef struct mach_class* Class;
-typedef struct mach_selector* Sel;
-typedef struct mach_method Method;
-typedef id (*Imp) (id, Sel, id*);
-
-struct mach_object {
-public:
-    Class isa;
-    int_t refs;
-    id ivars[0];
-};
-
-struct mach_method {
-public:
-    Sel sel;
-    Imp imp;
-};
-
-struct mach_class {
-public:
-    Class super;
-    int_t ivarc;
-    int_t mthdc;
-    Method mthdd[0];
-};
-
-Sel GetSel(const char* val);
-
-id SendMsg(id target, Sel cmd, ...);
+extern Sel AllocSel;
+extern Sel InitSel;
+extern Sel ReleaseSel;
+extern Sel RetainSel;
+extern Sel DeinitSel;
 
 #endif
