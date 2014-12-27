@@ -26,60 +26,9 @@
  
  ---------------------------------------------------------------------------- */
 
-#ifndef MACHRT_MACHRT_H
-#define MACHRT_MACHRT_H
+#ifndef mach_machrt_private_h
+#define mach_machrt_private_h
 
-#include "include/config.h"
-
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-
-#ifdef __cplusplus
-#define MACH_IMP(name) extern "C" id name (id self, Sel cmd, id* argv)
-#else
-#define MACH_IMP(name) id name (id self, Sel cmd, id* argv)
-#endif
-
-typedef struct mach_object* id;
-typedef struct mach_class* Class;
-typedef struct mach_selector* Sel;
-typedef struct mach_method Method;
-typedef id (*Imp) (id, Sel, id*);
-
-struct mach_method {
-    Sel sel;
-    Imp imp;
-};
-
-struct mach_selector {
-    const char* str;
-    int_t args;
-    Bool rets;
-};
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    
-    Class MAObjGetClass(id x);
-    int_t MAObjGetRefs(id x);
-    void MAObjSetRefs(id x, int_t k);
-    void MAObjIncRefs(id x);
-    void MAObjDecRefs(id x);
-    
-    Class MAClsGetMetaCls(Class c);
-    Class MAClsGetSuper(Class c);
-    const char* MAClsGetName(Class c);
-    int_t MAClsGetMthdc(Class c);
-    int_t MAClsGetIvarc(Class c);
-    Imp MAClsGetImpForSel(Class c, Sel s);
-    void MAClsSetImpForSel(Class c, Imp i);
-    
-    Sel MAGetSel(const char* str);
-    
-#ifdef __cplusplus
-}
-#endif
+#include "machrt.h"
 
 #endif

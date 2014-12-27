@@ -25,4 +25,12 @@ configure_file (
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_library(machrt STATIC src/machrt/config.h.in src/machrt/machrt.h src/machrt/selectors.cc src/machrt/mem.cc)
+add_library(machrt STATIC   src/machrt/config.h.in
+                            src/machrt/machrt.h
+                            src/machrt/machrt-private.h
+                            src/machrt/selectors.h
+
+                            src/machrt/selectors.c
+                            src/machrt/mem.c
+                            src/machrt/object.c
+                            src/machrt/class.c)

@@ -51,6 +51,10 @@ typedef signed long long int_t;
 #error "Unable To Determine A Type For int_t"
 #endif
 
+#define true ((Bool)1)
+#define false ((Bool)0)
+typedef unsigned char Bool;
+
 #define MACHRT_API_VERSION_MAJOR @MACHRT_API_VERSION_MAJOR@
 #define MACHRT_API_VERSION_MINOR @MACHRT_API_VERSION_MINOR@
 #define MACHRT_API_VERSION_PATCH @MACHRT_API_VERSION_PATCH@

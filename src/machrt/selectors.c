@@ -26,65 +26,14 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "machrt.h"
 #include "selectors.h"
-#include <pthread.h>
-#include <stdlib.h>
 
-pthread_mutex_t mach_mem_mutex0;
-pthread_mutex_t mach_mem_mutex1;
-pthread_mutex_t mach_mem_mutex2;
-pthread_mutex_t mach_mem_mutex3;
-pthread_mutex_t mach_mem_mutex4;
+Sel AllocSel = (Sel) NULL;
+Sel InitSel = NULL;
+Sel ReleaseSel = NULL;
+Sel RetainSel = NULL;
+Sel DeinitSel = NULL;
 
-void InitializeMutexes() {
-    pthread_mutex_init(&mach_mem_mutex0, NULL);
-    pthread_mutex_init(&mach_mem_mutex1, NULL);
-    pthread_mutex_init(&mach_mem_mutex2, NULL);
-    pthread_mutex_init(&mach_mem_mutex3, NULL);
-    pthread_mutex_init(&mach_mem_mutex4, NULL);
+void InitializeSelectors() {
+    
 }
-
-pthread_mutex_t* GetMutex(id x) {
-    switch (((int_t)x) % 5) {
-        case 0:
-            return &mach_mem_mutex0;
-            break;
-        case 1:
-            return &mach_mem_mutex1;
-            break;
-        case 2:
-            return &mach_mem_mutex2;
-            break;
-        case 3:
-            return &mach_mem_mutex3;
-            break;
-        case 4:
-            return &mach_mem_mutex4;
-            break;
-        default:
-            return NULL;
-            break;
-    }
-}
-
-MACH_IMP(ObjectRetain) {
-    pthread_mutex_t* mut = GetMutex(self);
-    pthread_mutex_lock(mut);
-    self->refs++;
-    pthread_mutex_unlock(mut);
-    return self;
-}
-
-MACH_IMP(ObjectRelease) {
-    pthread_mutex_t* mut = GetMutex(self);
-    pthread_mutex_lock(mut);
-    if (self->refs <= 1) {
-        SendMsg(self, DeinitSel);
-        free(self);
-    }
-    self->refs--;
-    pthread_mutex_unlock(mut);
-    return self;
-}
-
