@@ -5,3 +5,4 @@ compiler:
 os:
   - osx
   - linux
+script: ./setup.sh && cd build && make
