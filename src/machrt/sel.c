@@ -28,6 +28,7 @@
 
 #include "machrt.h"
 #include <stdlib.h>
+#include <string.h>
 
 #define MASelTableSize 5000
 
@@ -38,9 +39,9 @@ struct MASelTableNode {
 
 struct MASelTableNode** MASelTable;
 
-int_t MASelHash(const char* str, int_t* args, Bool* b) {
+int_t MASelHash(const char* str, int_t* args, Bool* r) {
     int_t hash = 5417;
-    *b = (*str++ == ':');
+    *r = (*str++ == ':');
     *args = 0;
     while (*str) {
         char c = *str++;
@@ -55,6 +56,27 @@ Sel MAGetSel(const char* str) {
         MASelTable = malloc(sizeof(struct MASelTableNode) * MASelTableSize);
     }
     
+    int_t args;
+    Bool rets;
+    int_t hash = MASelHash(str, &args, &rets);
+    hash %= MASelTableSize;
     
+    struct MASelTableNode* node = MASelTable[hash];
+    for (; true; node = node->next) {
+        if (strcmp(node->sel.str, str) == 0) {
+            return &node->sel;
+        }
+        if (node->next == NULL) {
+            break;
+        }
+    }
     
+    struct MASelTableNode* n = malloc(sizeof(struct MASelTableNode));
+    n->next = NULL;
+    node->next = n;
+    n->sel.args = args;
+    n->sel.rets = rets;
+    n->sel.str = str;
+    
+    return &n->sel;
 }
