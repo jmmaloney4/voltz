@@ -33,4 +33,5 @@ add_library(machrt STATIC   src/machrt/config.h.in
                             src/machrt/selectors.c
                             src/machrt/mem.c
                             src/machrt/object.c
-                            src/machrt/class.c)
+                            src/machrt/class.c
+                            src/machrt/sel.c)

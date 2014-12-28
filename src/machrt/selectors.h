@@ -39,4 +39,7 @@ extern Sel ReleaseSel;
 extern Sel RetainSel;
 extern Sel DeinitSel;
 
+extern Sel EqualsSel;
+extern Sel IdentEqSel;
+
 #endif

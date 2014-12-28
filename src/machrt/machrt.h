@@ -74,7 +74,7 @@ extern "C" {
     int_t MAClsGetMthdc(Class c);
     int_t MAClsGetIvarc(Class c);
     Imp MAClsGetImpForSel(Class c, Sel s);
-    void MAClsSetImpForSel(Class c, Imp i);
+    void MAClsSetImpForSel(Class c, Sel s, Imp i);
     
     Sel MAGetSel(const char* str);
     

@@ -28,12 +28,6 @@
 
 #include "machrt-private.h"
 
-struct mach_object {
-    Class isa;
-    int_t refs;
-    id ivars[0];
-};
-
 Class MAObjGetClass(id x) {
     return x->isa;
 }

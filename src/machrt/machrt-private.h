@@ -31,4 +31,19 @@
 
 #include "machrt.h"
 
+struct mach_object {
+    Class isa;
+    int_t refs;
+    id ivars[0];
+};
+
+struct mach_class {
+    Class isa;
+    Class super;
+    const char* name;
+    int_t mthdc;
+    int_t ivarc;
+    Method mthdd[0];
+};
+
 #endif

@@ -26,14 +26,35 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "selectors.h"
+#include "machrt.h"
+#include <stdlib.h>
 
-Sel AllocSel = NULL;
-Sel InitSel = NULL;
-Sel ReleaseSel = NULL;
-Sel RetainSel = NULL;
-Sel DeinitSel = NULL;
+#define MASelTableSize 5000
 
-void InitializeSelectors() {
+struct MASelTableNode {
+    struct mach_selector sel;
+    struct MASelTableNode* next;
+};
+
+struct MASelTableNode** MASelTable;
+
+int_t MASelHash(const char* str, int_t* args, Bool* b) {
+    int_t hash = 5417;
+    *b = (*str++ == ':');
+    *args = 0;
+    while (*str) {
+        char c = *str++;
+        *args += (c == ':' ? 1 : 0);
+        hash = hash * 101 + c;
+    }
+    return hash;
+}
+
+Sel MAGetSel(const char* str) {
+    if (!MASelTable) {
+        MASelTable = malloc(sizeof(struct MASelTableNode) * MASelTableSize);
+    }
+    
+    
     
 }

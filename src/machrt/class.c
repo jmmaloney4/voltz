@@ -26,16 +26,7 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "machrt.h"
-
-struct mach_class {
-    Class isa;
-    Class super;
-    const char* name;
-    int_t mthdc;
-    int_t ivarc;
-    Method mthdd[0];
-};
+#include "machrt-private.h"
 
 Class MAClsGetMetaCls(Class c) {
     return c->isa;
@@ -58,7 +49,18 @@ int_t MAClsGetIvarc(Class c) {
 }
 
 Imp MAClsGetImpForSel(Class c, Sel s) {
-    
+    for (int_t k = 0; k < c->mthdc; k++) {
+        if (c->mthdd[k].sel == s) {
+            return c->mthdd[k].imp;
+        }
+    }
+    return NULL;
 }
 
-void MAClsSetImpForSel(Class c, Imp i);
+void MAClsSetImpForSel(Class c, Sel s, Imp i) {
+    for (int_t k = 0; k < c->mthdc; k++) {
+        if (c->mthdd[k].sel == s) {
+            c->mthdd[k].imp = i;
+        }
+    }
+}

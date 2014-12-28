@@ -5,7 +5,7 @@ git submodule update --init --recursive
 mkdir -p build
 cd build
 
-rm CMakeCache.txt
+rm -f CMakeCache.txt
 
 if [ "$#" -ne 1 ]; then
     cmake .. -G Unix\ Makefiles
