@@ -18,6 +18,8 @@ set(MACHRT_API_VERSION_MINOR "1")
 set(MACHRT_API_VERSION_PATCH "0")
 set(MACHRT_API_VERSION_TAG "")
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/machrt/config.h.in"
   "${PROJECT_BINARY_DIR}/include/config.h"
