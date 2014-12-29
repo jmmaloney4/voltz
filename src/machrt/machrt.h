@@ -78,7 +78,7 @@ struct mach_selector {
     Bool rets;
 };
 
-typedef struct mach_jmpbuf {
+typedef struct {
     jmp_buf val;
 } MAJmpBuf;
 
@@ -120,7 +120,7 @@ extern "C" {
     
     Sel MAGetSel(const char* str);
 
-    id MASendMsg(id target, Sel sel, ...);
+    id MASendMsg(id target, Sel sel, ExecContext cntx, ...);
     
     void MALoadModule(const char* name);
     Class MALoadClass(const char* name);
@@ -128,8 +128,6 @@ extern "C" {
     void MAPushExceptionFrame(ExecContext cntx, MAJmpBuf catchbuf);
     MAJmpBuf MAPopExceptionFrame(ExecContext cntx);
     void MAThrowException(ExecContext cntx, id excep);
-    int_t MASetJmp(MAJmpBuf buf);
-    void MALongJmp(MAJmpBuf buf, int_t val);
     
 #ifdef __cplusplus
 }

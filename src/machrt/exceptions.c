@@ -48,32 +48,28 @@ MAJmpBuf MAPopExceptionFrame(ExecContext cntx) {
 void MAThrowException(ExecContext cntx, id excep) {
     cntx->excep = excep;
     MAJmpBuf buf = MAPopExceptionFrame(cntx);
-    MALongJmp(buf, 0);
+    longjmp(buf.val, 0);
 }
 
-int_t MASetJmp(MAJmpBuf buf) {
-    return setjmp(buf.val);
-}
-
-void MALongJmp(MAJmpBuf buf, int_t val) {
-    longjmp(buf.val, val);
-}
 
 #define try { \
-MAJmp
+MAJmpBuf buf; \
+if (!setjmp(buf.val)) { \
+MAPushExceptionFrame(cntx, buf);
 
-#define catch
+#define catch } else {
 
 #define finally
 
-#define throw(excep)
+#define throw(cntx, excep) MAThrowException(cntx, excep)
 
-#define yrt }
+#define yrt }}
 
 #include <stdio.h>
 
 void a(ExecContext c) {
-    MAThrowException(c, nil);
+    printf("throw\n");
+    throw(c, nil);
 }
 
 void test() {
@@ -83,13 +79,12 @@ void test() {
     ExecContext cntx = malloc(sizeof(struct mach_exec_context));
     cntx->uid = 0;
     
-    MAJmpBuf buf;
-    if (!MASetJmp(buf)) {
-        MAPushExceptionFrame(cntx, buf);
+    try {
         a(cntx);
-    } else {
-        printf("catch\n");
+    } catch {
+        printf("catch: %p\n", cntx->excep);
     }
-    
+    yrt
+
     free(cntx);
 }
