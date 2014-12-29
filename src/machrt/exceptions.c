@@ -26,24 +26,37 @@
  
  ---------------------------------------------------------------------------- */
 
-#ifndef mach_machrt_private_h
-#define mach_machrt_private_h
-
 #include "machrt.h"
 
-struct mach_object {
-    Class isa;
-    int_t refs;
-    id ivars[0];
-};
+void MAPushExceptionFrame(ExecContext cntx, MAJmpBuf catchbuf);
 
-struct mach_class {
-    Class isa;
-    Class super;
-    const char* name;
-    int_t mthdc;
-    int_t ivarc;
-    Method mthdd[0];
-};
+MAJmpBuf MAPopExceptionFrame(ExecContext cntx);
 
-#endif
+int_t MASetJmp(MAJmpBuf buf) {
+  return setjmp(buf.val);
+}
+
+void MALongJmp(MAJmpBuf buf, int_t val) {
+    longjmp(buf.val, val);
+}
+
+#define try
+
+#define catch
+
+#define finally
+
+#define throw(excep)
+
+void test() {
+    MAJmpBuf buf;
+    id excep = nil;
+    if (!MASetJmp(buf)) {
+        // try
+        excep = nil;
+        MALongJmp(buf, 0);
+    } else {
+        // catch
+        
+    }
+}

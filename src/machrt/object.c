@@ -26,7 +26,7 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "machrt-private.h"
+#include "machrt.h"
 
 Class MAObjGetClass(id x) {
     return x->isa;

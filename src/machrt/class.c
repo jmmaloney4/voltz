@@ -26,7 +26,7 @@
  
  ---------------------------------------------------------------------------- */
 
-#include "machrt-private.h"
+#include "machrt.h"
 
 Class MAClsGetMetaCls(Class c) {
     return c->isa;

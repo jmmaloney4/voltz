@@ -35,5 +35,9 @@ Sel RetainSel = NULL;
 Sel DeinitSel = NULL;
 
 void InitializeSelectors() {
-    
+    AllocSel = MAGetSel(":Alloc()");
+    InitSel = MAGetSel(":Init()");
+    ReleaseSel = MAGetSel("Release()");
+    RetainSel = MAGetSel(":Retain()");
+    DeinitSel = MAGetSel("Deinit()");
 }

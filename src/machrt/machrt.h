@@ -30,13 +30,17 @@
 #define MACHRT_MACHRT_H
 
 #include "include/config.h"
+#include <pthread.h>
+#include <setjmp.h>
 
 #ifndef NULL
 #define NULL ((void*)0)
 #endif
 
+#define nil ((id)0)
+
 #ifdef __cplusplus
-#define MACH_IMP(name) extern "C" id name (id self, Sel cmd, id* argv)
+#define MACH_IMP(name) extern "C" id name (id self, Sel cmd, ExecContext cntx, id* argv)
 #else
 #define MACH_IMP(name) id name (id self, Sel cmd, id* argv)
 #endif
@@ -45,17 +49,53 @@ typedef struct mach_object* id;
 typedef struct mach_class* Class;
 typedef struct mach_selector* Sel;
 typedef struct mach_method Method;
-typedef id (*Imp) (id, Sel, id*);
+typedef struct mach_exec_context* ExecContext;
+typedef id (*Imp) (id, Sel, ExecContext, id*);
+
+struct mach_object {
+    Class isa;
+    int_t refs;
+    id ivars[0];
+};
 
 struct mach_method {
     Sel sel;
     Imp imp;
 };
 
+struct mach_class {
+    Class isa;
+    Class super;
+    const char* name;
+    int_t mthdc;
+    int_t ivarc;
+    Method mthdd[0];
+};
+
 struct mach_selector {
     const char* str;
     int_t args;
     Bool rets;
+};
+
+typedef struct mach_jmpbuf {
+    jmp_buf val;
+} MAJmpBuf;
+
+struct mach_exception_frame_stack_node {
+    MAJmpBuf catchbuf;
+    struct mach_exception_frame_stack_node* next;
+};
+
+struct mach_exception_frame_stack {
+    struct mach_exception_frame_stack_node* node;
+};
+
+struct mach_exec_context {
+    pthread_t thread;
+    int_t uid;
+    id excep;
+    struct mach_exception_frame_stack estack;
 };
 
 #ifdef __cplusplus
@@ -76,7 +116,19 @@ extern "C" {
     Imp MAClsGetImpForSel(Class c, Sel s);
     void MAClsSetImpForSel(Class c, Sel s, Imp i);
     
+    Bool MAIsOfKind(id x, Class cls);
+    
     Sel MAGetSel(const char* str);
+
+    id MASendMsg(id target, Sel sel, ...);
+    
+    void MALoadModule(const char* name);
+    Class MALoadClass(const char* name);
+    
+    void MAPushExceptionFrame(ExecContext cntx, MAJmpBuf catchbuf);
+    MAJmpBuf MAPopExceptionFrame(ExecContext cntx);
+    int_t MASetJmp(MAJmpBuf buf);
+    void MALongJmp(MAJmpBuf buf, int_t val);
     
 #ifdef __cplusplus
 }
