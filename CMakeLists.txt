@@ -29,11 +29,15 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 add_library(machrt STATIC   src/machrt/config.h.in
                             src/machrt/machrt.h
-                            src/machrt/machrt-private.h
                             src/machrt/selectors.h
 
                             src/machrt/selectors.c
                             src/machrt/mem.c
                             src/machrt/object.c
                             src/machrt/class.c
-                            src/machrt/sel.c)
+                            src/machrt/sel.c
+                            src/machrt/main.c
+                            src/machrt/exceptions.c)
+
+add_executable(mach_tests   src/test/main.c)
+target_link_libraries(mach_tests machrt)

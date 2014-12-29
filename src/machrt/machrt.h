@@ -127,6 +127,7 @@ extern "C" {
     
     void MAPushExceptionFrame(ExecContext cntx, MAJmpBuf catchbuf);
     MAJmpBuf MAPopExceptionFrame(ExecContext cntx);
+    void MAThrowException(ExecContext cntx, id excep);
     int_t MASetJmp(MAJmpBuf buf);
     void MALongJmp(MAJmpBuf buf, int_t val);
     
