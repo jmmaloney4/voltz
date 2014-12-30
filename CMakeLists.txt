@@ -37,7 +37,8 @@ add_library(machrt STATIC   src/machrt/config.h.in
                             src/machrt/class.c
                             src/machrt/sel.c
                             src/machrt/main.c
-                            src/machrt/exceptions.c)
+                            src/machrt/exceptions.c
+                            src/machrt/std.c)
 
 add_executable(mach_tests   src/test/main.c)
 target_link_libraries(mach_tests machrt)

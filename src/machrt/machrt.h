@@ -42,7 +42,7 @@
 #ifdef __cplusplus
 #define MACH_IMP(name) extern "C" id name (id self, Sel cmd, ExecContext cntx, id* argv)
 #else
-#define MACH_IMP(name) id name (id self, Sel cmd, id* argv)
+#define MACH_IMP(name) id name (id self, Sel cmd, ExecContext cntx, id* argv)
 #endif
 
 typedef struct mach_object* id;
@@ -117,17 +117,21 @@ extern "C" {
     void MAClsSetImpForSel(Class c, Sel s, Imp i);
     
     Bool MAIsOfKind(id x, Class cls);
-    
     Sel MAGetSel(const char* str);
-
     id MASendMsg(id target, Sel sel, ExecContext cntx, ...);
     
     void MALoadModule(const char* name);
     Class MALoadClass(const char* name);
     
-    void MAPushExceptionFrame(ExecContext cntx, MAJmpBuf catchbuf);
-    MAJmpBuf MAPopExceptionFrame(ExecContext cntx);
     void MAThrowException(ExecContext cntx, id excep);
+
+    Class MAStdObjectCls;
+    Class MAStdArrayCls;
+    Class MAStdIntCls;
+    Class MAStdFloatCls;
+    Class MAStdStringCls;
+    Class MAStdCharCls;
+    Class MAStdFunctionCls;
     
 #ifdef __cplusplus
 }

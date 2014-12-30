@@ -80,7 +80,7 @@ MACH_IMP(ObjectRelease) {
     pthread_mutex_t* mut = GetMutex(self);
     pthread_mutex_lock(mut);
     if (MAObjGetRefs(self) <= 1) {
-        //SendMsg(self, DeinitSel);
+        MASendMsg(self, DeinitSel, cntx);
         free(self);
     }
     MAObjDecRefs(self);

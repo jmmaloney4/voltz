@@ -28,8 +28,14 @@
 
 #include "machrt.h"
 
-int main_(int argc, const char* argv[]) {
+Class MAStdObjectCls;
+Class MAStdArrayCls;
+Class MAStdIntCls;
+Class MAStdFloatCls;
+Class MAStdStringCls;
+Class MAStdCharCls;
+Class MAStdFunctionCls;
+
+void InitializeCoreClasses() {
     
-    int_t retval = 0;
-    return retval;
 }
