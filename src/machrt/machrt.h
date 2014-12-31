@@ -43,30 +43,35 @@
 #define nil ((MAId)0)
 
 #ifdef __cplusplus
-#define MACH_IMP(name) extern "C" id name (id self, Sel cmd, ExecContext cntx, id* argv)
+#define MACH_IMP(name) extern "C" id name (ExecContext cntx, id* argv)
 #else
-#define MACH_IMP(name) id name (id self, Sel cmd, ExecContext cntx, id* argv)
+#define MACH_IMP(name) id name (ExecContext cntx, id* argv)
 #endif
 
-typedef struct MAObject* MAId;
-typedef struct MAClass* MAClass;
-typedef struct MAMethod MAMethod;
-typedef struct MASelector* MASel;
-typedef struct MAExecContext* MAExecContext;
-typedef MAId (*MAImp) (MAId, MASel, MAExecContext, MAId*);
+typedef struct MAObject_* MAId;
+typedef struct MAClass_* MAClass;
+typedef struct MAMethod_ MAMethod;
+typedef struct MASel_* MASel;
+typedef struct MAExecContext_* MAExecContext;
+typedef struct MAImp_ MAImp;
 
-struct MAObject {
+struct MAImp_ {
+    MAId (*val) (MAExecContext, MAId*);
+    MAInt args;
+};
+
+struct MAObject_ {
     MAClass isa;
     MAInt refs;
     MAId ivars[0];
 };
 
-struct MAMethod {
+struct MAMethod_ {
     MASel sel;
     MAImp imp;
 };
 
-struct MAClass {
+struct MAClass_ {
     MAClass isa;
     MAClass super;
     const char* name;
@@ -75,7 +80,7 @@ struct MAClass {
     MAMethod mthdd[0];
 };
 
-struct MASelector {
+struct MASel_ {
     const char* str;
     MAInt args;
     MABool rets;
@@ -85,58 +90,13 @@ struct MASelector {
 extern "C" {
 #endif
     
-    /** 
-     *  Send the specified message to a given object.
-     *  
-     *  @param targ
-     *      The target object.
-     *  @param sel
-     *      The selector of the message to send.
-     *  @param cntx
-     *      The Execution Context that the message should be run on.
-     *  @param ...
-     *      A comma-seperated list of the arguments to be passed when the 
-     *      message is sent.
-     *
-     *  @return The return value of the message, or nil if @c targ is nil.
-     */
-    MAId MASendMsg(MAId targ, MASel sel, MAExecContext cntx, ...);
+    MAId MAExecImp(MAImp imp, ...);
+    MAImp MAGetImpForSel(MAClass cls, MASel sel);
     
-    /**
-     *  Get the class of a given object.
-     *  
-     *  @param obj
-     *      The object to get the class of.
-     *
-     *  @return The class of @c obj.
-     */
-    inline MAClass MAObjGetClass(MAId obj) {
-        return obj->isa;
-    }
     
-    /**
-     *  Get the superclass of a given class.
-     *
-     *  @param cls
-     *      The class to get the superclass of.
-     *
-     *  @return The superclass of @c cls.
-     */
-    inline MAClass MAClsGetSuper(MAClass cls) {
-        return cls->super;
-    }
-    
-    /**
-     *  Get the number of methods a given class has.
-     *  
-     *  @param cls
-     *      The class to get the method count of.
-     *  
-     *  @return The number of methods @c cls has.
-     */
-    MAInt MAClsGetMthdc(MAClass cls) {
-        return cls->mthdc;
-    }
+    extern MAClass MAObject;
+    extern MAClass MAFunction;
+    extern MAClass MAArray;
     
 #ifdef __cplusplus
 }
