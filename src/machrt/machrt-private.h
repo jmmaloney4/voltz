@@ -27,23 +27,18 @@
  ---------------------------------------------------------------------------- */
 
 #include "machrt.h"
-#include <stdlib.h>
 
-struct mach_data {
-    
-};
+#ifndef mach_machrt_private_h
+#define mach_machrt_private_h
 
-int_t go(struct mach_data* data) {
+#ifdef __cplusplus
+extern "C" {
+#endif
+
     
+    
+#ifdef __cplusplus
 }
+#endif
 
-int main_(int argc, const char* argv[]) {
-    
-    ExecContext cntx = malloc(sizeof(struct mach_exec_context));
-    cntx->uid = 0;
-    
-    
-    
-    int_t retval = 0;
-    return retval;
-}
+#endif

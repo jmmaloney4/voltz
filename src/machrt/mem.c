@@ -28,7 +28,6 @@
 
 #include "machrt.h"
 #include "selectors.h"
-#include <pthread.h>
 #include <stdlib.h>
 
 pthread_mutex_t mach_mem_mutex0;

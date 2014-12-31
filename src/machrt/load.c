@@ -27,23 +27,17 @@
  ---------------------------------------------------------------------------- */
 
 #include "machrt.h"
-#include <stdlib.h>
+#include <dlfcn.h>
 
-struct mach_data {
-    
-};
+#define MACH_MODULE_LOAD_PATH_VAR "MACH_MODULE_LOAD_PATH"
 
-int_t go(struct mach_data* data) {
+typedef struct {
+    void* lib;
+} MAModlue;
+
+void MALoadModule(const char* name) {
+    char* ldpath = "/opt/mach/modules/";
     
 }
 
-int main_(int argc, const char* argv[]) {
-    
-    ExecContext cntx = malloc(sizeof(struct mach_exec_context));
-    cntx->uid = 0;
-    
-    
-    
-    int_t retval = 0;
-    return retval;
-}
+Class MALoadClass(const char* name);

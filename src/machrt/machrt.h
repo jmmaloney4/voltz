@@ -124,14 +124,6 @@ extern "C" {
     Class MALoadClass(const char* name);
     
     void MAThrowException(ExecContext cntx, id excep);
-
-    Class MAStdObjectCls;
-    Class MAStdArrayCls;
-    Class MAStdIntCls;
-    Class MAStdFloatCls;
-    Class MAStdStringCls;
-    Class MAStdCharCls;
-    Class MAStdFunctionCls;
     
 #ifdef __cplusplus
 }
