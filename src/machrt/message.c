@@ -27,23 +27,35 @@
  ---------------------------------------------------------------------------- */
 
 #include "machrt.h"
+#include <stdarg.h>
+#include <stdlib.h>
 
-Class MAObjGetClass(id x) {
-    return x->isa;
-}
-
-int_t MAObjGetRefs(id x) {
-    return x->refs;
-}
-
-void MAObjSetRefs(id x, int_t k) {
-    x->refs = k;
-}
-
-void MAObjIncRefs(id x) {
-    x->refs++;
-}
-
-void MAObjDecRefs(id x) {
-    x->refs--;
+MAId MASendMsg(MAId targ, MASel sel, MAExecContext cntx, ...) {
+    if (targ == nil) {
+        return nil;
+    }
+    
+    //  iterate through each class in the hierarchy starting at the bottom, the
+    //  class of the target object. Then iterate through each method to find the
+    //  one that matches the specified selector.
+    for (MAClass c = MAObjGetClass(targ); c != NULL; c = MAClsGetSuper(c)) {
+        MAInt mc = MAClsGetMthdc(c);
+        for (MAInt k = 0; k < mc; k++) {
+            if (c->mthdd[k].sel == sel) {
+                MAId* arr = malloc(sizeof(MAId) * sel->args);
+                va_list ap;
+                va_start(ap, cntx);
+                for (MAInt i = 0; i < sel->args; i++) {
+                    arr[i] = va_arg(ap, MAId);
+                }
+                va_end(ap);
+                
+                MAId rv = c->mthdd[k].imp(targ, sel, cntx, arr);
+                free(arr);
+                return rv;
+            }
+        }
+    }
+    
+    abort();
 }

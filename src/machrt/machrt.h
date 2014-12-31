@@ -37,7 +37,10 @@
 #define NULL ((void*)0)
 #endif
 
-#define nil ((id)0)
+/**
+ *  A NULL instance.
+ */
+#define nil ((MAId)0)
 
 #ifdef __cplusplus
 #define MACH_IMP(name) extern "C" id name (id self, Sel cmd, ExecContext cntx, id* argv)
@@ -45,85 +48,95 @@
 #define MACH_IMP(name) id name (id self, Sel cmd, ExecContext cntx, id* argv)
 #endif
 
-typedef struct mach_object* id;
-typedef struct mach_class* Class;
-typedef struct mach_selector* Sel;
-typedef struct mach_method Method;
-typedef struct mach_exec_context* ExecContext;
-typedef id (*Imp) (id, Sel, ExecContext, id*);
+typedef struct MAObject* MAId;
+typedef struct MAClass* MAClass;
+typedef struct MAMethod MAMethod;
+typedef struct MASelector* MASel;
+typedef struct MAExecContext* MAExecContext;
+typedef MAId (*MAImp) (MAId, MASel, MAExecContext, MAId*);
 
-struct mach_object {
-    Class isa;
-    int_t refs;
-    id ivars[0];
+struct MAObject {
+    MAClass isa;
+    MAInt refs;
+    MAId ivars[0];
 };
 
-struct mach_method {
-    Sel sel;
-    Imp imp;
+struct MAMethod {
+    MASel sel;
+    MAImp imp;
 };
 
-struct mach_class {
-    Class isa;
-    Class super;
+struct MAClass {
+    MAClass isa;
+    MAClass super;
     const char* name;
-    int_t mthdc;
-    int_t ivarc;
-    Method mthdd[0];
+    MAInt ivarc;
+    MAInt mthdc;
+    MAMethod mthdd[0];
 };
 
-struct mach_selector {
+struct MASelector {
     const char* str;
-    int_t args;
-    Bool rets;
-};
-
-typedef struct {
-    jmp_buf val;
-} MAJmpBuf;
-
-struct mach_exception_frame_stack_node {
-    MAJmpBuf catchbuf;
-    struct mach_exception_frame_stack_node* next;
-};
-
-struct mach_exception_frame_stack {
-    struct mach_exception_frame_stack_node* node;
-};
-
-struct mach_exec_context {
-    pthread_t thread;
-    int_t uid;
-    id excep;
-    struct mach_exception_frame_stack estack;
+    MAInt args;
+    MABool rets;
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-    Class MAObjGetClass(id x);
-    int_t MAObjGetRefs(id x);
-    void MAObjSetRefs(id x, int_t k);
-    void MAObjIncRefs(id x);
-    void MAObjDecRefs(id x);
+    /** 
+     *  Send the specified message to a given object.
+     *  
+     *  @param targ
+     *      The target object.
+     *  @param sel
+     *      The selector of the message to send.
+     *  @param cntx
+     *      The Execution Context that the message should be run on.
+     *  @param ...
+     *      A comma-seperated list of the arguments to be passed when the 
+     *      message is sent.
+     *
+     *  @return The return value of the message, or nil if @c targ is nil.
+     */
+    MAId MASendMsg(MAId targ, MASel sel, MAExecContext cntx, ...);
     
-    Class MAClsGetMetaCls(Class c);
-    Class MAClsGetSuper(Class c);
-    const char* MAClsGetName(Class c);
-    int_t MAClsGetMthdc(Class c);
-    int_t MAClsGetIvarc(Class c);
-    Imp MAClsGetImpForSel(Class c, Sel s);
-    void MAClsSetImpForSel(Class c, Sel s, Imp i);
+    /**
+     *  Get the class of a given object.
+     *  
+     *  @param obj
+     *      The object to get the class of.
+     *
+     *  @return The class of @c obj.
+     */
+    inline MAClass MAObjGetClass(MAId obj) {
+        return obj->isa;
+    }
     
-    Bool MAIsOfKind(id x, Class cls);
-    Sel MAGetSel(const char* str);
-    id MASendMsg(id target, Sel sel, ExecContext cntx, ...);
+    /**
+     *  Get the superclass of a given class.
+     *
+     *  @param cls
+     *      The class to get the superclass of.
+     *
+     *  @return The superclass of @c cls.
+     */
+    inline MAClass MAClsGetSuper(MAClass cls) {
+        return cls->super;
+    }
     
-    void MALoadModule(const char* name);
-    Class MALoadClass(const char* name);
-    
-    void MAThrowException(ExecContext cntx, id excep);
+    /**
+     *  Get the number of methods a given class has.
+     *  
+     *  @param cls
+     *      The class to get the method count of.
+     *  
+     *  @return The number of methods @c cls has.
+     */
+    MAInt MAClsGetMthdc(MAClass cls) {
+        return cls->mthdc;
+    }
     
 #ifdef __cplusplus
 }

@@ -8,10 +8,7 @@
 
 #include <stdio.h>
 
-void test();
-
 int main(int argc, const char * argv[]) {
     printf("hello\n");
-    test();
     return 0;
 }

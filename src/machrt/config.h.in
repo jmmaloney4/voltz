@@ -30,30 +30,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MACHRT_CONFIG_H
 
 #if (@FLOAT_SIZE@ == 8)
-typedef float flt_t;
+typedef float MAFlt;
 #elif (@DOUBLE_SIZE@ == 8)
-typedef double flt_t;
+typedef double MAFlt;
 #else
-#error "Unable To Determine A Type For flt_t"
+#error "Unable To Determine A Type For MAFlt"
 #endif
 
 #if (@CHAR_SIZE@ == 8)
-typedef signed char int_t;
+typedef signed char MAInt;
 #elif (@SHORT_SIZE@ == 8)
-typedef signed short int_t;
+typedef signed short MAInt;
 #elif (@INT_SIZE@ == 8)
-typedef signed int int_t;
+typedef signed int MAInt;
 #elif (@LONG_SIZE@ == 8)
-typedef signed long int_t;
+typedef signed long MAInt;
 #elif (@LLONG_SIZE@ == 8)
-typedef signed long long int_t;
+typedef signed long long MAInt;
 #else
-#error "Unable To Determine A Type For int_t"
+#error "Unable To Determine A Type For MAInt"
 #endif
 
 #define true ((Bool)1)
 #define false ((Bool)0)
-typedef unsigned char Bool;
+typedef unsigned char MABool;
 
 #define MACHRT_API_VERSION_MAJOR @MACHRT_API_VERSION_MAJOR@
 #define MACHRT_API_VERSION_MINOR @MACHRT_API_VERSION_MINOR@

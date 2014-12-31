@@ -27,15 +27,3 @@
  ---------------------------------------------------------------------------- */
 
 #include "machrt.h"
-
-Class MAStdObjectCls;
-Class MAStdArrayCls;
-Class MAStdIntCls;
-Class MAStdFloatCls;
-Class MAStdStringCls;
-Class MAStdCharCls;
-Class MAStdFunctionCls;
-
-void InitializeCoreClasses() {
-    
-}
