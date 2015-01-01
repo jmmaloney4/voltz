@@ -87,3 +87,5 @@ MABool MAIsOfKind(MAId obj, MAClass cls) {
     }
     return false;
 }
+
+

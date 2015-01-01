@@ -34,7 +34,8 @@ add_library(machrt STATIC   src/machrt/config.h.in
                             src/machrt/machrt.h
                             src/machrt/machrt-private.h
 
-                            src/machrt/machrt.c)
+                            src/machrt/machrt.c
+                            src/machrt/load.c)
 
 add_executable(mach_tests   src/test/main.cc)
 target_link_libraries(mach_tests machrt gtest gtest_main)

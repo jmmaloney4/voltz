@@ -55,6 +55,7 @@ typedef struct MAMethod_ MAMethod;
 typedef struct MASel_* MASel;
 typedef struct MAExecContext_* MAExecContext;
 typedef struct MAImp_ MAImp;
+typedef struct MAModule_* MAModule;
 
 struct MAImp_ {
     MAId (*val) (MAExecContext, MAId*);
@@ -85,6 +86,16 @@ struct MASel_ {
     const char* str;
 };
 
+struct MAModule_ {
+    MAImp* imps;
+    MAInt impc;
+    const char** impn;
+    
+    MAClass* classes;
+    MAInt classc;
+    const char** classn;
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -95,11 +106,13 @@ extern "C" {
     
     MABool MAIsOfKind(MAId obj, MAClass cls);
     
-    MAClass MALoadClass(const char* name);
+    MASel MAGetSel(const char* val);
+    
+    void MALoadModule(const char* name);
+    MAClass MAGetClass(const char* name);
+    MAImp MAGetImp(const char* name);
     
     extern MAClass MAObject;
-    extern MAClass MAFunction;
-    extern MAClass MAArray;
     
     extern MASel AllocSel;
     
