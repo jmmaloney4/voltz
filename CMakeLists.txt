@@ -25,14 +25,16 @@ configure_file (
   "${PROJECT_BINARY_DIR}/include/config.h"
   )
 
+message("-- ${PROJECT_SOURCE_DIR}")
+
 include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/deps/gtest/include/")
 
 add_library(machrt STATIC   src/machrt/config.h.in
                             src/machrt/machrt.h
                             src/machrt/machrt-private.h
 
-                            src/machrt/machrt.c
-                            src/machrt/message.c)
+                            src/machrt/machrt.c)
 
-add_executable(mach_tests   src/test/main.c)
-target_link_libraries(mach_tests machrt)
+add_executable(mach_tests   src/test/main.cc)
+target_link_libraries(mach_tests machrt gtest gtest_main)

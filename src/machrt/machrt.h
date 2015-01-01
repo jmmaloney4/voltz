@@ -32,6 +32,7 @@
 #include "include/config.h"
 #include <pthread.h>
 #include <setjmp.h>
+#include <stdarg.h>
 
 #ifndef NULL
 #define NULL ((void*)0)
@@ -82,21 +83,25 @@ struct MAClass_ {
 
 struct MASel_ {
     const char* str;
-    MAInt args;
-    MABool rets;
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-    MAId MAExecImp(MAImp imp, ...);
-    MAImp MAGetImpForSel(MAClass cls, MASel sel);
+    MAId MAExecMethod(MAId obj, MASel sel, MAExecContext cntx, ...);
+    MAId MAExecMethodVA(MAId obj, MASel sel, MAExecContext cntx, va_list ap);
+    MAId MAExecMethodAR(MAId obj, MASel sel, MAExecContext cntx, MAId* args);
     
+    MABool MAIsOfKind(MAId obj, MAClass cls);
+    
+    MAClass MALoadClass(const char* name);
     
     extern MAClass MAObject;
     extern MAClass MAFunction;
     extern MAClass MAArray;
+    
+    extern MASel AllocSel;
     
 #ifdef __cplusplus
 }

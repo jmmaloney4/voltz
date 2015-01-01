@@ -27,7 +27,63 @@
  ---------------------------------------------------------------------------- */
 
 #include "machrt.h"
+#include <stdlib.h>
+#include <stdarg.h>
 
 void InitializeRuntime() {
     
+}
+
+MAId MAExecMethod(MAId obj, MASel sel, MAExecContext cntx, ...) {
+    va_list ap;
+    va_start(ap, cntx);
+    MAId rv = MAExecMethodVA(obj, sel, cntx, ap);
+    va_end(ap);
+    return rv;
+}
+
+MAImp MAGetImp_(MAClass cls, MASel sel) {
+    for (; cls != NULL; cls = cls->super) {
+        for (MAInt k = 0; k < cls->mthdc; k++) {
+            if (cls->mthdd[k].sel == sel) {
+                return cls->mthdd[k].imp;
+            }
+        }
+    }
+    MAImp l = { NULL, -1 };
+    return l;
+}
+
+MAId MAExecMethodVA(MAId obj, MASel sel, MAExecContext cntx, va_list ap) {
+    if (obj == nil) {
+        return nil;
+    }
+    
+    MAImp i = MAGetImp_(obj->isa, sel);
+    MAId* arr = alloca(sizeof(MAId) * i.args);
+    for (MAInt k = 0; k < i.args; k++) {
+        arr[k] = va_arg(ap, MAId);
+    }
+    return i.val(cntx, arr);
+}
+
+MAId MAExecMethodAR(MAId obj, MASel sel, MAExecContext cntx, MAId* args) {
+    if (obj == nil) {
+        return nil;
+    }
+    
+    return MAGetImp_(obj->isa, sel).val(cntx, args);
+}
+
+MABool MAIsOfKind(MAId obj, MAClass cls) {
+    if (obj == nil) {
+        return false;
+    }
+    
+    for (; cls != NULL; cls = cls->super) {
+        if (obj->isa == cls) {
+            return true;
+        }
+    }
+    return false;
 }

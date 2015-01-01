@@ -51,8 +51,8 @@ typedef signed long long MAInt;
 #error "Unable To Determine A Type For MAInt"
 #endif
 
-#define true ((Bool)1)
-#define false ((Bool)0)
+#define true ((MABool)1)
+#define false ((MABool)0)
 typedef unsigned char MABool;
 
 #define MACHRT_API_VERSION_MAJOR @MACHRT_API_VERSION_MAJOR@
