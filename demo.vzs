@@ -1,0 +1,68 @@
+ldstr "Hello World from Main Thread\n"
+ldint 1
+ldsel "Write(:std::String)"
+ldgbl "std::io::stdout"
+msg
+popr 5
+
+
+ldnil
+ldnil
+ldnil
+
+ldclos {
+    ldint 0
+    ldsel "Get(id)"
+
+    ldint 0
+    ldsel "GetCurrentThread()"
+    ldclass "std::Thread"
+    msg
+
+    msg
+
+    ldstr "Hello, World from Thread %.\n"
+
+    ldint 2
+    ldsel "Init(WithFormat:std::String,:...)"
+    ldclass "std::String"
+    msg
+
+    ldint 1
+    ldsel "Write(:std::String)"
+    ldvar "std::io::stdout"
+    msg
+
+    popr 16
+}
+
+ldint 1
+ldsel "Init(WithClosure:std::Closure,AndArgs:...)"
+ldclass "std::Thread"
+
+msg
+store 7
+
+msg
+store 6
+
+msg
+store 5
+
+popr 4
+
+
+ldint 0
+ldsel "Join()"
+load 2
+msg
+
+popr 2
+load 3
+msg
+
+popr 2
+load 4
+msg
+
+popr 7
