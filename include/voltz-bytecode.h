@@ -11,6 +11,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define MAGIC_NUMBER 0x6A626F7A746C6F76
+#define NOARG 9223372036854775807LL
+
 namespace voltz {
     
     struct Instruction {
@@ -74,7 +77,10 @@ namespace voltz {
             const char* str;
             char data[8];
             Builtin bltin;
-            Instruction* insts;
+            struct {
+                int64_t count;
+                Instruction* insts;
+            } closure;
         };
         
         Type type;
@@ -90,8 +96,8 @@ namespace voltz {
     
     Instruction* LoadAssemblyFile(FILE* file, int64_t* instc);
     Instruction* LoadBinaryFile(FILE* file, int64_t* instc);
-    const char* WriteAssemblyFile(Instruction* insts, int64_t instc);
-    const char* WriteBinaryFile(Instruction* insts, int64_t instc);
+    void WriteAssemblyFile(FILE* file, Instruction* insts, int64_t instc);
+    void WriteBinaryFile(FILE* file, Instruction* insts, int64_t instc);
 }
 
 #endif

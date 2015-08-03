@@ -190,9 +190,3 @@ Instruction::Type voltz::GetInstructionForName(const char* name) {
     }
     return Instruction::NOP;
 }
-
-Instruction* voltz::LoadBinaryFile(FILE *file, int64_t *instc) {
-    
-    
-    
-}

@@ -9,12 +9,11 @@
 
 using namespace voltz;
 
-int main() {
+int main() {    
     FILE* f = fopen("/Users/jack/Desktop/voltz/demo.vzs", "r");
     int64_t c = 0;
     Instruction* i = LoadAssemblyFile(f, &c);
     
-    for (int64_t k = 0; k < c; k++) {
-        printf("%s\n", GetNameForInstruction(i[k].type));
-    }
+    FILE* o = fopen("/Users/jack/Desktop/out.vzs", "w");
+    WriteAssemblyFile(o, i, c);
 }

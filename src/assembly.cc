@@ -215,6 +215,7 @@ Instruction ReadInstruction(FILE* file) {
             
             char c = fgetc(file);
             if (!IsNumber(c)) {
+                rv.value.i64 = NOARG;
                 break;
             }
             fseek(file, -1, SEEK_CUR);
@@ -236,7 +237,7 @@ Instruction ReadInstruction(FILE* file) {
             
             char c = fgetc(file);
             if (c != '"') {
-                rv.value.str = NULL;
+                rv.value.i64 = NOARG;
                 break;
             }
             fseek(file, -1, SEEK_CUR);
@@ -251,7 +252,6 @@ Instruction ReadInstruction(FILE* file) {
             EatLine(file);
             break;
         }
-            
         case Instruction::BLTIN:
         case Instruction::LDINT: {
             // Required Integer Argument
@@ -279,18 +279,20 @@ Instruction ReadInstruction(FILE* file) {
             EatLine(file);
             break;
         }
+        // TODO: UTF8 Support
         case Instruction::LDCHAR: {
             // Required Character Argument
             EatWhitespace(file);
             
             const char* str = ReadString(file);
+            int64_t len = strlen(str);
             
-            if (strlen(str) < 3) {
+            if (len > 6) {
                 printf("Parse Error!\n");
                 exit(1);
             }
             
-            char c = '\0';
+            uint64_t c = 0;
             
             if (str[0] != '\'') {
                 printf("Parse Error!\n");
@@ -324,9 +326,29 @@ Instruction ReadInstruction(FILE* file) {
                         break;
                     }
                 }
+            } else if (((uint8_t) str[1]) >= 0x80) {
+                // UTF-8
+                if (((uint8_t) str[1]) >= 0xf0 && len == 6) {
+                    // 4-byte
+                    c = (((uint8_t) str[1]) - 240) * 262144 + (((uint8_t) str[2]) - 128) * 4096 + (((uint8_t) str[3]) - 128) * 64 + (((uint8_t) str[4]) - 128);
+                } else if (((uint8_t) str[1]) >= 0xe0 && len == 5) {
+                    // 3-byte
+                    c = (((uint8_t) str[1]) - 224) * 4096 + (((uint8_t) str[2]) - 128) * 64 + (((uint8_t) str[3]) - 128);
+                } else if (((uint8_t) str[1]) >= 0xc0 && len == 4) {
+                    // 2-byte
+                    c = ((((uint8_t) str[1]) - 192) * 64) + ((uint8_t) str[2]) - 128;
+                } else {
+                    printf("Bad UTF-8 Character!\n");
+                    exit(1);
+                }
+            } else if (len == 3) {
+                c = str[1];
+            } else {
+                printf("Parse Error!\n");
+                exit(1);
             }
             
-            rv.value.c8 = c;
+            rv.value.i64 = c;
             
             delete[] str;
             
@@ -349,6 +371,7 @@ Instruction ReadInstruction(FILE* file) {
             EatLine(file);
             break;
         }
+            // FIXME: Nested Calls to LDCLOS
         case Instruction::LDCLOS: {
             // Required Closure Argument
             EatWhitespace(file);
@@ -373,13 +396,15 @@ Instruction ReadInstruction(FILE* file) {
                 delete [] insts;
                 insts = tmp;
                 
+                EatWhitespace(file);
                 char c = fgetc(file);
                 if (c == '}') {
                     break;
                 }
             }
             
-            rv.value.insts = insts;
+            rv.value.closure.count = instc;
+            rv.value.closure.insts = insts;
             
             EatLine(file);
             break;
@@ -415,4 +440,139 @@ Instruction* voltz::LoadAssemblyFile(FILE* file, int64_t* instc) {
     
     *instc = size;
     return rv;
+}
+
+void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
+    
+    for (int64_t k = 0; k < indent; k++) {
+        fprintf(file, "\t");
+    }
+    
+    fprintf(file, "%s", GetNameForInstruction(i.type));
+    
+    switch (i.type) {
+        case Instruction::NOP:
+        case Instruction::BREAK:
+        case Instruction::MSG:
+        case Instruction::MSGSPR:
+        case Instruction::RET:
+        case Instruction::RETN:
+        case Instruction::POPA:
+        case Instruction::POPAR:
+        case Instruction::DUP:
+        case Instruction::DUPR:
+        case Instruction::SET:
+        case Instruction::YIELD:
+        case Instruction::LDSELF:
+        case Instruction::LDIVARC:
+        case Instruction::LDARGC:
+        case Instruction::LDSZ:
+        case Instruction::LDNIL:
+        case Instruction::LDTRUE:
+        case Instruction::LDFALSE: {
+            // No Argument
+            fprintf(file, "\n");
+            break;
+        }
+        case Instruction::POP:
+        case Instruction::POPR:
+        case Instruction::LOAD:
+        case Instruction::LOADR:
+        case Instruction::STORE:
+        case Instruction::STORER:
+        case Instruction::JMP:
+        case Instruction::JMPCND:
+        case Instruction::LDIVAR:
+        case Instruction::STIVAR: {
+            // Optional Integer Argument
+            if (i.value.i64 != NOARG) {
+                fprintf(file, " %lli\n", i.value.i64);
+            }
+            break;
+        }
+        case Instruction::LDGBL:
+        case Instruction::LDSEL:
+        case Instruction::LDCLASS: {
+            // Optional String Argument
+            if (i.value.str != (const char*) NOARG) {
+                fprintf(file, " \"%s\"\n", i.value.str);
+            }
+            break;
+        }
+        case Instruction::BLTIN:
+        case Instruction::LDINT: {
+            // Required Integer Argument
+            fprintf(file, " %lli\n", i.value.i64);
+            break;
+        }
+        case Instruction::LDFLT: {
+            // Required Float Argument
+            fprintf(file, " %f\n", i.value.f64);
+            break;
+        }
+            // TODO: UTF8 Support
+        case Instruction::LDCHAR: {
+            // Required Character Argument
+            
+            char cs[5] = {0};
+            
+            if (i.value.i64 < 0x80) cs[0] = i.value.i64;
+            else if (i.value.i64 < 0x800) {
+                cs[0] = 192 + i.value.i64 / 64;
+                cs[1] = 128 + i.value.i64 % 64;
+            }
+            else if (i.value.i64 - 0xd800u < 0x800) {
+                printf("Parse Error!\n");
+                exit(1);
+            }
+            else if (i.value.i64 < 0x10000) {
+                cs[0] = 224 + i.value.i64 / 4096;
+                cs[1] = 128 + i.value.i64 / 64 % 64;
+                cs[2] = 128 + i.value.i64 % 64;
+            }
+            else if (i.value.i64 < 0x110000) {
+                cs[0] = 240 + i.value.i64 / 262144;
+                cs[1] = 128 + i.value.i64 / 4096 % 64;
+                cs[2] = 128 + i.value.i64 / 64 % 64;
+                cs[3] = 128 + i.value.i64 % 64;
+            }
+            else {
+                printf("Parse Error!\n");
+                exit(1);
+            }
+            
+            fprintf(file, " '%s'\n", cs);
+            break;
+        }
+        case Instruction::IMPORT:
+        case Instruction::PRINT:
+        case Instruction::LDSTR: {
+            // Required String Argument
+            fprintf(file, " \"%s\"\n", i.value.str);
+            break;
+        }
+            // FIXME: Nested Calls to LDCLOS
+        case Instruction::LDCLOS: {
+            // Required Closure Argument
+            fprintf(file, " {\n");
+            
+            for (int64_t k = 0; k < i.value.closure.count; k++) {
+                WriteAssemblyInstruction(file, i.value.closure.insts[k], indent + 1);
+            }
+            for (int64_t k = 0; k < indent; k++) {
+                fprintf(file, "\t");
+            }
+            fprintf(file, "}\n");
+            
+            break;
+        }
+            
+    }
+    
+}
+
+void voltz::WriteAssemblyFile(FILE* file, voltz::Instruction* insts, int64_t instc) {
+    for (int64_t k = 0; k < instc; k++) {
+        WriteAssemblyInstruction(file, insts[k], 0);
+    }
 }
