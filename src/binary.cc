@@ -6,6 +6,7 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz.h"
+#include <string.h>
 
 using namespace voltz;
 
@@ -103,6 +104,7 @@ Instruction ReadBinaryInstruction(FILE* file) {
         case Instruction::LDTRUE:
         case Instruction::LDFALSE: {
             // No Arguments
+            rv.value.i64 = 0;
             break;
         }
         case Instruction::POP:
@@ -163,6 +165,7 @@ Instruction ReadBinaryInstruction(FILE* file) {
             }
             rv.value.closure.count = count;
             rv.value.closure.insts = instv;
+            break;
         }
     }
     
@@ -182,7 +185,129 @@ Instruction* voltz::LoadBinaryFile(FILE *file, int64_t *instc) {
     Instruction* rv = new Instruction[count]();
     
     for (int64_t k = 0; k < count; k++) {
-        
+        rv[k] = ReadBinaryInstruction(file);
+    }
+    
+    *instc = count;
+    return rv;
+}
+
+void WriteBinaryInstruction(FILE* file, Instruction i) {
+    
+    uint8_t t = (uint8_t) i.type;
+    fwrite(&t, sizeof(uint8_t), 1, file);
+    
+    switch (i.type) {
+        case Instruction::NOP:
+        case Instruction::BREAK:
+        case Instruction::MSG:
+        case Instruction::MSGSPR:
+        case Instruction::RET:
+        case Instruction::RETN:
+        case Instruction::POPA:
+        case Instruction::POPAR:
+        case Instruction::DUP:
+        case Instruction::DUPR:
+        case Instruction::SET:
+        case Instruction::YIELD:
+        case Instruction::LDSELF:
+        case Instruction::LDIVARC:
+        case Instruction::LDARGC:
+        case Instruction::LDSZ:
+        case Instruction::LDNIL:
+        case Instruction::LDTRUE:
+        case Instruction::LDFALSE: {
+            // No Arguments
+            break;
+        }
+        case Instruction::POP:
+        case Instruction::POPR:
+        case Instruction::LOAD:
+        case Instruction::LOADR:
+        case Instruction::STORE:
+        case Instruction::STORER:
+        case Instruction::JMP:
+        case Instruction::JMPCND:
+        case Instruction::LDIVAR:
+        case Instruction::STIVAR: {
+            // Optional Integer Argument
+            uint8_t chars[8];
+            IntToChars(i.value.i64, chars);
+            fwrite(chars, sizeof(uint8_t), 8, file);
+            break;
+        }
+        case Instruction::LDGBL:
+        case Instruction::LDSEL:
+        case Instruction::LDCLASS: {
+            // Optional String Argument
+            int64_t len = strlen(i.value.str);
+            uint8_t chars[8 + len];
+            IntToChars(len, chars);
+            for (int64_t k = 0; k < len; k++) {
+                chars[8 + k] = i.value.str[k];
+            }
+            
+            fwrite(chars, sizeof(uint8_t), len + 8, file);
+            break;
+        }
+        case Instruction::BLTIN:
+        case Instruction::LDINT: {
+            // Required Integer Argument
+            uint8_t chars[8];
+            IntToChars(i.value.i64, chars);
+            fwrite(chars, sizeof(uint8_t), 8, file);
+            break;
+        }
+        case Instruction::LDFLT: {
+            // Required Float Argument
+            
+            break;
+        }
+        case Instruction::LDCHAR: {
+            
+            break;
+        }
+        case Instruction::IMPORT:
+        case Instruction::PRINT:
+        case Instruction::LDSTR: {
+            // Required String Argument
+            int64_t len = strlen(i.value.str);
+            uint8_t chars[8 + len];
+            IntToChars(len, chars);
+            for (int64_t k = 0; k < len; k++) {
+                chars[8 + k] = i.value.str[k];
+            }
+            
+            fwrite(chars, sizeof(uint8_t), len + 8, file);
+            break;
+        }
+        case Instruction::LDCLOS: {
+            // Required Closure Argument
+            uint8_t chars[8];
+            IntToChars(i.value.closure.count, chars);
+            fwrite(chars, sizeof(uint8_t), 8, file);
+            
+            for (int64_t k = 0; k < i.value.closure.count; k++) {
+                WriteBinaryInstruction(file, i.value.closure.insts[k]);
+            }
+            break;
+        }
+
+    }
+    
+}
+
+void voltz::WriteBinaryFile(FILE *file, voltz::Instruction *insts, int64_t instc) {
+    
+    uint8_t chars[8];
+    IntToChars(MAGIC_NUMBER, chars);
+    fwrite(chars, sizeof(uint8_t), 8, file);
+    
+    IntToChars(instc, chars);
+    fwrite(chars, sizeof(uint8_t), 8, file);
+    
+    for (int64_t k = 0; k < instc; k++) {
+        WriteBinaryInstruction(file, insts[k]);
     }
     
 }

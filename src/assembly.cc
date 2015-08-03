@@ -524,6 +524,8 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
             // Optional Integer Argument
             if (i.value.i64 != NOARG) {
                 fprintf(file, " %lli\n", i.value.i64);
+            } else {
+                fprintf(file, "\n");
             }
             break;
         }
@@ -535,6 +537,8 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
                 const char* str = InsertNewlineEscapes(i.value.str);
                 fprintf(file, " \"%s\"\n", str);
                 delete[] str;
+            } else {
+                fprintf(file, "\n");
             }
             break;
         }
@@ -597,7 +601,6 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
             delete[] str;
             break;
         }
-            // FIXME: Nested Calls to LDCLOS
         case Instruction::LDCLOS: {
             // Required Closure Argument
             fprintf(file, " {\n");
