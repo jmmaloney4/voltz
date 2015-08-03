@@ -163,6 +163,42 @@ const char* ParseEscapeCharacters(const char* str) {
     return rv;
 }
 
+const char* InsertNewlineEscapes(const char* str) {
+    int64_t size = 0;
+    char* rv = new char[1]();
+    rv[0] = '\0';
+    
+    int64_t len = strlen(str);
+    
+    for (int64_t k = 0; k < len; k++) {
+        int64_t newsize;
+        if (str[k] == '\n') {
+            newsize = size + 2;
+        } else {
+            newsize = size + 1;
+        }
+        
+        char* tmp = new char[newsize + 1]();
+        for (int64_t j = 0; j < size; j++) {
+            tmp[j] = rv[j];
+        }
+        tmp[newsize] = '\0';
+        
+        if (str[k] == '\n') {
+            tmp[size] = '\\';
+            tmp[size + 1] = 'n';
+        } else {
+            tmp[size] = str[k];
+        }
+        
+        delete[] rv;
+        rv = tmp;
+        size = newsize;
+    }
+    
+    return rv;
+}
+
 Instruction ReadInstruction(FILE* file) {
     Instruction rv;
     
@@ -401,6 +437,7 @@ Instruction ReadInstruction(FILE* file) {
                 if (c == '}') {
                     break;
                 }
+                fseek(file, -1, SEEK_CUR);
             }
             
             rv.value.closure.count = instc;
@@ -495,7 +532,9 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
         case Instruction::LDCLASS: {
             // Optional String Argument
             if (i.value.str != (const char*) NOARG) {
-                fprintf(file, " \"%s\"\n", i.value.str);
+                const char* str = InsertNewlineEscapes(i.value.str);
+                fprintf(file, " \"%s\"\n", str);
+                delete[] str;
             }
             break;
         }
@@ -513,6 +552,11 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
             // TODO: UTF8 Support
         case Instruction::LDCHAR: {
             // Required Character Argument
+            
+            if (i.value.i64 == '\n') {
+                printf(" '\\n'\n");
+                break;
+            }
             
             char cs[5] = {0};
             
@@ -548,7 +592,9 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
         case Instruction::PRINT:
         case Instruction::LDSTR: {
             // Required String Argument
-            fprintf(file, " \"%s\"\n", i.value.str);
+            const char* str = InsertNewlineEscapes(i.value.str);
+            fprintf(file, " \"%s\"\n", str);
+            delete[] str;
             break;
         }
             // FIXME: Nested Calls to LDCLOS
