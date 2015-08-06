@@ -9,11 +9,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 
 using namespace voltz;
 
 int main(int argc, const char** argv) {
-    
+        
     if (argc < 4) {
         fprintf(stderr, "Usage: %s <assemble | disassemble> [file] [outfile]\n", argv[0]);
         exit(1);

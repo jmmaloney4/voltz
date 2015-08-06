@@ -81,6 +81,15 @@ const char* ReadBinaryString(FILE* file) {
     return rv;
 }
 
+bool BigEndian(void) {
+    union {
+        uint32_t i;
+        char c[4];
+    } bint = {0x01020304};
+    
+    return bint.c[0] == 1;
+}
+
 // Implemented in assembly.cc, used because floats are stored as a string
 // even in the binary format, because otherwise they're a pain to deal with.
 double ParseFloatFromString(const char* str);
@@ -145,10 +154,39 @@ Instruction ReadBinaryInstruction(FILE* file) {
         }
         case Instruction::LDFLT: {
             // Required Float Argument
-            const char* str = ReadBinaryString(file);
-            double val = ParseFloatFromString(str);
-            rv.value.f64 = val;
-            delete[] str;
+            uint8_t arr[8];
+            fread(arr, sizeof(uint8_t), 8, file);
+            
+            double d = 0;
+            
+            if (BigEndian()) {
+                memcpy(&d, arr, sizeof(uint8_t) * 8);
+            } else {
+                // Flip Endianness
+                uint8_t tmp[8];
+                tmp[0] = arr[7];
+                tmp[1] = arr[6];
+                tmp[2] = arr[5];
+                tmp[3] = arr[4];
+                tmp[4] = arr[3];
+                tmp[5] = arr[2];
+                tmp[6] = arr[1];
+                tmp[7] = arr[0];
+                
+                arr[0] = tmp[0];
+                arr[1] = tmp[1];
+                arr[2] = tmp[2];
+                arr[3] = tmp[3];
+                arr[4] = tmp[4];
+                arr[5] = tmp[5];
+                arr[6] = tmp[6];
+                arr[7] = tmp[7];
+                
+                memcpy(&d, arr, sizeof(uint8_t) * 8);
+            }
+            
+            rv.value.f64 = d;
+            
             break;
         }
         case Instruction::LDCHAR: {
@@ -271,6 +309,31 @@ void WriteBinaryInstruction(FILE* file, Instruction i) {
         }
         case Instruction::LDFLT: {
             // Required Float Argument
+            uint8_t arr[8];
+            memcpy(arr, &i.value.f64, 8);
+            if (!BigEndian()) {
+                // Flip Endianness
+                uint8_t tmp[8];
+                tmp[0] = arr[7];
+                tmp[1] = arr[6];
+                tmp[2] = arr[5];
+                tmp[3] = arr[4];
+                tmp[4] = arr[3];
+                tmp[5] = arr[2];
+                tmp[6] = arr[1];
+                tmp[7] = arr[0];
+                
+                arr[0] = tmp[0];
+                arr[1] = tmp[1];
+                arr[2] = tmp[2];
+                arr[3] = tmp[3];
+                arr[4] = tmp[4];
+                arr[5] = tmp[5];
+                arr[6] = tmp[6];
+                arr[7] = tmp[7];
+            }
+            
+            fwrite(arr, sizeof(uint8_t), 8, file);
             
             break;
         }

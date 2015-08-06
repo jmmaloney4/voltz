@@ -552,7 +552,8 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
         }
         case Instruction::LDFLT: {
             // Required Float Argument
-            fprintf(file, " %f\n", i.value.f64);
+            fprintf(file, " %.21g\n", i.value.f64);
+            
             break;
         }
             // TODO: UTF8 Support
