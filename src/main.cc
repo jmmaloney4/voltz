@@ -8,6 +8,7 @@
 #include "voltz.h"
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 using namespace voltz;
 

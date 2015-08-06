@@ -266,6 +266,7 @@ Instruction ReadInstruction(FILE* file) {
             break;
         }
         case Instruction::LDGBL:
+        case Instruction::STGBL:
         case Instruction::LDSEL:
         case Instruction::LDCLASS: {
             // Optional String Argument
@@ -529,6 +530,7 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
             }
             break;
         }
+        case Instruction::STGBL:
         case Instruction::LDGBL:
         case Instruction::LDSEL:
         case Instruction::LDCLASS: {

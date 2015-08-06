@@ -47,6 +47,7 @@ const char* voltz::GetNameForInstruction(Instruction::Type t) {
         case voltz::Instruction::LDARGC: return "ldargc";
         case voltz::Instruction::LDSZ: return "ldsz";
         case voltz::Instruction::LDGBL: return "ldgbl";
+        case voltz::Instruction::STGBL: return "stgbl";
             
         case voltz::Instruction::LDNIL: return "ldnil";
         case voltz::Instruction::LDINT: return "ldint";
@@ -156,6 +157,8 @@ Instruction::Type voltz::GetInstructionForName(const char* name) {
     }
     if (strcmp(name, "ldgbl") == 0) {
         return Instruction::LDGBL;
+    } if (strcmp(name, "stgbl") == 0) {
+        return Instruction::STGBL;
     }
     
     if (strcmp(name, "ldnil") == 0) {

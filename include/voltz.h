@@ -11,4 +11,21 @@
 #include "voltz-types.h"
 #include "voltz-bytecode.h"
 
+namespace voltz {
+    
+#define nil (NULL)
+    
+    void RegisterObjectForName(Object obj, const char* name);
+    Object GetRegisteredObject(const char* name);
+    
+    Selector GetSelector(const char* value);
+    
+    void StartRuntime(FILE* file);
+    
+    void Release(Object o);
+    Object Retain(Object o);
+    
+    Object SendMessage(Object target, Selector sel, int64_t argc, ...);
+}
+
 #endif

@@ -7,6 +7,7 @@
 
 #include "voltz.h"
 #include <string.h>
+#include <math.h>
 
 using namespace voltz;
 
@@ -80,6 +81,10 @@ const char* ReadBinaryString(FILE* file) {
     return rv;
 }
 
+// Implemented in assembly.cc, used because floats are stored as a string
+// even in the binary format, because otherwise they're a pain to deal with.
+double ParseFloatFromString(const char* str);
+
 Instruction ReadBinaryInstruction(FILE* file) {
     Instruction::Type i = (Instruction::Type) fgetc(file);
     Instruction rv = Instruction(i);
@@ -122,6 +127,7 @@ Instruction ReadBinaryInstruction(FILE* file) {
             rv.value.i64 = arg;
             break;
         }
+        case Instruction::STGBL:
         case Instruction::LDGBL:
         case Instruction::LDSEL:
         case Instruction::LDCLASS: {
@@ -139,6 +145,10 @@ Instruction ReadBinaryInstruction(FILE* file) {
         }
         case Instruction::LDFLT: {
             // Required Float Argument
+            const char* str = ReadBinaryString(file);
+            double val = ParseFloatFromString(str);
+            rv.value.f64 = val;
+            delete[] str;
             break;
         }
         case Instruction::LDCHAR: {
@@ -236,6 +246,7 @@ void WriteBinaryInstruction(FILE* file, Instruction i) {
             fwrite(chars, sizeof(uint8_t), 8, file);
             break;
         }
+        case Instruction::STGBL:
         case Instruction::LDGBL:
         case Instruction::LDSEL:
         case Instruction::LDCLASS: {
@@ -264,7 +275,9 @@ void WriteBinaryInstruction(FILE* file, Instruction i) {
             break;
         }
         case Instruction::LDCHAR: {
-            
+            uint8_t chars[8];
+            IntToChars(i.value.i64, chars);
+            fwrite(chars, sizeof(uint8_t), 8, file);
             break;
         }
         case Instruction::IMPORT:

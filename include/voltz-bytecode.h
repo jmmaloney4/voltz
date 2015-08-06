@@ -52,6 +52,7 @@ namespace voltz {
             LDARGC = 0x34,
             LDSZ = 0x35,
             LDGBL = 0x36,
+            STGBL = 0x37,
             
             LDNIL = 0x40,
             LDINT = 0x41,
@@ -93,7 +94,7 @@ namespace voltz {
     
     const char* GetNameForInstruction(Instruction::Type t);
     Instruction::Type GetInstructionForName(const char* name);
-    
+        
     Instruction* LoadAssemblyFile(FILE* file, int64_t* instc);
     Instruction* LoadBinaryFile(FILE* file, int64_t* instc);
     void WriteAssemblyFile(FILE* file, Instruction* insts, int64_t instc);

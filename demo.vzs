@@ -30,7 +30,7 @@ ldclos {
 
     ldint 1
     ldsel "Write(:std::String)"
-    ldgbl "std::io::stdout"
+    ldgbl  "std::io::stdout"
     msg
 
     popr 16
