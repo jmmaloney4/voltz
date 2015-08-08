@@ -13,7 +13,7 @@
 
 namespace voltz {
     
-#define nil (NULL)
+    const std::nullptr_t nil = NULL;
     
     void RegisterObjectForName(Object obj, const char* name);
     Object GetRegisteredObject(const char* name);
@@ -26,6 +26,9 @@ namespace voltz {
     Object Retain(Object o);
     
     Object SendMessage(Object target, Selector sel, int64_t argc, ...);
+
+    void Push(Thread t, Object o);
+    Object Pop(Thread t);
 }
 
 #endif

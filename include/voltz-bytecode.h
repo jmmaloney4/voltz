@@ -11,8 +11,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define MAGIC_NUMBER 0x6A626F7A746C6F76
-#define NOARG 9223372036854775807LL
+const int64_t MAGIC_NUMBER = 0x6A626F7A746C6F76;
+const int64_t NOARG = 9223372036854775807;
 
 namespace voltz {
     

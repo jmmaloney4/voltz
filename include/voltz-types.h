@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <voltz-bytecode.h>
+#include <mutex>
 
 namespace voltz {
     
@@ -58,11 +59,15 @@ namespace voltz {
     struct voltz_thread : public voltz_object {
         int64_t id;
         
+        std::mutex mutex;
+        
         Imp code;
         int64_t loc;
         
         int64_t stksz;
         Object* stack;
+        
+        int64_t tp;
     };
     
     struct voltz_method : public voltz_object {
