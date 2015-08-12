@@ -15,20 +15,24 @@ namespace voltz {
     
     const std::nullptr_t nil = NULL;
     
-    void RegisterObjectForName(Object obj, const char* name);
-    Object GetRegisteredObject(const char* name);
+    extern void (*RegisterObjectForName)(Object obj, const char* name);
+    extern Object (*GetRegisteredObject)(const char* name);
     
-    Selector GetSelector(const char* value);
+    extern Selector (*GetSelector)(const char* value);
+    extern void (*AddSelector)(Selector s);
     
     void StartRuntime(FILE* file);
     
-    void Release(Object o);
-    Object Retain(Object o);
+    extern void (*Release)(Object o);
+    extern Object (*Retain)(Object o);
     
-    Object SendMessage(Object target, Selector sel, int64_t argc, ...);
-
-    void Push(Thread t, Object o);
-    Object Pop(Thread t);
+    extern Object (*SendMessage)(Object target, Selector sel, int64_t argc, ...);
+    
+    extern Object (*GetStackValue)(int64_t index);
+    extern void (*SetStackValue)(int64_t index, Object value);
+    
+    
+    
 }
 
 #endif

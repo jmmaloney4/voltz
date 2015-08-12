@@ -45,6 +45,7 @@ const char* voltz::GetNameForInstruction(Instruction::Type t) {
         case voltz::Instruction::LDIVARC: return "ldivarc";
             
         case voltz::Instruction::LDARGC: return "ldargc";
+        case voltz::Instruction::LDARG: return "ldarg";
         case voltz::Instruction::LDSZ: return "ldsz";
         case voltz::Instruction::LDGBL: return "ldgbl";
         case voltz::Instruction::STGBL: return "stgbl";
@@ -60,9 +61,6 @@ const char* voltz::GetNameForInstruction(Instruction::Type t) {
         case voltz::Instruction::LDCLOS: return "ldclos";
         case voltz::Instruction::LDCLASS: return "ldclass";
     }
-    
-    printf("%02x\n", (uint32_t) t);
-    
 }
 
 Instruction::Type voltz::GetInstructionForName(const char* name) {
@@ -151,6 +149,9 @@ Instruction::Type voltz::GetInstructionForName(const char* name) {
     
     if (strcmp(name, "ldargc") == 0) {
         return Instruction::LDARGC;
+    }
+    if (strcmp(name, "ldarg") == 0) {
+        return Instruction::LDARG;
     }
     if (strcmp(name, "ldsz") == 0) {
         return Instruction::LDSZ;

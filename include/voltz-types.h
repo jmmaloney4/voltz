@@ -21,6 +21,7 @@ namespace voltz {
     typedef struct voltz_imp* Imp;
     typedef struct voltz_thread* Thread;
     typedef struct voltz_method* Method;
+    typedef struct voltz_vm VM;
     
     struct voltz_object {
         Class isa;
@@ -60,7 +61,9 @@ namespace voltz {
         int64_t id;
         
         std::mutex mutex;
-        
+    };
+    
+    struct voltz_vm {
         Imp code;
         int64_t loc;
         

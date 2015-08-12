@@ -50,9 +50,10 @@ namespace voltz {
             LDIVARC = 0x33,
             
             LDARGC = 0x34,
-            LDSZ = 0x35,
-            LDGBL = 0x36,
-            STGBL = 0x37,
+            LDARG = 0x35,
+            LDSZ = 0x36,
+            LDGBL = 0x37,
+            STGBL = 0x38,
             
             LDNIL = 0x40,
             LDINT = 0x41,
@@ -68,7 +69,10 @@ namespace voltz {
         
         enum Builtin {
             Alloc = 0x0,
-            
+            Init = 0x1,
+            AddMethod = 0x2,
+            SubClass = 0x3,
+            Register = 0x4,
         };
         
         union Value {
@@ -82,6 +86,13 @@ namespace voltz {
                 int64_t count;
                 Instruction* insts;
             } closure;
+            
+            Value() : i64(0) {}
+            Value(int64_t i) : i64(i) {}
+            Value(double d) : f64(d) {}
+            Value(char c) : c8(c) {}
+            Value(const char* s) : str(s) {}
+            Value(Builtin b) : bltin(b) {}
         };
         
         Type type;

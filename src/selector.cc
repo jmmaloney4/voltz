@@ -38,7 +38,7 @@ struct SelectorTableEntry {
 std::mutex SelectorTableMutex;
 SelectorTableEntry* SelectorTable[SelectorTableSize];
 
-Selector voltz::GetSelector(const char* value) {
+Selector GetSelectorImp(const char* value) {
     int64_t hash = HashString(value);
     if (hash < 0) {
         hash *= -1;
@@ -72,3 +72,31 @@ Selector voltz::GetSelector(const char* value) {
     return rv;
 }
 
+Selector (*voltz::GetSelector)(const char*) = GetSelectorImp;
+
+void AddSelectorImp(Selector s) {
+    int64_t hash = HashString(s->value);
+    if (hash < 0) {
+        hash *= -1;
+    }
+    hash %= SelectorTableSize;
+    
+    SelectorTableMutex.lock();
+    
+    for (SelectorTableEntry* entry = SelectorTable[hash]; entry != NULL; entry = entry->next) {
+        if (strcmp(entry->sel->value, s->value) == 0) {
+            Release(entry->sel);
+            entry->sel = (Selector) Retain(s);
+            SelectorTableMutex.unlock();
+        }
+    }
+    
+    SelectorTableEntry* entry = new SelectorTableEntry();
+    entry->sel = (Selector) Retain(s);
+    entry->next = SelectorTable[hash];
+    SelectorTable[hash] = entry;
+    
+    SelectorTableMutex.unlock();
+}
+
+void (*voltz::AddSelector)(Selector) = AddSelectorImp;

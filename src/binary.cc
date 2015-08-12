@@ -130,7 +130,8 @@ Instruction ReadBinaryInstruction(FILE* file) {
         case Instruction::JMP:
         case Instruction::JMPCND:
         case Instruction::LDIVAR:
-        case Instruction::STIVAR: {
+        case Instruction::STIVAR:
+        case Instruction::LDARG: {
             // Optional Integer Argument
             int64_t arg = ReadBinaryInt(file);
             rv.value.i64 = arg;
@@ -277,7 +278,8 @@ void WriteBinaryInstruction(FILE* file, Instruction i) {
         case Instruction::JMP:
         case Instruction::JMPCND:
         case Instruction::LDIVAR:
-        case Instruction::STIVAR: {
+        case Instruction::STIVAR:
+        case Instruction::LDARG: {
             // Optional Integer Argument
             uint8_t chars[8];
             IntToChars(i.value.i64, chars);

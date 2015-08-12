@@ -245,7 +245,8 @@ Instruction ReadInstruction(FILE* file) {
         case Instruction::JMP:
         case Instruction::JMPCND:
         case Instruction::LDIVAR:
-        case Instruction::STIVAR: {
+        case Instruction::STIVAR:
+        case Instruction::LDARG: {
             // Optional Integer Argument
             EatWhitespace(file);
             
@@ -521,7 +522,8 @@ void WriteAssemblyInstruction(FILE* file, Instruction i, int64_t indent) {
         case Instruction::JMP:
         case Instruction::JMPCND:
         case Instruction::LDIVAR:
-        case Instruction::STIVAR: {
+        case Instruction::STIVAR:
+        case Instruction::LDARG: {
             // Optional Integer Argument
             if (i.value.i64 != NOARG) {
                 fprintf(file, " %lli\n", i.value.i64);

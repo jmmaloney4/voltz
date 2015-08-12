@@ -20,84 +20,10 @@ using namespace voltz;
 #error "Define a thread local storage qualifier for your compiler/platform!"
 #endif
 
-ATTRIBUTE_TLS Thread CurrentThread;
-
-inline void SetCurrentThread(Thread t) {
-    CurrentThread = t;
-}
-
-inline Thread GetCurrentThread() {
-    return CurrentThread;
-}
-
-void voltz::Push(Thread t, Object o) {
-    t->tp++;
-    t->stack[t->tp] = Retain(o);
-}
-
-Object voltz::Pop(Thread t) {
-    Object rv = t->stack[t->tp];
-    t->tp--;
+const int64_t InitFuncSize = 0x10;
+Instruction InitFunc[InitFuncSize] = {
     
-    return rv;
-}
-
-// UPDATE ME once threads are working.
-Object CallImpOnCurrentThread(Imp imp, Object self, Selector sel, int64_t argc, Object* args) {
-    Thread t = GetCurrentThread();
-    
-    t->mutex.lock();
-    
-    Push(t, (Object) t->tp);
-    Push(t, self);
-    
-    t->code = imp;
-    
-    t->mutex.unlock();
-}
-
-Object voltz::SendMessage(Object target, Selector sel, int64_t argc, ...) {
-    
-    if (target == nil) {
-        return nil;
-    }
-    
-    for (Class c = target->isa; c != nil; c = c->super) {
-        for (int64_t k = 0; k < c->mthdc; k++) {
-            if (c->mthdv[k]->sel == sel) {
-                
-                Object* args = (Object*) alloca(sizeof(Object) * argc);
-                va_list ap;
-                va_start(ap, argc);
-                for (int64_t k = 0; k < argc; k++) {
-                    args[k] = Retain(va_arg(ap, Object));
-                }
-                
-                Object rv = CallImpOnCurrentThread(c->mthdv[k]->imp, target, sel, argc, args);
-                return rv;
-            }
-        }
-    }
-    
-    return nil;
-}
-
-void voltz::Release(Object o) {
-    SendMessage(o, GetSelector("Release()"), 0);
-}
-
-Object voltz::Retain(Object o) {
-    Object rv = SendMessage(o, GetSelector("Retain()"), 0);
-    return rv;
-}
-
-std::queue<Thread> ThreadQueue;
-const int64_t ThreadTableSize = 0x10;
-std::thread* ThreadTable[ThreadTableSize];
-
-void ThreadStartFunc() {
-    
-}
+};
 
 void VoltzMain(const char* path) {
     
@@ -118,18 +44,19 @@ void VoltzMain(const char* path) {
     ObjectCls->protocolc = 0;
     ObjectCls->protocols = new Protocol[ObjectCls->protocolc]();
     ObjectCls->ivarc = 0;
-    ObjectCls->mthdc = 0;
+    ObjectCls->mthdc = 1;
     ObjectCls->mthdv = new Method[ObjectCls->mthdc]();
     
     ObjectCls->isa->super = ObjectCls;
-    ObjectCls->isa->name = "std::Object.isa";
+    ObjectCls->isa->name = "std::Class";
     ObjectCls->isa->protocolc = 0;
     ObjectCls->isa->protocols = new Protocol[ObjectCls->isa->protocolc]();
     ObjectCls->isa->ivarc = 0;
-    ObjectCls->isa->mthdc = 1;
+    ObjectCls->isa->mthdc = 4;
     ObjectCls->isa->mthdv = new Method[ObjectCls->isa->mthdc]();
     
     RegisterObjectForName(ObjectCls, ObjectCls->name);
+    RegisterObjectForName(ObjectCls->isa, ObjectCls->isa->name);
     
     // Protocol Class
     Class ProtocolCls = new voltz_class();
@@ -165,14 +92,14 @@ void VoltzMain(const char* path) {
     SelectorCls->ivarc = 0;
     SelectorCls->mthdc = 0;
     SelectorCls->mthdv = new Method[SelectorCls->mthdc]();
-
+    
     SelectorCls->isa->super = ObjectCls->isa;
     SelectorCls->isa->name = "std::Selector.isa";
     SelectorCls->isa->protocolc = 0;
     SelectorCls->isa->protocols = new Protocol[SelectorCls->isa->protocolc]();
     SelectorCls->isa->mthdc = 0;
     SelectorCls->isa->mthdv = new Method[SelectorCls->isa->mthdc]();
-
+    
     RegisterObjectForName(SelectorCls, SelectorCls->name);
     
     // Imp Class
@@ -194,7 +121,7 @@ void VoltzMain(const char* path) {
     ImpCls->isa->protocols = new Protocol[ImpCls->isa->protocolc]();
     ImpCls->isa->mthdc = 0;
     ImpCls->isa->mthdv = new Method[ImpCls->isa->mthdc]();
-
+    
     RegisterObjectForName(ImpCls, ImpCls->name);
     
     // Method Class
@@ -218,7 +145,7 @@ void VoltzMain(const char* path) {
     MethodCls->isa->mthdv = new Method[MethodCls->isa->mthdc]();
     
     RegisterObjectForName(MethodCls, MethodCls->name);
-    
+    /*
     // Thread Class
     
     Class ThreadCls = new voltz_class();
@@ -241,23 +168,13 @@ void VoltzMain(const char* path) {
     ThreadCls->isa->mthdv = new Method[ThreadCls->isa->mthdc]();
     
     RegisterObjectForName(ThreadCls, ThreadCls->name);
-    
-    Thread thread = new voltz_thread();
-    thread->isa = ThreadCls;
-    thread->refs = 1;
-    thread->weaks = 0;
-    thread->id = 0;
-    thread->code = nil;
-    thread->loc = 0;
-    thread->stksz = 0x100;
-    thread->stack = new Object[thread->stksz]();
-    thread->tp = 0;
-    
-    ThreadQueue.push(thread);
-    
-    for (int64_t k = 0; k < ThreadTableSize; k++) {
-        ThreadTable[k] = new std::thread(ThreadStartFunc);
-    }
+    */
+    Imp code = new voltz_imp();
+    code->isa = ImpCls;
+    code->refs = 1;
+    code->weaks = 0;
+    code->count = size;
+    code->instructions = insts;
     
     Method Alloc = new voltz_method();
     Alloc->isa = MethodCls;
@@ -268,6 +185,7 @@ void VoltzMain(const char* path) {
     Alloc->sel->refs = 1;
     Alloc->sel->weaks = 0;
     Alloc->sel->value = "Alloc()";
+    AddSelector(Alloc->sel);
     Alloc->imp = new voltz_imp();
     Alloc->imp->isa = ImpCls;
     Alloc->imp->refs = 1;
@@ -275,10 +193,131 @@ void VoltzMain(const char* path) {
     Alloc->imp->count = 3;
     Alloc->imp->instructions = new Instruction[Alloc->imp->count]();
     Alloc->imp->instructions[0] = Instruction(Instruction::LDSELF);
-    Alloc->imp->instructions[1] = Instruction(Instruction::BLTIN);
-    Alloc->imp->instructions[1].value.bltin = Instruction::Alloc;
+    Alloc->imp->instructions[1] = Instruction(Instruction::BLTIN, Instruction::Alloc);
     Alloc->imp->instructions[2] = Instruction(Instruction::RET);
     
     ObjectCls->isa->mthdv[0] = Alloc;
     
+    Method Init = new voltz_method();
+    Init->isa = MethodCls;
+    Init->refs = 1;
+    Init->weaks = 0;
+    Init->sel = new voltz_selector();
+    Init->sel->isa = SelectorCls;
+    Init->sel->refs = 1;
+    Init->sel->weaks = 0;
+    Init->sel->value = "Init()";
+    AddSelector(Init->sel);
+    Init->imp = new voltz_imp();
+    Init->imp->isa = ImpCls;
+    Init->imp->refs = 1;
+    Init->imp->weaks = 0;
+    Init->imp->count = 2;
+    Init->imp->instructions = new Instruction[Init->imp->count]();
+    Init->imp->instructions[0] = Instruction(Instruction::LDSELF);
+    Init->imp->instructions[1] = Instruction(Instruction::BLTIN, Instruction::Init);
+    Init->imp->instructions[1] = Instruction(Instruction::RET);
+    
+    ObjectCls->mthdv[0] = Init;
+    
+    Method AddMethod = new voltz_method();
+    AddMethod->isa = MethodCls;
+    AddMethod->refs = 1;
+    AddMethod->weaks = 0;
+    AddMethod->sel = new voltz_selector();
+    AddMethod->sel->isa = SelectorCls;
+    AddMethod->sel->refs = 1;
+    AddMethod->sel->weaks = 0;
+    AddMethod->sel->value = "AddMethod(:std::Method)";
+    AddSelector(AddMethod->sel);
+    AddMethod->imp = new voltz_imp();
+    AddMethod->imp->isa = ImpCls;
+    AddMethod->imp->refs = 1;
+    AddMethod->imp->weaks = 0;
+    AddMethod->imp->count = 4;
+    AddMethod->imp->instructions = new Instruction[AddMethod->imp->count]();
+    AddMethod->imp->instructions[0] = Instruction(Instruction::LDARG, (int64_t) 0);
+    AddMethod->imp->instructions[1] = Instruction(Instruction::LDSELF);
+    AddMethod->imp->instructions[2] = Instruction(Instruction::BLTIN, Instruction::AddMethod);
+    AddMethod->imp->instructions[3] = Instruction(Instruction::RET);
+    
+    ObjectCls->isa->mthdv[1] = AddMethod;
+    
+    Method SubClass = new voltz_method();
+    SubClass->isa = MethodCls;
+    SubClass->refs = 1;
+    SubClass->weaks = 0;
+    SubClass->sel = new voltz_selector();
+    SubClass->sel->isa = SelectorCls;
+    SubClass->sel->refs = 1;
+    SubClass->sel->weaks = 0;
+    SubClass->sel->value = "SubClass(:std::String)";
+    AddSelector(SubClass->sel);
+    SubClass->imp = new voltz_imp();
+    SubClass->imp->isa = ImpCls;
+    SubClass->imp->refs = 1;
+    SubClass->imp->weaks = 0;
+    SubClass->imp->count = 4;
+    SubClass->imp->instructions = new Instruction[SubClass->imp->count]();
+    SubClass->imp->instructions[0] = Instruction(Instruction::LDARG, (int64_t) 0);
+    SubClass->imp->instructions[1] = Instruction(Instruction::LDSELF);
+    SubClass->imp->instructions[2] = Instruction(Instruction::BLTIN, Instruction::SubClass);
+    SubClass->imp->instructions[3] = Instruction(Instruction::RET);
+    
+    ObjectCls->isa->mthdv[2] = SubClass;
+    
+    Method Register = new voltz_method();
+    Register->isa = MethodCls;
+    Register->refs = 1;
+    Register->weaks = 0;
+    Register->sel = new voltz_selector();
+    Register->sel->isa = SelectorCls;
+    Register->sel->refs = 1;
+    Register->sel->weaks = 0;
+    Register->sel->value = "Register()";
+    AddSelector(Register->sel);
+    Register->imp = new voltz_imp();
+    Register->imp->isa = ImpCls;
+    Register->imp->refs = 1;
+    Register->imp->weaks = 0;
+    Register->imp->count = 4;
+    Register->imp->instructions = new Instruction[Register->imp->count]();
+    Register->imp->instructions[0] = Instruction(Instruction::LDARG, (int64_t) 0);
+    Register->imp->instructions[1] = Instruction(Instruction::LDSELF);
+    Register->imp->instructions[2] = Instruction(Instruction::BLTIN, Instruction::Register);
+    Register->imp->instructions[3] = Instruction(Instruction::RET);
+    
+    ObjectCls->isa->mthdv[3] = Register;
+    
+    // ldclos {
+    //
+    // }
+    // ldnil
+    //
+    // ldint 0
+    // ldsel "Alloc()"
+    // ldclass "std::Method"
+    // msg
+    //
+    // store 4
+    // popr 4
+    //
+    // load 1
+    // ldsel "MySel()"
+    // ldint 2
+    // ldsel "Init(imp:std::Imp,sel:std::Selector)"
+    // load 4
+    // msg
+    //
+    // store 6
+    // popr 6
+    //
+    // load 0
+    // ldint 1
+    // ldsel "AddMethod(:std::Method)"
+    // ldclass "module::MyClass"
+    // msg
+    //
+    // popr 7
+    // retn
 }

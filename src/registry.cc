@@ -25,7 +25,7 @@ struct RegistryTableEntry {
 RegistryTableEntry* RegistryTable[RegistryTableSize];
 std::mutex RegistryTableMutex;
 
-void voltz::RegisterObjectForName(Object obj, const char* name) {
+void RegisterObjectForNameImp(Object obj, const char* name) {
     int64_t hash = HashString(name);
     if (hash < 0) {
         hash *= -1;
@@ -53,7 +53,9 @@ void voltz::RegisterObjectForName(Object obj, const char* name) {
     RegistryTableMutex.unlock();
 }
 
-Object voltz::GetRegisteredObject(const char* name) {
+void (*voltz::RegisterObjectForName)(Object, const char*) = RegisterObjectForNameImp;
+
+Object GetRegisteredObjectImp(const char* name) {
     
     int64_t hash = HashString(name);
     if (hash < 0) {
@@ -75,3 +77,5 @@ Object voltz::GetRegisteredObject(const char* name) {
     
     return nullptr;
 }
+
+Object (*voltz::GetRegisteredObject)(const char*) = GetRegisteredObjectImp;
