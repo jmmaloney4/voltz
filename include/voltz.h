@@ -22,13 +22,14 @@ namespace voltz {
     typedef struct voltz_char* Char;
     typedef struct voltz_string* String;
     typedef struct voltz_array* Array;
+    typedef struct voltz_bool* Bool;
     typedef struct voltz_method* Method;
 
     typedef std::function<Object(Object, Selector, Array)> FuncPtr;
-    
-    // Not actually implemented by the runtime
-    void VoltzMain(Int argc, Array argv);
 
+    // Implemented by the linker in executables, loads the linked modules, and enters the code.
+    void VoltzLinkerEntry(Int argc, Array argv);
+    
     extern Int (*BoxInt)(int64_t value);
     extern Float (*BoxFloat)(double value);
     extern Char (*BoxChar)(int64_t value);
@@ -45,26 +46,26 @@ namespace voltz {
     // the return value needs to be freed after this function is called.
     extern Object* (*UnboxArray)(Array value);
 
-    void (*Release)(Object obj);
-    Object (*Retain)(Object obj);
-    void (*WeakRelease)(Object obj);
-    Object (*WeakRetain)(Object obj);
+    extern void (*Release)(Object obj);
+    extern Object (*Retain)(Object obj);
+    extern void (*WeakRelease)(Object obj);
+    extern Object (*WeakRetain)(Object obj);
     
-    Selector (*GetSelector)(String value);
+    extern Selector (*GetSelector)(String value);
 
-    void (*RegisterObject)(Object obj, String name);
-    Object (*GetRegisteredObject)(String name);
+    extern void (*RegisterObject)(Object obj, String name);
+    extern Object (*GetRegisteredObject)(String name);
     
-    Class (*GetIsa)(Object obj);
-    Int (*GetRefs)(Object obj);
-    Int (*GetWeaks)(Object obj);
+    extern Class (*GetIsa)(Object obj);
+    extern Int (*GetRefs)(Object obj);
+    extern Int (*GetWeaks)(Object obj);
     
-    Class (*GetSuper)(Class cls);
-    String (*GetClassName)(Class cls);
+    extern Class (*GetSuper)(Class cls);
+    extern String (*GetClassName)(Class cls);
     
-    String (*GetProtocolName)(Protocol prt);
+    extern String (*GetProtocolName)(Protocol prt);
 
-    Object (*SendMsg)(Object target, Selector sel, Int argc, ...);
-    Object (*SendMsgVA)(Object target, Selector sel, Int argc, va_list ap);
+    extern Object (*SendMsg)(Object target, Selector sel, Int argc, ...);
+    extern Object (*SendMsgVA)(Object target, Selector sel, Int argc, va_list ap);
     
 }

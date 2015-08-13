@@ -5,4 +5,7 @@ include_directories(include/)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
 
-add_library(voltz include/voltz.h src/voltz-internal.h src/voltz.cc src/int.cc src/float.cc)
+add_library(voltz include/voltz.h src/voltz-internal.h src/voltz.cc src/int.cc src/float.cc src/sel.cc src/string.cc src/registry.cc)
+
+add_executable(tests test/test.cc)
+target_link_libraries(tests voltz)

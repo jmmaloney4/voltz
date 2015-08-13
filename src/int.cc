@@ -5,39 +5,28 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
+#include <stdlib.h>
 
 using namespace voltz;
 
 //               neg   0 + pos
 Int voltz::InternedInts[0x20 + 0xff];
 
-Int BoxIntImp(int64_t value) {
+Int BoxIntPhase1(int64_t value) {
     if (value >= -0x20 && value < 0xff) {
         return (Int) Retain(InternedInts[value + 0x20]);
     }
     
-    String IntClassName = BoxString("std::Int");
-    String AllocSelValue = BoxString("Alloc()");
-    Selector AllocSel = GetSelector(AllocSelValue);
-    Int Argc = BoxInt(0);
-    Int rv = (Int) SendMsg((Object) GetRegisteredObject(IntClassName), AllocSel, Argc);
-    
-    String InitSelValue = BoxString("Init()");
-    Selector InitSel = GetSelector(InitSelValue);
-    
-    rv = (Int) SendMsg(rv, InitSel, Argc);
-    
+    Int rv = (Int) malloc(sizeof(struct voltz_int));
+    rv->isa = IntClass;
+    rv->refs = 1;
+    rv->weaks = 0;
     rv->value = value;
-    
-    Release(IntClassName);
-    Release(AllocSelValue);
-    Release(AllocSel);
-    Release(Argc);
     
     return rv;
 }
 
-Int (*voltz::BoxInt)(int64_t) = BoxIntImp;
+Int (*voltz::BoxInt)(int64_t) = BoxIntPhase1;
 
 int64_t UnboxIntImp(Int value) {
     return value->value;

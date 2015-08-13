@@ -12,6 +12,16 @@ namespace voltz {
     
     extern Int InternedInts[0x20 + 0xff];
     
+    int64_t HashString(const char* s);
+    
+    extern Class StringClass;
+    extern Class ArrayClass;
+    extern Class IntClass;
+    extern Class SelectorClass;
+    
+    extern Selector AllocSel;
+    extern Selector InitSel;
+    //extern Selector ArrayOpSel;
 }
 
 struct voltz::voltz_object {
@@ -24,7 +34,7 @@ struct voltz::voltz_object {
 struct voltz::voltz_class : public voltz_object {
     Class super;
     String name;
-    Int ivars;
+    int64_t ivars;
     Array prots;
     Array mthds;
 };
@@ -35,7 +45,7 @@ struct voltz::voltz_protocol : public voltz_object {
 };
 
 struct voltz::voltz_selector : public voltz_object {
-    String value;
+    const char* value;
 };
 
 struct voltz::voltz_imp : public voltz_object {
@@ -55,13 +65,17 @@ struct voltz::voltz_char : public voltz_object {
 };
 
 struct voltz::voltz_string : public voltz_object {
-    Int length;
+    int64_t length;
     const char* value;
 };
 
 struct voltz::voltz_array : public voltz_object {
-    Int count;
+    int64_t count;
     Object* value;
+};
+
+struct voltz::voltz_bool : public voltz_object {
+    int64_t value;
 };
 
 struct voltz::voltz_method : public voltz_object {
