@@ -8,6 +8,12 @@
 
 using namespace voltz;
 
+namespace voltz {
+    
+    extern Int InternedInts[0x20 + 0xff];
+    
+}
+
 struct voltz::voltz_object {
     Class isa;
     int64_t refs;
@@ -58,4 +64,7 @@ struct voltz::voltz_array : public voltz_object {
     Object* value;
 };
 
-
+struct voltz::voltz_method : public voltz_object {
+    Selector sel;
+    Imp imp;
+};

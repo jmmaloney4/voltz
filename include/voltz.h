@@ -22,8 +22,9 @@ namespace voltz {
     typedef struct voltz_char* Char;
     typedef struct voltz_string* String;
     typedef struct voltz_array* Array;
+    typedef struct voltz_method* Method;
 
-    typedef std::function<Object(Object, Array)> FuncPtr;
+    typedef std::function<Object(Object, Selector, Array)> FuncPtr;
     
     // Not actually implemented by the runtime
     void VoltzMain(Int argc, Array argv);

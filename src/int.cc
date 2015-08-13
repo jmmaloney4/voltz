@@ -9,7 +9,7 @@
 using namespace voltz;
 
 //               neg   0 + pos
-Int InternedInts[0x20 + 0xff];
+Int voltz::InternedInts[0x20 + 0xff];
 
 Int BoxIntImp(int64_t value) {
     if (value >= -0x20 && value < 0xff) {
