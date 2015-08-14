@@ -4,12 +4,6 @@ compiler:
   - clang
   - gcc
 
-sudo: required
-
-install:
-  - sudo apt-get update
-  - sudo apt-get install cmake clang gcc
-
 script:
   - git submodule init
   - mkdir build
