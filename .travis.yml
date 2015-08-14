@@ -5,10 +5,13 @@ compiler:
   - gcc
   
 sudo: required
-  
-install:
-  - apt-get update
-  - apt-get upgrade cmake gcc clang
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - clang
+    - gcc
   
 script:
   - git submodule init
