@@ -8,13 +8,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+int voltz::Cargc = 0;
+const char** voltz::Cargv = nullptr;
+
 Class voltz::StringClass = nil;
 Class voltz::ArrayClass = nil;
 Class voltz::IntClass = nil;
 Class voltz::SelectorClass = nil;
 
 int main(int argc, const char** argv) {
-        
+    
+    Cargc = argc;
+    Cargv = argv;
+    
     Class ObjectCls = (Class) malloc(sizeof(struct voltz_class));
     Class ClassCls = (Class) malloc(sizeof(struct voltz_class));
     Class ProtocolCls = (Class) malloc(sizeof(struct voltz_class));

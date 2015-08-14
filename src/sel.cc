@@ -35,7 +35,7 @@ struct SelectorTableEntry {
 
 SelectorTableEntry* SelectorTable[SelectorTableSize];
 
-Selector GetSelectorImp(String value) {
+Selector GetSelectorPhase1(String value) {
     const char* str = UnboxString(value);
     int64_t hash = HashString(str);
     if (hash < 0) {
@@ -58,6 +58,8 @@ Selector GetSelectorImp(String value) {
     entry->sel->value = UnboxString(value);
     entry->next = SelectorTable[hash];
     SelectorTable[hash] = entry;
+    
+    return (Selector) Retain(entry->sel);
 }
 
-
+Selector (*voltz::GetSelector)(String) = GetSelectorPhase1;

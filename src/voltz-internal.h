@@ -22,6 +22,7 @@ namespace voltz {
     extern Selector AllocSel;
     extern Selector InitSel;
     //extern Selector ArrayOpSel;
+    
 }
 
 struct voltz::voltz_object {

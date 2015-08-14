@@ -13,6 +13,9 @@ namespace voltz {
 
     const std::nullptr_t nil = NULL;
     
+    extern int Cargc;
+    extern const char** Cargv;
+    
     typedef struct voltz_object* Object;
     typedef struct voltz_class* Class;
     typedef struct voltz_protocol* Protocol;

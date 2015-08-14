@@ -5,6 +5,7 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
+#include <stdlib.h>
 
 using namespace voltz;
 
