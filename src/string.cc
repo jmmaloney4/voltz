@@ -6,6 +6,7 @@
 
 #include "voltz-internal.h"
 #include <stdlib.h>
+#include <string.h>
 
 String BoxStringPhase1(const char* str) {
 
