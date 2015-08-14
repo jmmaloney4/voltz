@@ -6,6 +6,7 @@
 
 #include "voltz-internal.h"
 #include <stdlib.h>
+#include <string.h>
 
 Class voltz::StringClass = nil;
 Class voltz::ArrayClass = nil;
