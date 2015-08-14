@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <functional>
+#include <cstddef>
 
 namespace voltz {
 
