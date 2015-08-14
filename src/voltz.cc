@@ -486,3 +486,14 @@ Object RetainPhase1(Object obj) {
 void (*voltz::Release)(Object) = ReleasePhase1;
 Object (*voltz::Retain)(Object) = RetainPhase1;
 
+Class GetIsaAll(Object obj) {
+    return obj->isa;
+}
+
+Class (*voltz::GetIsa)(Object) = GetIsaAll;
+
+Class GetSuperAll(Class cls) {
+    return cls->super;
+}
+
+Class (*voltz::GetSuper)(Class) = GetSuperAll;
