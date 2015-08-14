@@ -17,7 +17,7 @@ Float BoxFloatImp(double value) {
     Float rv = (Float) SendMsg((Object) GetRegisteredObject(FloatClassName), AllocSel, Argc);
     
     // TODO: Init
-
+    
     rv->value = value;
     
     Release(FloatClassName);
