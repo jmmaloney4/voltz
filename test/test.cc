@@ -10,6 +10,4 @@ using namespace voltz;
 
 void voltz::VoltzLinkerEntry(Int argc, Array argv) {
     
-    Int i = BoxInt(1);
-    
 }
