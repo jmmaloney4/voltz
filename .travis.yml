@@ -4,6 +4,8 @@ compiler:
   - clang
   - gcc
   
+sudo: required
+  
 install:
   - apt-get update
   - apt-get upgrade cmake gcc clang
