@@ -4,6 +4,10 @@ compiler:
   - clang
   - gcc
   
+install:
+  - apt-get update
+  - apt-get upgrade cmake gcc clang
+  
 script:
   - git submodule init
   - mkdir build
