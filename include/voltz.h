@@ -41,6 +41,7 @@ namespace voltz {
     extern String (*BoxString)(const char* value);
     // value is copied, and does not need to be kept after this function is called
     extern Array (*BoxArray)(Int count, Object* value);
+    extern Imp (*BoxImp)(FuncPtr value);
     
     extern int64_t (*UnboxInt)(Int value);
     extern double (*UnboxFloat)(Float value);
@@ -49,16 +50,18 @@ namespace voltz {
     extern char* (*UnboxString)(String value);
     // the return value needs to be freed after this function is called.
     extern Object* (*UnboxArray)(Array value);
-
+    extern FuncPtr (*UnboxImp)(Imp value);
+    
+    // These should get turned off in Phase 2
     extern void (*Release)(Object obj);
     extern Object (*Retain)(Object obj);
     extern void (*WeakRelease)(Object obj);
     extern Object (*WeakRetain)(Object obj);
     
-    extern Selector (*GetSelector)(String value);
+    extern Selector (*GetSelector)(const char* value);
 
-    extern void (*RegisterObject)(Object obj, String name);
-    extern Object (*GetRegisteredObject)(String name);
+    extern void (*RegisterObject)(Object obj, const char* name);
+    extern Object (*GetRegisteredObject)(const char* name);
     
     extern Class (*GetIsa)(Object obj);
     extern Int (*GetRefs)(Object obj);

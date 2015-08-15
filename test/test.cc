@@ -47,7 +47,7 @@ TEST(voltz, BoxString) {
 
 TEST(voltz, GetSelector) {
     
-    String str = BoxString("SomeSelector(name:count:args:string:release:)");
+    const char* str = "SomeSelector(name:count:args:string:release:)";
     Selector sel1 = GetSelector(str);
     
     Selector sel2 = GetSelector(str);

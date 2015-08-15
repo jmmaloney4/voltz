@@ -20,16 +20,16 @@ struct RegistryTableEntry {
 
 RegistryTableEntry* RegistryTable[RegistryTableSize];
 
-void RegisterObjectPhase1(Object obj, String name) {
+void RegisterObjectPhase1(Object obj, const char* name) {
     
-    int64_t hash = HashString(name->value);
+    int64_t hash = HashString(name);
     if (hash < 0) {
         hash *= -1;
     }
     hash %= RegistryTableSize;
     
     for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
-        if (strcmp(entry->name, name->value) == 0) {
+        if (strcmp(entry->name, name) == 0) {
             Release(entry->obj);
             entry->obj = Retain(obj);
             return;
@@ -39,23 +39,23 @@ void RegisterObjectPhase1(Object obj, String name) {
     
     RegistryTableEntry* entry = (RegistryTableEntry*) malloc(sizeof(struct RegistryTableEntry));
     entry->obj = Retain(obj);
-    entry->name = strdup(name->value);
+    entry->name = strdup(name);
     entry->next = RegistryTable[hash];
     RegistryTable[hash] = entry;
 }
 
-void(*voltz::RegisterObject)(Object, String) = RegisterObjectPhase1;
+void(*voltz::RegisterObject)(Object, const char*) = RegisterObjectPhase1;
 
-Object GetRegisteredObjectPhase1(String name) {
+Object GetRegisteredObjectPhase1(const char* name) {
     
-    int64_t hash = HashString(name->value);
+    int64_t hash = HashString(name);
     if (hash < 0) {
         hash *= -1;
     }
     hash %= RegistryTableSize;
     
     for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
-        if (strcmp(entry->name, name->value) == 0) {
+        if (strcmp(entry->name, name) == 0) {
             return Retain(entry->obj);
         }
     }
@@ -63,4 +63,4 @@ Object GetRegisteredObjectPhase1(String name) {
     return nil;
 }
 
-Object (*voltz::GetRegisteredObject)(String) = GetRegisteredObjectPhase1;
+Object (*voltz::GetRegisteredObject)(const char*) = GetRegisteredObjectPhase1;

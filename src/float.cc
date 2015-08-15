@@ -9,20 +9,18 @@
 
 using namespace voltz;
 
-Float BoxFloatImp(double value) {
-    String FloatClassName = BoxString("std::Float");
-    String AllocSelValue = BoxString("Alloc()");
-    Selector AllocSel = GetSelector(AllocSelValue);
+Float BoxFloatAll(double value) {
+    Selector AllocSel = GetSelector("Alloc()");
     Int Argc = BoxInt(0);
-    Float rv = (Float) SendMsg((Object) GetRegisteredObject(FloatClassName), AllocSel, Argc);
+    Float rv = (Float) SendMsg((Object) GetRegisteredObject("std::Float"), AllocSel, Argc);
     
-    // TODO: Init
+    Selector InitSel = GetSelector("Init()");
+    rv = (Float) SendMsg(rv, InitSel, Argc);
     
     rv->value = value;
     
-    Release(FloatClassName);
-    Release(AllocSelValue);
     Release(AllocSel);
+    Release(InitSel);
     Release(Argc);
     
     return rv;

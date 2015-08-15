@@ -18,6 +18,7 @@ namespace voltz {
     extern Class ArrayClass;
     extern Class IntClass;
     extern Class SelectorClass;
+    extern Class ImpClass;
     
     extern Selector AllocSel;
     extern Selector InitSel;
@@ -34,7 +35,7 @@ struct voltz::voltz_object {
 
 struct voltz::voltz_class : public voltz_object {
     Class super;
-    String name;
+    const char* name;
     int64_t ivars;
     Array prots;
     Array mthds;

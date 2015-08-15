@@ -16,6 +16,10 @@ Class voltz::StringClass = nil;
 Class voltz::ArrayClass = nil;
 Class voltz::IntClass = nil;
 Class voltz::SelectorClass = nil;
+Class voltz::ImpClass = nil;
+
+Selector voltz::AllocSel = nil;
+Selector voltz::InitSel = nil;
 
 int main(int argc, const char** argv) {
 
@@ -39,6 +43,7 @@ int main(int argc, const char** argv) {
     ArrayClass = ArrayCls;
     IntClass = IntCls;
     SelectorClass = SelectorCls;
+    ImpClass = ImpCls;
 
     ObjectCls->isa = ClassCls;
     ObjectCls->super = nil;
@@ -108,185 +113,58 @@ int main(int argc, const char** argv) {
     MethodCls->isa->super = ClassCls;
     MethodCls->ivars = 2;
 
-    ObjectCls->name = (String) malloc(sizeof(voltz_string));
-    ObjectCls->name->isa = StringCls;
-    ObjectCls->name->refs = 1;
-    ObjectCls->name->weaks = 0;
-    ObjectCls->name->value = "std::Object";
-    ObjectCls->name->length = strlen(ObjectCls->name->value);
-
+    ObjectCls->name = "std::Object";
     RegisterObject((Object) ObjectCls, ObjectCls->name);
 
-    ClassCls->name = (String) malloc(sizeof(voltz_string));
-    ClassCls->name->isa = StringCls;
-    ClassCls->name->refs = 1;
-    ClassCls->name->weaks = 0;
-    ClassCls->name->value = "std::Class";
-    ClassCls->name->length = strlen(ClassCls->name->value);
-
+    ClassCls->name = "std::Class";
     RegisterObject((Object) ClassCls, ClassCls->name);
 
-    ProtocolCls->name = (String) malloc(sizeof(voltz_string));
-    ProtocolCls->name->isa = StringCls;
-    ProtocolCls->name->refs = 1;
-    ProtocolCls->name->weaks = 0;
-    ProtocolCls->name->value = "std::Protocol";
-    ProtocolCls->name->length = strlen(ProtocolCls->name->value);
-
-    ProtocolCls->isa->name = (String) malloc(sizeof(voltz_string));
-    ProtocolCls->isa->name->isa = StringCls;
-    ProtocolCls->isa->name->refs = 1;
-    ProtocolCls->isa->name->weaks = 0;
-    ProtocolCls->isa->name->value = "std::Protocol.isa";
-    ProtocolCls->isa->name->length = strlen(ProtocolCls->isa->name->value);
-
+    ProtocolCls->name = "std::Protocol";
+    ProtocolCls->isa->name = "std::Protocol.isa";
     RegisterObject((Object) ProtocolCls, ProtocolCls->name);
 
-    SelectorCls->name = (String) malloc(sizeof(voltz_string));
-    SelectorCls->name->isa = StringCls;
-    SelectorCls->name->refs = 1;
-    SelectorCls->name->weaks = 0;
-    SelectorCls->name->value = "std::Selector";
-    SelectorCls->name->length = strlen(SelectorCls->name->value);
-
-    SelectorCls->isa->name = (String) malloc(sizeof(voltz_string));
-    SelectorCls->isa->name->isa = StringCls;
-    SelectorCls->isa->name->refs = 1;
-    SelectorCls->isa->name->weaks = 0;
-    SelectorCls->isa->name->value = "std::Selector.isa";
-    SelectorCls->isa->name->length = strlen(SelectorCls->isa->name->value);
-
+    SelectorCls->name = "std::Selector";
+    SelectorCls->isa->name = "std::Selector.isa";
     RegisterObject((Object) SelectorCls, SelectorCls->name);
 
-    ImpCls->name = (String) malloc(sizeof(voltz_string));
-    ImpCls->name->isa = StringCls;
-    ImpCls->name->refs = 1;
-    ImpCls->name->weaks = 0;
-    ImpCls->name->value = "std::Imp";
-    ImpCls->name->length = strlen(ImpCls->name->value);
-
-    ImpCls->isa->name = (String) malloc(sizeof(voltz_string));
-    ImpCls->isa->name->isa = StringCls;
-    ImpCls->isa->name->refs = 1;
-    ImpCls->isa->name->weaks = 0;
-    ImpCls->isa->name->value = "std::Imp.isa";
-    ImpCls->isa->name->length = strlen(ImpCls->isa->name->value);
-
+    ImpCls->name = "std::Imp";
+    ImpCls->isa->name = "std::Imp.isa";
     RegisterObject((Object) ImpCls, ImpCls->name);
 
-    IntCls->name = (String) malloc(sizeof(voltz_string));
-    IntCls->name->isa = StringCls;
-    IntCls->name->refs = 1;
-    IntCls->name->weaks = 0;
-    IntCls->name->value = "std::Int";
-    IntCls->name->length = strlen(IntCls->name->value);
-
-    IntCls->isa->name = (String) malloc(sizeof(voltz_string));
-    IntCls->isa->name->isa = StringCls;
-    IntCls->isa->name->refs = 1;
-    IntCls->isa->name->weaks = 0;
-    IntCls->isa->name->value = "std::Int.isa";
-    IntCls->isa->name->length = strlen(IntCls->isa->name->value);
-
+    IntCls->name = "std::Int";
+    IntCls->isa->name = "std::Int.isa";
     RegisterObject((Object) IntCls, IntCls->name);
-
-    FloatCls->name = (String) malloc(sizeof(voltz_string));
-    FloatCls->name->isa = StringCls;
-    FloatCls->name->refs = 1;
-    FloatCls->name->weaks = 0;
-    FloatCls->name->value = "std::Float";
-    FloatCls->name->length = strlen(FloatCls->name->value);
-
-    FloatCls->isa->name = (String) malloc(sizeof(voltz_string));
-    FloatCls->isa->name->isa = StringCls;
-    FloatCls->isa->name->refs = 1;
-    FloatCls->isa->name->weaks = 0;
-    FloatCls->isa->name->value = "std::Float.isa";
-    FloatCls->isa->name->length = strlen(FloatCls->isa->name->value);
-
+    
+    FloatCls->name = "std::Float";
+    FloatCls->isa->name = "std::Float.isa";
     RegisterObject((Object) FloatCls, FloatCls->name);
 
-    CharCls->name = (String) malloc(sizeof(voltz_string));
-    CharCls->name->isa = StringCls;
-    CharCls->name->refs = 1;
-    CharCls->name->weaks = 0;
-    CharCls->name->value = "std::Char";
-    CharCls->name->length = strlen(CharCls->name->value);
-
-    CharCls->isa->name = (String) malloc(sizeof(voltz_string));
-    CharCls->isa->name->isa = StringCls;
-    CharCls->isa->name->refs = 1;
-    CharCls->isa->name->weaks = 0;
-    CharCls->isa->name->value = "std::Char.isa";
-    CharCls->isa->name->length = strlen(CharCls->isa->name->value);
-
+    CharCls->name = "std::Char";
+    CharCls->isa->name = "std::Char.isa";
     RegisterObject((Object) CharCls, CharCls->name);
 
-    StringCls->name = (String) malloc(sizeof(voltz_string));
-    StringCls->name->isa = StringCls;
-    StringCls->name->refs = 1;
-    StringCls->name->weaks = 0;
-    StringCls->name->value = "std::String";
-    StringCls->name->length = strlen(StringCls->name->value);
-
-    StringCls->isa->name = (String) malloc(sizeof(voltz_string));
-    StringCls->isa->name->isa = StringCls;
-    StringCls->isa->name->refs = 1;
-    StringCls->isa->name->weaks = 0;
-    StringCls->isa->name->value = "std::String.isa";
-    StringCls->isa->name->length = strlen(StringCls->isa->name->value);
-
+    StringCls->name = "std::String";
+    StringCls->isa->name = "std::String.isa";
     RegisterObject((Object) StringCls, StringCls->name);
 
-    ArrayCls->name = (String) malloc(sizeof(voltz_string));
-    ArrayCls->name->isa = StringCls;
-    ArrayCls->name->refs = 1;
-    ArrayCls->name->weaks = 0;
-    ArrayCls->name->value = "std::Array";
-    ArrayCls->name->length = strlen(ArrayCls->name->value);
-
-    ArrayCls->isa->name = (String) malloc(sizeof(voltz_string));
-    ArrayCls->isa->name->isa = StringCls;
-    ArrayCls->isa->name->refs = 1;
-    ArrayCls->isa->name->weaks = 0;
-    ArrayCls->isa->name->value = "std::Array.isa";
-    ArrayCls->isa->name->length = strlen(ArrayCls->isa->name->value);
-
+    ArrayCls->name = "std::Array";
+    ArrayCls->isa->name = "std::Array.isa";
     RegisterObject((Object) ArrayCls, ArrayCls->name);
 
-    BoolCls->name = (String) malloc(sizeof(voltz_string));
-    BoolCls->name->isa = StringCls;
-    BoolCls->name->refs = 1;
-    BoolCls->name->weaks = 0;
-    BoolCls->name->value = "std::Bool";
-    BoolCls->name->length = strlen(BoolCls->name->value);
-
-    BoolCls->isa->name = (String) malloc(sizeof(voltz_string));
-    BoolCls->isa->name->isa = StringCls;
-    BoolCls->isa->name->refs = 1;
-    BoolCls->isa->name->weaks = 0;
-    BoolCls->isa->name->value = "std::Bool.isa";
-    BoolCls->isa->name->length = strlen(BoolCls->isa->name->value);
-
+    BoolCls->name = "std::Bool";
+    BoolCls->isa->name = "std::Bool.isa";
     RegisterObject((Object) BoolCls, BoolCls->name);
 
-    MethodCls->name = (String) malloc(sizeof(voltz_string));
-    MethodCls->name->isa = StringCls;
-    MethodCls->name->refs = 1;
-    MethodCls->name->weaks = 0;
-    MethodCls->name->value = "std::Method";
-    MethodCls->name->length = strlen(MethodCls->name->value);
-
-    MethodCls->isa->name = (String) malloc(sizeof(voltz_string));
-    MethodCls->isa->name->isa = StringCls;
-    MethodCls->isa->name->refs = 1;
-    MethodCls->isa->name->weaks = 0;
-    MethodCls->isa->name->value = "std::Method.isa";
-    MethodCls->isa->name->length = strlen(MethodCls->isa->name->value);
-
+    MethodCls->name = "std::Method";
+    MethodCls->isa->name = "std::Method.isa";
     RegisterObject((Object) MethodCls, MethodCls->name);
-
-
+    
+    ObjectCls->mthds = (Array) malloc(sizeof(voltz_array));
+    ObjectCls->mthds->isa = ArrayCls;
+    ObjectCls->mthds->refs = 1;
+    ObjectCls->mthds->weaks = 0;
+    ObjectCls->mthds->count = 3;
+    ObjectCls->mthds->value = (Object*) malloc(sizeof(Object) * ObjectCls->mthds->count);
 
     ClassCls->mthds = (Array) malloc(sizeof(voltz_array));
     ClassCls->mthds->isa = ArrayCls;
@@ -294,6 +172,164 @@ int main(int argc, const char** argv) {
     ClassCls->mthds->weaks = 0;
     ClassCls->mthds->count = 2;
     ClassCls->mthds->value = (Object*) malloc(sizeof(Object) * ClassCls->mthds->count);
+    
+    ProtocolCls->mthds = (Array) malloc(sizeof(voltz_array));
+    ProtocolCls->mthds->isa = ArrayCls;
+    ProtocolCls->mthds->refs = 1;
+    ProtocolCls->mthds->weaks = 0;
+    ProtocolCls->mthds->count = 0;
+    ProtocolCls->mthds->value = (Object*) malloc(sizeof(Object) * ProtocolCls->mthds->count);
+    
+    ImpCls->mthds = (Array) malloc(sizeof(voltz_array));
+    ImpCls->mthds->isa = ArrayCls;
+    ImpCls->mthds->refs = 1;
+    ImpCls->mthds->weaks = 0;
+    ImpCls->mthds->count = 0;
+    ImpCls->mthds->value = (Object*) malloc(sizeof(Object) * ImpCls->mthds->count);
+    
+    ImpCls->mthds = (Array) malloc(sizeof(voltz_array));
+    ImpCls->mthds->isa = ArrayCls;
+    ImpCls->mthds->refs = 1;
+    ImpCls->mthds->weaks = 0;
+    ImpCls->mthds->count = 0;
+    ImpCls->mthds->value = (Object*) malloc(sizeof(Object) * ImpCls->mthds->count);
+    
+    IntCls->mthds = (Array) malloc(sizeof(voltz_array));
+    IntCls->mthds->isa = ArrayCls;
+    IntCls->mthds->refs = 1;
+    IntCls->mthds->weaks = 0;
+    IntCls->mthds->count = 0;
+    IntCls->mthds->value = (Object*) malloc(sizeof(Object) * IntCls->mthds->count);
+    
+    FloatCls->mthds = (Array) malloc(sizeof(voltz_array));
+    FloatCls->mthds->isa = ArrayCls;
+    FloatCls->mthds->refs = 1;
+    FloatCls->mthds->weaks = 0;
+    FloatCls->mthds->count = 0;
+    FloatCls->mthds->value = (Object*) malloc(sizeof(Object) * FloatCls->mthds->count);
+    
+    CharCls->mthds = (Array) malloc(sizeof(voltz_array));
+    CharCls->mthds->isa = ArrayCls;
+    CharCls->mthds->refs = 1;
+    CharCls->mthds->weaks = 0;
+    CharCls->mthds->count = 0;
+    CharCls->mthds->value = (Object*) malloc(sizeof(Object) * CharCls->mthds->count);
+    
+    StringCls->mthds = (Array) malloc(sizeof(voltz_array));
+    StringCls->mthds->isa = ArrayCls;
+    StringCls->mthds->refs = 1;
+    StringCls->mthds->weaks = 0;
+    StringCls->mthds->count = 0;
+    StringCls->mthds->value = (Object*) malloc(sizeof(Object) * StringCls->mthds->count);
+    
+    ArrayCls->mthds = (Array) malloc(sizeof(voltz_array));
+    ArrayCls->mthds->isa = ArrayCls;
+    ArrayCls->mthds->refs = 1;
+    ArrayCls->mthds->weaks = 0;
+    ArrayCls->mthds->count = 1;
+    ArrayCls->mthds->value = (Object*) malloc(sizeof(Object) * ArrayCls->mthds->count);
+    
+    BoolCls->mthds = (Array) malloc(sizeof(voltz_array));
+    BoolCls->mthds->isa = ArrayCls;
+    BoolCls->mthds->refs = 1;
+    BoolCls->mthds->weaks = 0;
+    BoolCls->mthds->count = 0;
+    BoolCls->mthds->value = (Object*) malloc(sizeof(Object) * BoolCls->mthds->count);
+    
+    MethodCls->mthds = (Array) malloc(sizeof(voltz_array));
+    MethodCls->mthds->isa = ArrayCls;
+    MethodCls->mthds->refs = 1;
+    MethodCls->mthds->weaks = 0;
+    MethodCls->mthds->count = 0;
+    MethodCls->mthds->value = (Object*) malloc(sizeof(Object) * MethodCls->mthds->count);
+
+    
+    
+    ObjectCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    ObjectCls->isa->mthds->isa = ArrayCls;
+    ObjectCls->isa->mthds->refs = 1;
+    ObjectCls->isa->mthds->weaks = 0;
+    ObjectCls->isa->mthds->count = 3;
+    ObjectCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ObjectCls->isa->mthds->count);
+    
+    ClassCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    ClassCls->isa->mthds->isa = ArrayCls;
+    ClassCls->isa->mthds->refs = 1;
+    ClassCls->isa->mthds->weaks = 0;
+    ClassCls->isa->mthds->count = 2;
+    ClassCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ClassCls->isa->mthds->count);
+    
+    ProtocolCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    ProtocolCls->isa->mthds->isa = ArrayCls;
+    ProtocolCls->isa->mthds->refs = 1;
+    ProtocolCls->isa->mthds->weaks = 0;
+    ProtocolCls->isa->mthds->count = 0;
+    ProtocolCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ProtocolCls->isa->mthds->count);
+    
+    ImpCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    ImpCls->isa->mthds->isa = ArrayCls;
+    ImpCls->isa->mthds->refs = 1;
+    ImpCls->isa->mthds->weaks = 0;
+    ImpCls->isa->mthds->count = 0;
+    ImpCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ImpCls->isa->mthds->count);
+    
+    ImpCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    ImpCls->isa->mthds->isa = ArrayCls;
+    ImpCls->isa->mthds->refs = 1;
+    ImpCls->isa->mthds->weaks = 0;
+    ImpCls->isa->mthds->count = 0;
+    ImpCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ImpCls->isa->mthds->count);
+    
+    IntCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    IntCls->isa->mthds->isa = ArrayCls;
+    IntCls->isa->mthds->refs = 1;
+    IntCls->isa->mthds->weaks = 0;
+    IntCls->isa->mthds->count = 0;
+    IntCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * IntCls->isa->mthds->count);
+    
+    FloatCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    FloatCls->isa->mthds->isa = ArrayCls;
+    FloatCls->isa->mthds->refs = 1;
+    FloatCls->isa->mthds->weaks = 0;
+    FloatCls->isa->mthds->count = 0;
+    FloatCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * FloatCls->isa->mthds->count);
+    
+    CharCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    CharCls->isa->mthds->isa = ArrayCls;
+    CharCls->isa->mthds->refs = 1;
+    CharCls->isa->mthds->weaks = 0;
+    CharCls->isa->mthds->count = 0;
+    CharCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * CharCls->isa->mthds->count);
+    
+    StringCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    StringCls->isa->mthds->isa = ArrayCls;
+    StringCls->isa->mthds->refs = 1;
+    StringCls->isa->mthds->weaks = 0;
+    StringCls->isa->mthds->count = 0;
+    StringCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * StringCls->isa->mthds->count);
+    
+    ArrayCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    ArrayCls->isa->mthds->isa = ArrayCls;
+    ArrayCls->isa->mthds->refs = 1;
+    ArrayCls->isa->mthds->weaks = 0;
+    ArrayCls->isa->mthds->count = 1;
+    ArrayCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ArrayCls->isa->mthds->count);
+    
+    BoolCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    BoolCls->isa->mthds->isa = ArrayCls;
+    BoolCls->isa->mthds->refs = 1;
+    BoolCls->isa->mthds->weaks = 0;
+    BoolCls->isa->mthds->count = 0;
+    BoolCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * BoolCls->isa->mthds->count);
+    
+    MethodCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    MethodCls->isa->mthds->isa = ArrayCls;
+    MethodCls->isa->mthds->refs = 1;
+    MethodCls->isa->mthds->weaks = 0;
+    MethodCls->isa->mthds->count = 0;
+    MethodCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * MethodCls->isa->mthds->count);
+    
+    
 
     Method alloc = (Method) malloc(sizeof(voltz_method));
     alloc->isa = MethodCls;
@@ -304,6 +340,7 @@ int main(int argc, const char** argv) {
     alloc->sel->refs = 1;
     alloc->sel->weaks = 0;
     alloc->sel->value = "Alloc()";
+    AllocSel = (Selector) Retain(alloc->sel);
     alloc->imp = (Imp) malloc(sizeof(voltz_imp));
     alloc->imp->isa = ImpCls;
     alloc->imp->refs = 1;
@@ -356,14 +393,11 @@ int main(int argc, const char** argv) {
         return (Object) rv;
     };
 
-
-
-    ObjectCls->mthds = (Array) malloc(sizeof(voltz_array));
-    ObjectCls->mthds->isa = ArrayCls;
-    ObjectCls->mthds->refs = 1;
-    ObjectCls->mthds->weaks = 0;
-    ObjectCls->mthds->count = 1;
-    ObjectCls->mthds->value = (Object*) malloc(sizeof(Object) * ObjectCls->mthds->count);
+    ClassCls->mthds->value[0] = alloc;
+    ClassCls->mthds->value[1] = subclass;
+    
+    
+    
 
     Method init = (Method) malloc(sizeof(voltz_method));
     init->isa = MethodCls;
@@ -374,6 +408,7 @@ int main(int argc, const char** argv) {
     init->sel->refs = 1;
     init->sel->weaks = 0;
     init->sel->value = "Init()";
+    InitSel = (Selector) Retain(init->sel);
     init->imp = (Imp) malloc(sizeof(voltz_imp));
     init->imp->isa = ImpCls;
     init->imp->refs = 1;
@@ -384,12 +419,7 @@ int main(int argc, const char** argv) {
 
     ObjectCls->mthds->value[0] = init;
 
-    ArrayCls->mthds = (Array) malloc(sizeof(voltz_array));
-    ArrayCls->mthds->isa = ArrayCls;
-    ArrayCls->mthds->refs = 1;
-    ArrayCls->mthds->weaks = 0;
-    ArrayCls->mthds->count = 1;
-    ArrayCls->mthds->value = (Object*) malloc(sizeof(Object) * ArrayCls->mthds->count);
+
 
     Method arr = (Method) malloc(sizeof(voltz_method));
     arr->isa = MethodCls;
@@ -424,6 +454,47 @@ int main(int argc, const char** argv) {
         InternedInts[k + 0x20] = i;
     }
 
+    Int Zero = BoxInt(0);
+    Method release = (Method) SendMsg(MethodCls, AllocSel, Zero);
+    release = (Method) SendMsg(release, InitSel, Zero);
+    
+    Selector releaseSel = GetSelector("Release()");
+    
+    Imp releaseImp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+        
+        self->refs--;
+        if (self->refs <= 0) {
+            Selector deinitSel = GetSelector("Deinit()");
+            Int argc = BoxInt(0);
+            SendMsg(self, deinitSel, argc);
+            Release(deinitSel);
+        }
+        
+        return nil;
+    });
+    
+    release->sel = releaseSel;
+    release->imp = releaseImp;
+    
+    ObjectCls->mthds->value[1] = release;
+    
+    Method retain = (Method) SendMsg(MethodCls, AllocSel, Zero);
+    retain = (Method) SendMsg(retain, InitSel, Zero);
+    
+    Selector retainSel = GetSelector("Retain()");
+    
+    Imp retainImp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+        self->refs++;
+        return self;
+    });
+    
+    retain->sel = retainSel;
+    retain->imp = retainImp;
+    
+    ObjectCls->mthds->value[2] = retain;
+    
+    
+    
     VoltzLinkerEntry(nil, nil);
 }
 
@@ -480,6 +551,16 @@ void ReleasePhase1(Object obj) {
         // Deinit
         free(obj);
     }
+}
+
+void ReleasePhase2(Object obj) {
+    Int argc = BoxInt(0);
+    Selector release = GetSelector("Release()");
+    SendMsg(obj, release, argc);
+    
+    // FIXME: Not going to work, will recurse endlessly
+    Release(argc);
+    Release(release);
 }
 
 Object RetainPhase1(Object obj) {

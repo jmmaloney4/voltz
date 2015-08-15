@@ -36,9 +36,8 @@ struct SelectorTableEntry {
 
 SelectorTableEntry* SelectorTable[SelectorTableSize];
 
-Selector GetSelectorPhase1(String value) {
-    const char* str = UnboxString(value);
-    int64_t hash = HashString(str);
+Selector GetSelectorPhase1(const char* value) {
+    int64_t hash = HashString(value);
     if (hash < 0) {
         hash *= -1;
     }
@@ -46,7 +45,7 @@ Selector GetSelectorPhase1(String value) {
     
     
     for (SelectorTableEntry* entry = SelectorTable[hash]; entry != NULL; entry = entry->next) {
-        if (strcmp(entry->sel->value, value->value) == 0) {
+        if (strcmp(entry->sel->value, value) == 0) {
             return (Selector) Retain(entry->sel);
         }
     }
@@ -56,11 +55,11 @@ Selector GetSelectorPhase1(String value) {
     entry->sel->isa = SelectorClass;
     entry->sel->refs = 1;
     entry->sel->weaks = 0;
-    entry->sel->value = UnboxString(value);
+    entry->sel->value = strdup(value);
     entry->next = SelectorTable[hash];
     SelectorTable[hash] = entry;
     
     return (Selector) Retain(entry->sel);
 }
 
-Selector (*voltz::GetSelector)(String) = GetSelectorPhase1;
+Selector (*voltz::GetSelector)(const char*) = GetSelectorPhase1;
