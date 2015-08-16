@@ -21,7 +21,6 @@ struct RegistryTableEntry {
 RegistryTableEntry* RegistryTable[RegistryTableSize];
 
 void RegisterObjectPhase1(Object obj, const char* name) {
-    
     int64_t hash = HashString(name);
     if (hash < 0) {
         hash *= -1;
@@ -44,10 +43,39 @@ void RegisterObjectPhase1(Object obj, const char* name) {
     RegistryTable[hash] = entry;
 }
 
+void RegisterObjectPhase2(Object obj, const char* name) {
+    int64_t hash = HashString(name);
+    if (hash < 0) {
+        hash *= -1;
+    }
+    hash %= RegistryTableSize;
+    
+    for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
+        if (strcmp(entry->name, name) == 0) {
+            Selector retain = GetSelector("Retain()");
+            Selector release = GetSelector("Release()");
+            
+            SendMsg(entry->obj, release, 0);
+            entry->obj = SendMsg(obj, retain, 0);
+            
+            SendMsg(retain, release, 0);
+            SendMsg(release, release, 0);
+            
+            return;
+            
+        }
+    }
+    
+    RegistryTableEntry* entry = (RegistryTableEntry*) malloc(sizeof(struct RegistryTableEntry));
+    entry->obj = Retain(obj);
+    entry->name = strdup(name);
+    entry->next = RegistryTable[hash];
+    RegistryTable[hash] = entry;
+}
+
 void(*voltz::RegisterObject)(Object, const char*) = RegisterObjectPhase1;
 
 Object GetRegisteredObjectPhase1(const char* name) {
-    
     int64_t hash = HashString(name);
     if (hash < 0) {
         hash *= -1;
@@ -63,4 +91,27 @@ Object GetRegisteredObjectPhase1(const char* name) {
     return nil;
 }
 
+Object GetRegisteredObjectPhase2(const char* name) {
+    int64_t hash = HashString(name);
+    if (hash < 0) {
+        hash *= -1;
+    }
+    hash %= RegistryTableSize;
+    
+    for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
+        if (strcmp(entry->name, name) == 0) {
+            Selector retain = GetSelector("Retain()");
+            Object rv = SendMsg(entry->obj, retain, 0);
+            return rv;
+        }
+    }
+    
+    return nil;
+}
+
 Object (*voltz::GetRegisteredObject)(const char*) = GetRegisteredObjectPhase1;
+
+void voltz::RegistryPhase2() {
+    RegisterObject = RegisterObjectPhase2;
+    GetRegisteredObject = GetRegisteredObjectPhase2;
+}

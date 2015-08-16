@@ -55,8 +55,6 @@ namespace voltz {
     // These should get turned off in Phase 2
     extern void (*Release)(Object obj);
     extern Object (*Retain)(Object obj);
-    extern void (*WeakRelease)(Object obj);
-    extern Object (*WeakRetain)(Object obj);
     
     extern Selector (*GetSelector)(const char* value);
 
@@ -72,7 +70,7 @@ namespace voltz {
     
     extern String (*GetProtocolName)(Protocol prt);
 
-    extern Object (*SendMsg)(Object target, Selector sel, Int argc, ...);
-    extern Object (*SendMsgVA)(Object target, Selector sel, Int argc, va_list ap);
+    extern Object (*SendMsg)(Object target, Selector sel, int64_t argc, ...);
+    extern Object (*SendMsgVA)(Object target, Selector sel, int64_t argc, va_list ap);
     
 }

@@ -62,4 +62,65 @@ Selector GetSelectorPhase1(const char* value) {
     return (Selector) Retain(entry->sel);
 }
 
+Selector GetSelectorPhase2(const char* value) {
+    int64_t hash = HashString(value);
+    if (hash < 0) {
+        hash *= -1;
+    }
+    hash %= SelectorTableSize;
+    
+    for (SelectorTableEntry* entry = SelectorTable[hash]; entry != NULL; entry = entry->next) {
+        if (strcmp(entry->sel->value, value) == 0) {
+            entry->sel->refs++;
+            return entry->sel;
+        }
+    }
+    
+    Selector alloc = GetSelector("Alloc()");
+    Selector init = GetSelector("Init()");
+    Selector release = GetSelector("Release()");
+    
+    Class SelectorClass = (Class) GetRegisteredObject("std::Selector");
+    
+    SelectorTableEntry* entry = (SelectorTableEntry*) malloc(sizeof(SelectorTableEntry));
+    entry->sel = (Selector) SendMsg(SelectorClass, alloc, 0);
+    entry->sel = (Selector) SendMsg(entry->sel, init, 0);
+    entry->sel->value = strdup(value);
+    
+    entry->next = SelectorTable[hash];
+    SelectorTable[hash] = entry;
+    
+    SendMsg(alloc, release, 0);
+    SendMsg(init, release, 0);
+    SendMsg(release, release, 0);
+    
+    return entry->sel;
+}
+
 Selector (*voltz::GetSelector)(const char*) = GetSelectorPhase1;
+
+void voltz::SelectorPhase2() {
+    GetSelector = GetSelectorPhase2;
+}
+
+void voltz::AddSelector(Selector sel) {
+    int64_t hash = HashString(sel->value);
+    if (hash < 0) {
+        hash *= -1;
+    }
+    hash %= SelectorTableSize;
+    
+    
+    for (SelectorTableEntry* entry = SelectorTable[hash]; entry != NULL; entry = entry->next) {
+        if (strcmp(entry->sel->value, sel->value) == 0) {
+            fprintf(stderr, "Selector Already in Table\n");
+            abort();
+        }
+    }
+    
+    SelectorTableEntry* entry = (SelectorTableEntry*) malloc(sizeof(SelectorTableEntry));
+    entry->sel = (Selector) malloc(sizeof(struct voltz_selector));
+    entry->sel = (Selector) Retain(sel);
+    entry->next = SelectorTable[hash];
+    SelectorTable[hash] = entry;
+}

@@ -11,17 +11,15 @@ using namespace voltz;
 
 Float BoxFloatAll(double value) {
     Selector AllocSel = GetSelector("Alloc()");
-    Int Argc = BoxInt(0);
-    Float rv = (Float) SendMsg((Object) GetRegisteredObject("std::Float"), AllocSel, Argc);
+    Float rv = (Float) SendMsg((Object) GetRegisteredObject("std::Float"), AllocSel, 0);
     
     Selector InitSel = GetSelector("Init()");
-    rv = (Float) SendMsg(rv, InitSel, Argc);
+    rv = (Float) SendMsg(rv, InitSel, 0);
     
     rv->value = value;
     
     Release(AllocSel);
     Release(InitSel);
-    Release(Argc);
     
     return rv;
 }

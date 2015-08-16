@@ -9,20 +9,46 @@
 #include <string.h>
 
 String BoxStringPhase1(const char* str) {
-
     String rv = (String) malloc(sizeof(struct voltz_string));
     rv->isa = StringClass;
     rv->refs = 1;
     rv->weaks = 0;
     rv->value = strdup(str);
+    rv->length = strlen(str);
     
     return rv;
+}
+
+String BoxStringPhase2(const char* str) {
+    Selector alloc = GetSelector("Alloc()");
+    Selector init = GetSelector("Init()");
+    Selector release = GetSelector("release()");
     
+    Class stringClass = (Class) GetRegisteredObject("std::String");
+    
+    String rv = (String) SendMsg(stringClass, alloc, 0);
+    rv = (String) SendMsg(rv, init, 0);
+    rv->value = strdup(str);
+    rv->length = strlen(str);
+    
+    SendMsg(alloc, release, 0);
+    SendMsg(init, release, 0);
+    SendMsg(stringClass, release, 0);
+    SendMsg(release, release, 0);
+    
+    return rv;
 }
 
 String (*voltz::BoxString)(const char*) = BoxStringPhase1;
 
+void voltz::StringPhase2() {
+    BoxString = BoxStringPhase2;
+}
+
 char* UnboxStringPhase1(String value) {
+    if (!value) {
+        return nullptr;
+    }
     return strdup(value->value);
 }
 

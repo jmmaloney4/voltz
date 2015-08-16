@@ -24,6 +24,13 @@ namespace voltz {
     extern Selector InitSel;
     //extern Selector ArrayOpSel;
     
+    void AddSelector(Selector sel);
+    
+    void IntPhase2();
+    void ReleaseRetainPhase2();
+    void SelectorPhase2();
+    void RegistryPhase2();
+    void StringPhase2();
 }
 
 struct voltz::voltz_object {

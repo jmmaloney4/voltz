@@ -21,7 +21,9 @@ TEST(voltz, BoxInt) {
     Int orv = BoxInt(1234);
     int64_t irv = UnboxInt(orv);
 
-    Release((Object) orv);
+    Selector release = GetSelector("Release()");
+    SendMsg((Object) orv, release, 0);
+    SendMsg((Object) release, release, 0);
     
     EXPECT_EQ(1234, irv);
 }
@@ -40,7 +42,9 @@ TEST(voltz, BoxString) {
     String orv = BoxString(str);
     char* srv = UnboxString(orv);
 
-    Release((Object) orv);
+    Selector release = GetSelector("Release()");
+    SendMsg((Object) orv, release, 0);
+    SendMsg((Object) release, release, 0);
     
     EXPECT_STREQ(str, srv);
 }
@@ -52,7 +56,23 @@ TEST(voltz, GetSelector) {
     
     Selector sel2 = GetSelector(str);
     
+    Selector release = GetSelector("Release()");
+    SendMsg((Object) sel1, release, 0);
+    SendMsg((Object) sel2, release, 0);
+    SendMsg((Object) release, release, 0);
+    
     EXPECT_EQ(sel1, sel2);
 }
 
-
+TEST(voltz, HelloWorld) {
+    Object std_out = GetRegisteredObject("std::io::stdout");
+    String helloworld = BoxString("Hello, World!\n");
+    Selector write = GetSelector("Write(:)");
+    SendMsg(std_out, write, 1, helloworld);
+    
+    Selector release = GetSelector("Release()");
+    SendMsg(std_out, release, 0);
+    SendMsg((Object) helloworld, release, 0);
+    SendMsg((Object) write, release, 0);
+    SendMsg((Object) release, release, 0);
+}

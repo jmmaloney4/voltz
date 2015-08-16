@@ -163,7 +163,7 @@ int main(int argc, const char** argv) {
     ObjectCls->mthds->isa = ArrayCls;
     ObjectCls->mthds->refs = 1;
     ObjectCls->mthds->weaks = 0;
-    ObjectCls->mthds->count = 3;
+    ObjectCls->mthds->count = 4;
     ObjectCls->mthds->value = (Object*) malloc(sizeof(Object) * ObjectCls->mthds->count);
 
     ClassCls->mthds = (Array) malloc(sizeof(voltz_array));
@@ -180,12 +180,12 @@ int main(int argc, const char** argv) {
     ProtocolCls->mthds->count = 0;
     ProtocolCls->mthds->value = (Object*) malloc(sizeof(Object) * ProtocolCls->mthds->count);
     
-    ImpCls->mthds = (Array) malloc(sizeof(voltz_array));
-    ImpCls->mthds->isa = ArrayCls;
-    ImpCls->mthds->refs = 1;
-    ImpCls->mthds->weaks = 0;
-    ImpCls->mthds->count = 0;
-    ImpCls->mthds->value = (Object*) malloc(sizeof(Object) * ImpCls->mthds->count);
+    SelectorCls->mthds = (Array) malloc(sizeof(voltz_array));
+    SelectorCls->mthds->isa = ArrayCls;
+    SelectorCls->mthds->refs = 1;
+    SelectorCls->mthds->weaks = 0;
+    SelectorCls->mthds->count = 2;
+    SelectorCls->mthds->value = (Object*) malloc(sizeof(Object) * SelectorCls->mthds->count);
     
     ImpCls->mthds = (Array) malloc(sizeof(voltz_array));
     ImpCls->mthds->isa = ArrayCls;
@@ -266,12 +266,12 @@ int main(int argc, const char** argv) {
     ProtocolCls->isa->mthds->count = 0;
     ProtocolCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ProtocolCls->isa->mthds->count);
     
-    ImpCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
-    ImpCls->isa->mthds->isa = ArrayCls;
-    ImpCls->isa->mthds->refs = 1;
-    ImpCls->isa->mthds->weaks = 0;
-    ImpCls->isa->mthds->count = 0;
-    ImpCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * ImpCls->isa->mthds->count);
+    SelectorCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
+    SelectorCls->isa->mthds->isa = ArrayCls;
+    SelectorCls->isa->mthds->refs = 1;
+    SelectorCls->isa->mthds->weaks = 0;
+    SelectorCls->isa->mthds->count = 0;
+    SelectorCls->isa->mthds->value = (Object*) malloc(sizeof(Object) * SelectorCls->isa->mthds->count);
     
     ImpCls->isa->mthds = (Array) malloc(sizeof(voltz_array));
     ImpCls->isa->mthds->isa = ArrayCls;
@@ -341,6 +341,7 @@ int main(int argc, const char** argv) {
     alloc->sel->weaks = 0;
     alloc->sel->value = "Alloc()";
     AllocSel = (Selector) Retain(alloc->sel);
+    AddSelector(AllocSel);
     alloc->imp = (Imp) malloc(sizeof(voltz_imp));
     alloc->imp->isa = ImpCls;
     alloc->imp->refs = 1;
@@ -362,6 +363,7 @@ int main(int argc, const char** argv) {
     subclass->sel->refs = 1;
     subclass->sel->weaks = 0;
     subclass->sel->value = "Subclass()";
+    AddSelector(subclass->sel);
     subclass->imp = (Imp) malloc(sizeof(voltz_imp));
     subclass->imp->isa = ImpCls;
     subclass->imp->refs = 1;
@@ -409,6 +411,7 @@ int main(int argc, const char** argv) {
     init->sel->weaks = 0;
     init->sel->value = "Init()";
     InitSel = (Selector) Retain(init->sel);
+    AddSelector(init->sel);
     init->imp = (Imp) malloc(sizeof(voltz_imp));
     init->imp->isa = ImpCls;
     init->imp->refs = 1;
@@ -420,7 +423,6 @@ int main(int argc, const char** argv) {
     ObjectCls->mthds->value[0] = init;
 
 
-
     Method arr = (Method) malloc(sizeof(voltz_method));
     arr->isa = MethodCls;
     arr->refs = 1;
@@ -430,6 +432,7 @@ int main(int argc, const char** argv) {
     arr->sel->refs = 1;
     arr->sel->weaks = 0;
     arr->sel->value = "[](:)";
+    AddSelector(arr->sel);
     arr->imp = (Imp) malloc(sizeof(voltz_imp));
     arr->imp->isa = ImpCls;
     arr->imp->refs = 1;
@@ -454,51 +457,72 @@ int main(int argc, const char** argv) {
         InternedInts[k + 0x20] = i;
     }
 
-    Int Zero = BoxInt(0);
-    Method release = (Method) SendMsg(MethodCls, AllocSel, Zero);
-    release = (Method) SendMsg(release, InitSel, Zero);
+    Method release = (Method) SendMsg(MethodCls, AllocSel, 0);
+    release = (Method) SendMsg(release, InitSel, 0);
+    release->sel = GetSelector("Release()");
     
-    Selector releaseSel = GetSelector("Release()");
-    
-    Imp releaseImp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+    release->imp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
         
         self->refs--;
         if (self->refs <= 0) {
             Selector deinitSel = GetSelector("Deinit()");
-            Int argc = BoxInt(0);
-            SendMsg(self, deinitSel, argc);
-            Release(deinitSel);
+            SendMsg(self, deinitSel, 0);
+            Selector release = GetSelector("Release()");
+            SendMsg(deinitSel, release, 0);
+            SendMsg(release, release, 0);
         }
         
         return nil;
     });
-    
-    release->sel = releaseSel;
-    release->imp = releaseImp;
-    
     ObjectCls->mthds->value[1] = release;
     
-    Method retain = (Method) SendMsg(MethodCls, AllocSel, Zero);
-    retain = (Method) SendMsg(retain, InitSel, Zero);
-    
-    Selector retainSel = GetSelector("Retain()");
-    
-    Imp retainImp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+    Method retain = (Method) SendMsg(MethodCls, AllocSel, 0);
+    retain = (Method) SendMsg(retain, InitSel, 0);
+    retain->sel = GetSelector("Retain()");
+    retain->imp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
         self->refs++;
         return self;
     });
-    
-    retain->sel = retainSel;
-    retain->imp = retainImp;
-    
     ObjectCls->mthds->value[2] = retain;
     
+    Method deinit = (Method) SendMsg(MethodCls, AllocSel, 0);
+    deinit = (Method) SendMsg(deinit, InitSel, 0);
+    deinit->sel = GetSelector("Deinit()");
+    deinit->imp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+        free(self);
+        return nil;
+    });
+    ObjectCls->mthds->value[3] = deinit;
     
+    Method selret = (Method) SendMsg(MethodCls, AllocSel, 0);
+    selret = (Method) SendMsg(selret, InitSel, 0);
+    selret->sel = GetSelector("Retain()");
+    selret->imp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+        // Selectors don't do refrence counting
+        return self;
+    });
     
-    VoltzLinkerEntry(nil, nil);
+    Method selrel = (Method) SendMsg(MethodCls, AllocSel, 0);
+    selrel = (Method) SendMsg(selrel, InitSel, 0);
+    selrel->sel = GetSelector("Release()");
+    selrel->imp = BoxImp([] (Object self, Selector cmd, Array args) -> Object {
+        // Selectors don't do refrence counting
+        return self;
+    });
+    
+    SelectorCls->mthds->value[0] = selret;
+    SelectorCls->mthds->value[1] = selrel;
+    
+    IntPhase2();
+    ReleaseRetainPhase2();
+    SelectorPhase2();
+    RegistryPhase2();
+    
+    Int Argc = BoxInt(argc);
+    VoltzLinkerEntry(Argc, nil);
 }
 
-Object SendMsgVAPhase1(Object target, Selector sel, Int argc, va_list ap) {
+Object SendMsgVAPhase1(Object target, Selector sel, int64_t argc, va_list ap) {
 
     if (target == nil) {
         return nil;
@@ -513,15 +537,14 @@ Object SendMsgVAPhase1(Object target, Selector sel, Int argc, va_list ap) {
                 args->isa = ArrayClass;
                 args->refs = 1;
                 args->weaks = 0;
-                args->count = argc->value;
-                args->value = (Object*) malloc(sizeof(Object) * argc->value);
+                args->count = argc;
+                args->value = (Object*) malloc(sizeof(Object) * argc);
 
                 for (int64_t k = 0; k < args->count; k++) {
                     args->value[k] = va_arg(ap, Object);
                 }
 
                 return ((Method) c->mthds->value[k])->imp->value(target, sel, nil);
-
             }
         }
     }
@@ -530,7 +553,7 @@ Object SendMsgVAPhase1(Object target, Selector sel, Int argc, va_list ap) {
     abort();
 }
 
-Object SendMsgPhase1(Object target, Selector sel, Int argc, ...) {
+Object SendMsgPhase1(Object target, Selector sel, int64_t argc, ...) {
     va_list ap;
     va_start(ap, argc);
     Object rv = SendMsgVAPhase1(target, sel, argc, ap);
@@ -538,14 +561,18 @@ Object SendMsgPhase1(Object target, Selector sel, Int argc, ...) {
     return rv;
 }
 
-Object (*voltz::SendMsg)(Object, Selector, Int, ...) = SendMsgPhase1;
-Object (*voltz::SendMsgVA)(Object, Selector, Int, va_list) = SendMsgVAPhase1;
+Object (*voltz::SendMsg)(Object, Selector, int64_t, ...) = SendMsgPhase1;
+Object (*voltz::SendMsgVA)(Object, Selector, int64_t, va_list) = SendMsgVAPhase1;
 
 void ReleasePhase1(Object obj) {
     if (obj == nil) {
         return;
     }
 
+    if (obj->isa == SelectorClass) {
+        return;
+    }
+    
     obj->refs -= 1;
     if (obj->refs <= 0 && obj->weaks <= 0) {
         // Deinit
@@ -554,26 +581,35 @@ void ReleasePhase1(Object obj) {
 }
 
 void ReleasePhase2(Object obj) {
-    Int argc = BoxInt(0);
-    Selector release = GetSelector("Release()");
-    SendMsg(obj, release, argc);
-    
-    // FIXME: Not going to work, will recurse endlessly
-    Release(argc);
-    Release(release);
+    fprintf(stderr, "This program should not be using the Release() function\n");
+    abort();
 }
 
 Object RetainPhase1(Object obj) {
     if (obj == nil) {
         return nil;
     }
+    
+    if (obj->isa == SelectorClass) {
+        return obj;
+    }
 
     obj->refs++;
     return obj;
 }
 
+Object RetainPhase2(Object obj) {
+    fprintf(stderr, "This program should not be using the Retain() function\n");
+    abort();
+}
+
 void (*voltz::Release)(Object) = ReleasePhase1;
 Object (*voltz::Retain)(Object) = RetainPhase1;
+
+void voltz::ReleaseRetainPhase2() {
+    Release = ReleasePhase2;
+    Retain = RetainPhase2;
+}
 
 Class GetIsaAll(Object obj) {
     return obj->isa;

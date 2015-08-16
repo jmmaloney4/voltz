@@ -28,8 +28,43 @@ Int BoxIntPhase1(int64_t value) {
 
 Int (*voltz::BoxInt)(int64_t) = BoxIntPhase1;
 
-int64_t UnboxIntImp(Int value) {
+Int BoxIntPhase2(int64_t value) {
+    if (value >= -0x20 && value < 0xff) {
+        Selector retain = GetSelector("Retain()");
+        Int rv = (Int) SendMsg(InternedInts[value + 0x20], retain, 0);
+        Selector release = GetSelector("Release()");
+        SendMsg(retain, release, 0);
+        SendMsg(release, release, 0);
+        return rv;
+    }
+    
+    Class IntClass = (Class) GetRegisteredObject("std::Int");
+    Selector AllocSel = GetSelector("Alloc()");
+    Int rv = (Int) SendMsg(IntClass, AllocSel, 0);
+    
+    Selector InitSel = GetSelector("Init()");
+    rv = (Int) SendMsg(rv, InitSel, 0);
+    
+    rv->value = value;
+    
+    Selector releaseSel = GetSelector("Release()");
+    SendMsg(IntClass, releaseSel, 0);
+    SendMsg(AllocSel, releaseSel, 0);
+    SendMsg(InitSel, releaseSel, 0);
+    SendMsg(releaseSel, releaseSel, 0);
+    
+    return rv;
+}
+
+void voltz::IntPhase2() {
+    BoxInt = BoxIntPhase2;
+}
+
+int64_t UnboxIntAll(Int value) {
+    if (!value) {
+        return 0;
+    }
     return value->value;
 }
 
-int64_t (*voltz::UnboxInt)(Int) = UnboxIntImp;
+int64_t (*voltz::UnboxInt)(Int) = UnboxIntAll;
