@@ -50,11 +50,11 @@ void RegisterObjectPhase2(Object obj, const char* name) {
     }
     hash %= RegistryTableSize;
     
+    Selector retain = GetSelector("Retain()");
+    Selector release = GetSelector("Release()");
+    
     for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
-            Selector retain = GetSelector("Retain()");
-            Selector release = GetSelector("Release()");
-            
             SendMsg(entry->obj, release, 0);
             entry->obj = SendMsg(obj, retain, 0);
             
@@ -67,10 +67,13 @@ void RegisterObjectPhase2(Object obj, const char* name) {
     }
     
     RegistryTableEntry* entry = (RegistryTableEntry*) malloc(sizeof(struct RegistryTableEntry));
-    entry->obj = Retain(obj);
+    entry->obj = SendMsg(obj, retain, 0);
     entry->name = strdup(name);
     entry->next = RegistryTable[hash];
     RegistryTable[hash] = entry;
+    
+    SendMsg(retain, release, 0);
+    SendMsg(release, release, 0);
 }
 
 void(*voltz::RegisterObject)(Object, const char*) = RegisterObjectPhase1;

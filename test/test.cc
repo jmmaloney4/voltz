@@ -64,8 +64,31 @@ TEST(voltz, GetSelector) {
     EXPECT_EQ(sel1, sel2);
 }
 
+TEST(voltz, Registry) {
+    Selector alloc = GetSelector("Alloc()");
+    Selector init = GetSelector("Init()");
+    Selector release = GetSelector("Release()");
+    Class objectClass = (Class) GetRegisteredObject("std::Object");
+    
+    Object obj = SendMsg((Object) objectClass, alloc, 0);
+    obj = SendMsg(obj, init, 0);
+    
+    RegisterObject(obj, "SomeObject");
+    
+    Object o = GetRegisteredObject("SomeObject");
+    
+    EXPECT_EQ(obj, o);
+    
+    SendMsg((Object) alloc, release, 0);
+    SendMsg((Object) init, release, 0);
+    SendMsg( obj, release, 0);
+    SendMsg(o, release, 0);
+    SendMsg((Object) release, release, 0);
+    
+}
+
 TEST(voltz, HelloWorld) {
-    Object std_out = GetRegisteredObject("std::io::stdout");
+    Object std_out = GetRegisteredObject("std::io::StdOut");
     String helloworld = BoxString("Hello, World!\n");
     Selector write = GetSelector("Write(:)");
     SendMsg(std_out, write, 1, helloworld);
