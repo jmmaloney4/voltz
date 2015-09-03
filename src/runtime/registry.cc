@@ -50,8 +50,8 @@ void RegisterObjectPhase2(Object obj, const char* name) {
     }
     hash %= RegistryTableSize;
     
-    Selector retain = GetSelector("Retain()");
-    Selector release = GetSelector("Release()");
+    Selector retain = GetSelector("Retain():std::Object");
+    Selector release = GetSelector("Release():std::Void");
     
     for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
@@ -103,7 +103,7 @@ Object GetRegisteredObjectPhase2(const char* name) {
     
     for (RegistryTableEntry* entry = RegistryTable[hash]; entry != nil; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
-            Selector retain = GetSelector("Retain()");
+            Selector retain = GetSelector("Retain():std::Object");
             Object rv = SendMsg(entry->obj, retain, 0);
             return rv;
         }

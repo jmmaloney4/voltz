@@ -7,6 +7,8 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
+using namespace voltz;
+
 Imp BoxImpPhase1(FuncPtr ptr) {
     Imp rv = (Imp) malloc(sizeof(struct voltz_imp));
     rv->isa = ImpClass;

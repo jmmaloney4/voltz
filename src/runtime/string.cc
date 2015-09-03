@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+using namespace voltz;
+
 String BoxStringPhase1(const char* str) {
     String rv = (String) malloc(sizeof(struct voltz_string));
     rv->isa = StringClass;

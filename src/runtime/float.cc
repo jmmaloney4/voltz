@@ -10,16 +10,30 @@
 using namespace voltz;
 
 Float BoxFloatAll(double value) {
-    Selector AllocSel = GetSelector("Alloc()");
+    Selector AllocSel = GetSelector("Allocate():std::Object");
     Float rv = (Float) SendMsg((Object) GetRegisteredObject("std::Float"), AllocSel, 0);
     
-    Selector InitSel = GetSelector("Init()");
+    Selector InitSel = GetSelector("Initialize():std::Object");
     rv = (Float) SendMsg(rv, InitSel, 0);
     
     rv->value = value;
     
-    Release(AllocSel);
-    Release(InitSel);
+    Selector release = GetSelector("Release():std::Void");
+    
+    SendMsg(AllocSel, release, 0);
+    SendMsg(InitSel, release, 0);
+    SendMsg(release, release, 0);
     
     return rv;
 }
+
+double UnboxFloatAll(Float value) {
+    if (value == nil) {
+        return 0;
+    }
+    
+    return value->value;
+}
+
+Float (*voltz::BoxFloat)(double) = BoxFloatAll;
+double (*voltz::UnboxFloat)(Float) = UnboxFloatAll;

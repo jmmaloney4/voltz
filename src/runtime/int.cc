@@ -9,20 +9,20 @@
 
 using namespace voltz;
 
-//               neg   0 + pos
+//                      neg   0 + pos
 Int voltz::InternedInts[0x20 + 0xff];
 
 Int BoxIntPhase1(int64_t value) {
     if (value >= -0x20 && value < 0xff) {
         return (Int) Retain(InternedInts[value + 0x20]);
     }
-    
+
     Int rv = (Int) malloc(sizeof(struct voltz_int));
     rv->isa = IntClass;
     rv->refs = 1;
     rv->weaks = 0;
     rv->value = value;
-    
+
     return rv;
 }
 
@@ -30,29 +30,29 @@ Int (*voltz::BoxInt)(int64_t) = BoxIntPhase1;
 
 Int BoxIntPhase2(int64_t value) {
     if (value >= -0x20 && value < 0xff) {
-        Selector retain = GetSelector("Retain()");
+        Selector retain = GetSelector("Retain():std::Object");
         Int rv = (Int) SendMsg(InternedInts[value + 0x20], retain, 0);
-        Selector release = GetSelector("Release()");
+        Selector release = GetSelector("Release():std::Void");
         SendMsg(retain, release, 0);
         SendMsg(release, release, 0);
         return rv;
     }
-    
+
     Class IntClass = (Class) GetRegisteredObject("std::Int");
-    Selector AllocSel = GetSelector("Alloc()");
+    Selector AllocSel = GetSelector("Allocate():std::Object");
     Int rv = (Int) SendMsg(IntClass, AllocSel, 0);
-    
-    Selector InitSel = GetSelector("Init()");
+
+    Selector InitSel = GetSelector("Initialize():std::Object");
     rv = (Int) SendMsg(rv, InitSel, 0);
-    
+
     rv->value = value;
-    
-    Selector releaseSel = GetSelector("Release()");
+
+    Selector releaseSel = GetSelector("Release():std::Void");
     SendMsg(IntClass, releaseSel, 0);
     SendMsg(AllocSel, releaseSel, 0);
     SendMsg(InitSel, releaseSel, 0);
     SendMsg(releaseSel, releaseSel, 0);
-    
+
     return rv;
 }
 
@@ -61,10 +61,18 @@ void voltz::IntPhase2() {
 }
 
 int64_t UnboxIntAll(Int value) {
-    if (!value) {
+    if (value == nil) {
         return 0;
     }
     return value->value;
 }
 
 int64_t (*voltz::UnboxInt)(Int) = UnboxIntAll;
+
+void InitializeIntClass() {
+
+    //Class intcls = GetRegisteredObject("std::Int");
+
+
+
+}

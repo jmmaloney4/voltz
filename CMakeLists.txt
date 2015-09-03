@@ -7,7 +7,9 @@ option(test "Build all tests." ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
 
-add_library(voltz include/voltz.h src/voltz-internal.h src/voltz.cc src/int.cc src/float.cc src/sel.cc src/string.cc src/registry.cc src/imp.cc)
+add_library(voltz include/voltz.h src/runtime/voltz-internal.h src/runtime/voltz.cc src/runtime/int.cc src/runtime/float.cc src/runtime/sel.cc src/runtime/string.cc src/runtime/registry.cc src/runtime/imp.cc src/runtime/object.cc src/runtime/char.cc src/runtime/array.cc)
+
+add_library(std src/std/std.cc src/std/io.cc)
 
 if(test)
     add_subdirectory(lib/gtest)

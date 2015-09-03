@@ -76,9 +76,10 @@ Selector GetSelectorPhase2(const char* value) {
         }
     }
     
-    Selector alloc = GetSelector("Alloc()");
-    Selector init = GetSelector("Init()");
-    Selector release = GetSelector("Release()");
+    Selector alloc = GetSelector("Allocate():std::Object");
+    Selector init = GetSelector("Initialize():std::Object");
+    Selector retain = GetSelector("Retain():std::Object");
+    Selector release = GetSelector("Release():std::Void");
     
     Class SelectorClass = (Class) GetRegisteredObject("std::Selector");
     
@@ -90,11 +91,14 @@ Selector GetSelectorPhase2(const char* value) {
     entry->next = SelectorTable[hash];
     SelectorTable[hash] = entry;
     
+    Selector rv = (Selector) SendMsg(entry->sel, retain, 0);
+    
     SendMsg(alloc, release, 0);
     SendMsg(init, release, 0);
+    SendMsg(retain, release, 0);
     SendMsg(release, release, 0);
     
-    return entry->sel;
+    return rv;
 }
 
 Selector (*voltz::GetSelector)(const char*) = GetSelectorPhase1;
