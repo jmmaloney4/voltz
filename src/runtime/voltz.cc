@@ -555,6 +555,7 @@ int main(int argc, const char** argv) {
     
     Selector addMethodSel = GetSelector("Add(Method:std::Method):std::Void");
     SendMsg(MethodCls, addMethodSel, 1, setSelector);
+    
     Method setImp = (Method) SendMsg(MethodCls, AllocSel, 0);
     setImp = (Method) SendMsg(setImp, InitSel, 0);
     setImp->sel = GetSelector("Set(Imp:std::Imp):std::Void");
@@ -574,12 +575,16 @@ int main(int argc, const char** argv) {
     });
     
     SendMsg(MethodCls, addMethodSel, 1, setImp);
-    
-    
-    
+    /*
+    Method addProtocol = (Method) SendMsg(MethodCls, AllocSel, 0);
+    addProtocol = (Method) SendMsg(addProtocol, AllocSel, 0);
+    addProtocol->sel = GetSelector("Add(Protocol:std::Protocol):std::Void");
+    addProtocol->imp = BoxImp([] VOLTZ_FN {
+        
+    });
+    */
     
     InitializeObjectClass();
-    
 
     Int Argc = BoxInt(argc);
     VoltzLinkerEntry(Argc, nil);
