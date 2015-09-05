@@ -7,6 +7,14 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
-extern "C" id vz_object_alloc(NUM ivars) {
-    return (id) malloc(sizeof(struct vz_object) + (sizeof(id) * ivars));
+extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
+    
+    id objcls = vz_object_alloc(8);
+    id clscls = vz_object_alloc(8);
+    id numcls = vz_object_alloc(1);
+    id charcls = vz_object_alloc(1);
+    id stringcls = vz_object_alloc(2);
+    
+    
+    
 }
