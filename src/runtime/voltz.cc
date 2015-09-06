@@ -5,8 +5,3 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
-#include <stdlib.h>
-
-id vz_object_alloc(NUM ivars) {
-    return (id) malloc(sizeof(struct vz_object) + (sizeof(id) * ivars));
-}

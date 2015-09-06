@@ -6,14 +6,20 @@
 
 #include "voltz-internal.h"
 
-id vz_num_boxI(NUM value) {
-    id numcls = vz_class_get("std::Number");
-    id rv = vz_msg_send(numcls, "Alloc()", 0);
+id vz_imp_boxI(IMP imp) {
+    id impcls = vz_class_get("std::Imp");
+    id rv = vz_msg_send(impcls, "Alloc()", 0);
     rv = vz_msg_send(rv, "Init()", 0);
     
-    rv->ivars[0].num = value;
+    rv->ivars[0].imp = imp;
     
     return rv;
 }
 
-id(*vz_num_box)(NUM) = vz_num_boxI;
+id (*vz_imp_box)(IMP) = vz_imp_boxI;
+
+IMP vz_imp_unboxI(id obj) {
+    return obj->ivars[0].imp;
+}
+
+IMP (*vz_imp_unbox)(id) = vz_imp_unboxI;

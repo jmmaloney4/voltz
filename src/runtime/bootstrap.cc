@@ -13,11 +13,13 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     id clscls = vz_object_alloc(8);
     id mthdcls = vz_object_alloc(8);
     id selcls = vz_object_alloc(8);
+    id impcls = vz_object_alloc(8);
     
     objcls->isa = clscls;
     clscls->isa = clscls;
     mthdcls->isa = vz_object_alloc(8);
     selcls->isa = vz_object_alloc(8);
+    impcls->isa = vz_object_alloc(8);
     
     objcls->refs = 1;
     objcls->weaks = 0;
@@ -31,11 +33,15 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     selcls->refs = 1;
     selcls->weaks = 0;
     
+    impcls->refs = 1;
+    impcls->weaks = 0;
+    
     // super classes
     objcls->ivars[0].obj = nil;
     clscls->ivars[0].obj = objcls;
     mthdcls->ivars[0].obj = objcls;
     selcls->ivars[0].obj = objcls;
+    impcls->ivars[0].obj = objcls;
     
     
     // names
@@ -43,9 +49,11 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     clscls->ivars[1].str = "std::Class";
     mthdcls->ivars[1].str = "std::Method";
     selcls->ivars[1].str = "std::Selector";
+    impcls->ivars[1].str = "std::Imp";
     
     mthdcls->isa->ivars[1].str = "std::Method.isa";
     selcls->isa->ivars[1].str = "std::Selector.isa";
+    impcls->isa->ivars[1].str = "std::Imp.isa";
     
     
     // ivars
@@ -53,9 +61,11 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     clscls->ivars[2].num = 8;
     mthdcls->ivars[2].num = 2;
     selcls->ivars[2].num = 1;
+    impcls->ivars[2].num = 1;
     
     mthdcls->isa->ivars[2].num = 0;
     selcls->isa->ivars[2].num = 0;
+    impcls->isa->ivars[2].num = 0;
     
     
     // ivarn
@@ -74,6 +84,8 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     mthdcls->ivars[3].sarr[1] = vz_getSel("imp");
     selcls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * selcls->ivars[2].num);
     selcls->ivars[3].sarr[0] = vz_getSel("value");
+    impcls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * impcls->ivars[2].num);
+    impcls->ivars[3].sarr[0] = vz_getSel("value");
     
     
     // protocolc
@@ -81,6 +93,7 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     clscls->ivars[4].num = 0;
     mthdcls->ivars[4].num = 0;
     selcls->ivars[4].num = 0;
+    impcls->ivars[4].num = 0;
 
     
     // protocolv
@@ -88,18 +101,27 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     clscls->ivars[5].arr = (id*) malloc(0);
     mthdcls->ivars[5].arr = (id*) malloc(0);
     selcls->ivars[5].arr = (id*) malloc(0);
+    impcls->ivars[5].arr = (id*) malloc(0);
+    
     
     // mthdc
     objcls->ivars[6].num = 4;
     clscls->ivars[6].num = 2;
     mthdcls->ivars[6].num = 0;
     selcls->ivars[6].num = 0;
+    impcls->ivars[6].num = 0;
+    
+    mthdcls->isa->ivars[6].num = 0;
+    selcls->isa->ivars[6].num = 0;
+    impcls->isa->ivars[6].num = 0;
     
     
     // mthdv
     objcls->ivars[7].arr = (id*) malloc(sizeof(id) * objcls->ivars[6].num);
     clscls->ivars[7].arr = (id*) malloc(sizeof(id) * clscls->ivars[6].num);
     mthdcls->ivars[7].arr = (id*) malloc(sizeof(id) * mthdcls->ivars[6].num);
+    selcls->ivars[7].arr = (id*) malloc(sizeof(id) * selcls->ivars[6].num);
+    impcls->ivars[7].arr = (id*) malloc(sizeof(id) * impcls->ivars[6].num);
 
     
     // object methods
@@ -188,11 +210,25 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
         return nil;
     };
     
+    
+    
     // SetSel(:)
     {
         id mthd = vz_msg_send(mthdcls, "Alloc()", 0);
         mthd = vz_msg_send(mthd, "Init()", 0);
         vz_object_setIvar(mthd, "sel", (id) vz_getSel("SetSel(:)"));
+        mthd->ivars[1].imp = [] vz_def {
+            SEL s = vz_sel_unbox(argv[0]);
+            vz_object_setIvar(self, "sel", (id) s);
+            return nil;
+        };
+    }
+    
+    // SetImp(:)
+    {
+        id mthd = vz_msg_send(mthdcls, "Alloc()", 0);
+        mthd = vz_msg_send(mthd, "Init()", 0);
+        vz_object_setIvar(mthd, "imp", (id) vz_getSel("SetImp(:)"));
         mthd->ivars[1].imp = [] vz_def {
             
         };

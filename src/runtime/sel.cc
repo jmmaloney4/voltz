@@ -79,3 +79,9 @@ id vz_sel_boxI(SEL sel) {
 }
 
 id (*vz_sel_box)(SEL) = vz_sel_boxI;
+
+SEL vz_sel_unboxI(id obj) {
+    return (SEL) vz_object_getIvar(obj, "value");
+}
+
+SEL (*vz_sel_unbox)(id) = vz_sel_unboxI;
