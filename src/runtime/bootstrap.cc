@@ -60,23 +60,23 @@ extern "C" void vz_bootstrap_runtime(int argc, const char** argv) {
     
     
     // ivarn
-    objcls->ivars[3].sarr = (const char**) malloc(sizeof(const char*) * objcls->ivars[2].num);
-    clscls->ivars[3].sarr = (const char**) malloc(sizeof(const char*) * clscls->ivars[2].num);
-    clscls->ivars[3].sarr[0] = "super";
-    clscls->ivars[3].sarr[1] = "name";
-    clscls->ivars[3].sarr[2] = "ivars";
-    clscls->ivars[3].sarr[3] = "ivarn";
-    clscls->ivars[3].sarr[4] = "protocolc";
-    clscls->ivars[3].sarr[5] = "protocolv";
-    clscls->ivars[3].sarr[6] = "mthdc";
-    clscls->ivars[3].sarr[7] = "mthdv";
-    numcls->ivars[3].sarr = (const char**) malloc(sizeof(const char*) * numcls->ivars[2].num);
-    numcls->ivars[3].sarr[0] = "value";
-    charcls->ivars[3].sarr = (const char**) malloc(sizeof(const char*) * numcls->ivars[2].num);
-    charcls->ivars[3].sarr[0] = "value";
-    stringcls->ivars[3].sarr = (const char**) malloc(sizeof(const char*) * stringcls->ivars[2].num);
-    stringcls->ivars[3].sarr[0] = "value";
-    stringcls->ivars[3].sarr[1] = "length";
+    objcls->ivars[3].sarr = (SEL*) malloc(sizeof(const char*) * objcls->ivars[2].num);
+    clscls->ivars[3].sarr = (SEL*) malloc(sizeof(const char*) * clscls->ivars[2].num);
+    clscls->ivars[3].sarr[0] = vz_getSel("super");
+    clscls->ivars[3].sarr[1] = vz_getSel("name");
+    clscls->ivars[3].sarr[2] = vz_getSel("ivars");
+    clscls->ivars[3].sarr[3] = vz_getSel("ivarn");
+    clscls->ivars[3].sarr[4] = vz_getSel("protocolc");
+    clscls->ivars[3].sarr[5] = vz_getSel("protocolv");
+    clscls->ivars[3].sarr[6] = vz_getSel("mthdc");
+    clscls->ivars[3].sarr[7] = vz_getSel("mthdv");
+    numcls->ivars[3].sarr = (SEL*) malloc(sizeof(const char*) * numcls->ivars[2].num);
+    numcls->ivars[3].sarr[0] = vz_getSel("value");
+    charcls->ivars[3].sarr = (SEL*) malloc(sizeof(const char*) * numcls->ivars[2].num);
+    charcls->ivars[3].sarr[0] = vz_getSel("value");
+    stringcls->ivars[3].sarr = (SEL*) malloc(sizeof(const char*) * stringcls->ivars[2].num);
+    stringcls->ivars[3].sarr[0] = vz_getSel("value");
+    stringcls->ivars[3].sarr[1] = vz_getSel("length");
     
     
     // protocolc

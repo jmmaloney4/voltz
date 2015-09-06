@@ -13,7 +13,7 @@ union vz_ivar {
     IMP imp;
     const char* str;
     id* arr;
-    const char** sarr;
+    SEL* sarr;
 };
 
 struct vz_object {
