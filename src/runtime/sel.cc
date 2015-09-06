@@ -65,3 +65,5 @@ SEL vz_getSelI(const char* value) {
     
     return rv;
 }
+
+SEL (*vz_getSel)(const char*) = vz_getSelI;

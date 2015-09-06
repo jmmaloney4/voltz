@@ -7,6 +7,6 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
-extern "C" id vz_object_alloc(NUM ivars) {
+id vz_object_alloc(NUM ivars) {
     return (id) malloc(sizeof(struct vz_object) + (sizeof(id) * ivars));
 }

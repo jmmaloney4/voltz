@@ -6,11 +6,21 @@
 
 #include <voltz.h>
 
+union vz_ivar {
+    id obj;
+    SEL sel;
+    NUM num;
+    IMP imp;
+    const char* str;
+    id* arr;
+    const char** sarr;
+};
+
 struct vz_object {
     id isa;
     NUM refs;
     NUM weaks;
-    id ivars[0];
+    vz_ivar ivars[0];
 };
 
 struct vz_sel {

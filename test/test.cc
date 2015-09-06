@@ -7,3 +7,11 @@
 #include <voltz.h>
 #include <gtest/gtest.h>
 
+TEST(voltz, getsel) {
+    
+    SEL sel = vz_getSel("TestSelector(::)");
+    SEL sel2 = vz_getSel("TestSelector(::)");
+    
+    EXPECT_EQ(sel, sel2);
+    
+}

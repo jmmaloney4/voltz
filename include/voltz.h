@@ -73,14 +73,19 @@ extern "C" NUM(*vz_char_unbox)(id obj);
 extern "C" SEL(*vz_getSel)(const char* value);
 
 /** Get an object's instance variable that is stored for @c name.
+ * 
+ *  Don't use this except in the setter and getter methods for this class, as 
+ *  this can mess up the internal state of an object.
  *
  */
 extern "C" id(*vz_object_ivarForName)(const char* name);
 
 /** Set an object's instance variable for @c name, to @c value.
  *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
  */
-extern "C" id(*vz_object_setIvarForName)(const char* name, id value);
+extern "C" void(*vz_object_setIvarForName)(const char* name, id value);
 
 /** Get the type of an object.
  *
