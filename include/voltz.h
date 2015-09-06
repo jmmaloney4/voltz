@@ -78,14 +78,14 @@ extern "C" SEL(*vz_getSel)(const char* value);
  *  this can mess up the internal state of an object.
  *
  */
-extern "C" id(*vz_object_ivarForName)(const char* name);
+extern "C" id(*vz_object_getIvar)(const char* name);
 
 /** Set an object's instance variable for @c name, to @c value.
  *
  *  Don't use this except in the setter and getter methods for this class, as
  *  this can mess up the internal state of an object.
  */
-extern "C" void(*vz_object_setIvarForName)(const char* name, id value);
+extern "C" void(*vz_object_setIvar)(const char* name, id value);
 
 /** Get the type of an object.
  *
@@ -94,6 +94,20 @@ extern "C" void(*vz_object_setIvarForName)(const char* name, id value);
  */
 extern "C" id(*vz_object_getType)(id obj);
 
+/** Gets the global variable for the given name.
+ *
+ */
+extern "C" id(*vz_global_get)(const char* name);
+
+/** Sets the global variable for the given name.
+ *
+ */
+extern "C" void(*vz_global_set)(const char* name, id value);
+
+/** Implemented by the linker to load modules for an executable.
+ *
+ */
+extern "C" void(*vz_linker_entry)(id argc, id argv);
 
 extern "C" id(*vz_msg_send)(id target, const char* sel, NUM argc, ...);
 extern "C" id(*vz_msg_send_s)(id target, SEL sel, NUM argc, ...);
