@@ -67,3 +67,15 @@ SEL vz_getSelI(const char* value) {
 }
 
 SEL (*vz_getSel)(const char*) = vz_getSelI;
+
+id vz_sel_boxI(SEL sel) {
+    id selcls = vz_class_get("std::Selector");
+    id rv = vz_msg_send(selcls, "Alloc()", 0);
+    rv = vz_msg_send(rv, "Init()", 0);
+    
+    vz_object_setIvar(rv, "value", (id) sel);
+    
+    return rv;
+}
+
+id (*vz_sel_box)(SEL) = vz_sel_boxI;

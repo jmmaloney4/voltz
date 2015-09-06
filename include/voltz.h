@@ -9,7 +9,7 @@
 #include <functional>
 #include <cstddef>
 
-#define VOLTZ_FN (id self, SEL cmd, NUM argc, id* argv) -> id
+#define vz_def (id self, SEL cmd, NUM argc, id* argv) -> id
 
 const std::nullptr_t nil = NULL;
 
@@ -48,6 +48,10 @@ extern "C" id(*vz_string_box)(const char* value);
  */
 extern "C" id(*vz_char_box)(NUM value);
 
+/** Box a SEL into a object of type Selector.
+ *
+ */
+extern "C" id(*vz_sel_box)(SEL value);
 
 /** Unbox an object of type Number into a NUM.
  *
@@ -67,6 +71,11 @@ extern "C" const char*(*vz_string_unbox)(id obj);
  */
 extern "C" NUM(*vz_char_unbox)(id obj);
 
+/** Unbox an object of type Selector into a SEL.
+ *
+ */
+extern "C" SEL(*vz_sel_unbox)(id obj);
+
 /** Returns a SEL representing @c value.
  *
  */
@@ -78,14 +87,29 @@ extern "C" SEL(*vz_getSel)(const char* value);
  *  this can mess up the internal state of an object.
  *
  */
-extern "C" id(*vz_object_getIvar)(const char* name);
+extern "C" id(*vz_object_getIvar)(id obj, const char* name);
+
+/** Get an object's instance variable that is stored for @c name.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ *
+ */
+extern "C" id(*vz_object_getIvar_s)(id obj, SEL name);
 
 /** Set an object's instance variable for @c name, to @c value.
  *
  *  Don't use this except in the setter and getter methods for this class, as
  *  this can mess up the internal state of an object.
  */
-extern "C" void(*vz_object_setIvar)(const char* name, id value);
+extern "C" void(*vz_object_setIvar)(id obj, const char* name, id value);
+
+/** Set an object's instance variable for @c name, to @c value.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ */
+extern "C" void(*vz_object_setIvar_s)(id obj, SEL name, id value);
 
 /** Get the type of an object.
  *
@@ -103,6 +127,16 @@ extern "C" id(*vz_global_get)(const char* name);
  *
  */
 extern "C" void(*vz_global_set)(const char* name, id value);
+
+/** Lookup a class by name.
+ *
+ */
+extern "C" id(*vz_class_get)(const char* name);
+
+/** Register a class to a name.
+ *
+ */
+extern "C" void(*vz_class_set)(const char* name, id cls);
 
 /** Implemented by the linker to load modules for an executable.
  *
