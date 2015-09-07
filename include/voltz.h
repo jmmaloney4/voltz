@@ -9,69 +9,194 @@
 #include <functional>
 #include <cstddef>
 
-#define VOLTZ_FN (voltz::Object self, voltz::Selector cmd, int64_t argc, Object* argv) -> voltz::Object
+#define VZ_MAJOR_VERSION 0
+#define VZ_MINOR_VERSION 0
+#define VZ_PATCH_VERSION 1
 
-namespace voltz {
+#define vz_def(func) new std::function<id(id, SEL, NUM, id*)>([] (id self,    \
+        SEL cmd, NUM argc, id* argv) -> id {func})
 
-    const std::nullptr_t nil = NULL;
+#define vz_def_capture(list, func) new std::function<id(id, SEL, NUM, id*)>([list] (id self,    \
+SEL cmd, NUM argc, id* argv) -> id {func})
 
-    extern int Cargc;
-    extern const char** Cargv;
+const std::nullptr_t nil = NULL;
 
-    typedef struct voltz_object* Object;
-    typedef struct voltz_class* Class;
-    typedef struct voltz_protocol* Protocol;
-    typedef struct voltz_selector* Selector;
-    typedef struct voltz_imp* Imp;
-    typedef struct voltz_int* Int;
-    typedef struct voltz_float* Float;
-    typedef struct voltz_char* Char;
-    typedef struct voltz_string* String;
-    typedef struct voltz_array* Array;
-    typedef struct voltz_bool* Bool;
-    typedef struct voltz_method* Method;
+extern int C_argc;
+extern const char** C_argv;
 
-    typedef std::function<Object(Object, Selector, int64_t, Object*)> FuncPtr;
+typedef struct vz_object* id;
+typedef struct vz_sel* SEL;
+typedef double NUM;
+typedef std::function<id(id, SEL, NUM, id*)>* IMP;
 
-    // Implemented by the linker in executables, loads the linked modules, and enters the code.
-    void VoltzLinkerEntry(Int argc, Array argv);
-
-    extern Int (*BoxInt)(int64_t value);
-    extern Float (*BoxFloat)(double value);
-    extern Char (*BoxChar)(int64_t value);
-    // str is not kept after the invocation of this function
-    extern String (*BoxString)(const char* value);
-    // value is copied, and does not need to be kept after this function is called
-    extern Array (*BoxArray)(int64_t count, Object* value);
-    extern Imp (*BoxImp)(FuncPtr value);
-
-    extern int64_t (*UnboxInt)(Int value);
-    extern double (*UnboxFloat)(Float value);
-    extern int64_t (*UnboxChar)(Char value);
-    // the return value needs to be freed after this function is called.
-    extern char* (*UnboxString)(String value);
-    extern FuncPtr (*UnboxImp)(Imp value);
-
-    // These should get turned off in Phase 2
-    extern void (*Release)(Object obj);
-    extern Object (*Retain)(Object obj);
-
-    extern Selector (*GetSelector)(const char* value);
+/* Class
+ * - super
+ * - name
+ * - ivars (for this class only)
+ * - ivarn
+ * - protocolc
+ * - protocolv
+ * - mthdc
+ * - mthdv
+ */
 
 
-    extern void (*RegisterObject)(Object obj, const char* name);
-    extern Object (*GetRegisteredObject)(const char* name);
+/** Box a NUM into an object of type Number.
+ *
+ */
+extern "C" id(*vz_num_box)(NUM value);
 
-    extern Class (*GetIsa)(Object obj);
-    extern Int (*GetRefs)(Object obj);
-    extern Int (*GetWeaks)(Object obj);
+/** Box a const char* into an object of type String.
+ *
+ */
+extern "C" id(*vz_string_box)(const char* value);
 
-    extern Class (*GetSuper)(Class cls);
-    extern String (*GetClassName)(Class cls);
+/** Box a NUM (representing a Unicode Code Point) into an object of type Char.
+ *
+ */
+extern "C" id(*vz_char_box)(NUM value);
 
-    extern String (*GetProtocolName)(Protocol prt);
+/** Box a SEL into a object of type Selector.
+ *
+ */
+extern "C" id(*vz_sel_box)(SEL value);
 
-    extern Object (*SendMsg)(Object target, Selector sel, int64_t argc, ...);
-    extern Object (*SendMsgVA)(Object target, Selector sel, int64_t argc, va_list ap);
+/** Box an IMP into a object of type Imp.
+ *
+ */
+extern "C" id(*vz_imp_box)(IMP value);
 
-}
+/** Unbox an object of type Number into a NUM.
+ *
+ */
+extern "C" NUM(*vz_num_unbox)(id obj);
+
+/** Unbox an object of type String into a const char*.
+ *
+ *  The return value of this function must be freed after use.
+ *
+ */
+extern "C" const char*(*vz_string_unbox)(id obj);
+
+/** Unbox an object of type Char into NUM representing the Unicode Code
+ *  Point for that character.
+ *
+ */
+extern "C" NUM(*vz_char_unbox)(id obj);
+
+/** Unbox an object of type Selector into a SEL.
+ *
+ */
+extern "C" SEL(*vz_sel_unbox)(id obj);
+
+/** Unbox an object of type Imp into a IMP.
+ *
+ */
+extern "C" IMP(*vz_imp_unbox)(id obj);
+
+/** Returns a SEL representing @c value.
+ *
+ */
+extern "C" SEL(*vz_sel_get)(const char* value);
+
+/** Get an object's instance variable that is stored for @c name.
+ * 
+ *  Don't use this except in the setter and getter methods for this class, as 
+ *  this can mess up the internal state of an object.
+ *
+ */
+extern "C" id(*vz_object_getIvar)(id obj, const char* name);
+
+/** Get an object's instance variable that is stored for @c name.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ *
+ */
+extern "C" id(*vz_object_getIvar_s)(id obj, SEL name);
+
+/** Set an object's instance variable for @c name, to @c value.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ */
+extern "C" void(*vz_object_setIvar)(id obj, const char* name, id value);
+
+/** Set an object's instance variable for @c name, to @c value.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ */
+extern "C" void(*vz_object_setIvar_s)(id obj, SEL name, id value);
+
+/** Get the type of an object.
+ *
+ *  Returns nil if @c obj is nil.
+ *
+ */
+extern "C" id(*vz_object_getType)(id obj);
+
+/** Gets the global variable for the given name.
+ *
+ */
+extern "C" id(*vz_global_get)(const char* name);
+
+/** Sets the global variable for the given name.
+ *
+ */
+extern "C" void(*vz_global_set)(const char* name, id value);
+
+/** Lookup a class by name.
+ *
+ */
+extern "C" id(*vz_class_get)(const char* name);
+
+/** Register a class to a name.
+ *
+ */
+extern "C" void(*vz_class_register)(const char* name, id cls);
+
+/** Get a class' superclass.
+ *
+ */
+extern "C" id(*vz_class_super)(id cls);
+
+/** Get a class' name. Must be freed after use.
+ *
+ */
+extern "C" const char* (*vz_class_name)(id cls);
+
+/** Get the number of methods a class implements.
+ *
+ */
+extern "C" NUM (*vz_class_mthdc)(id cls);
+
+/** Get the number of instance variables a class defines.
+ *
+ */
+extern "C" NUM (*vz_class_ivarc)(id cls);
+
+/** Get the names of the class' instance variables. This is the actual array 
+ *  used in the class, do NOT modify it and do NOT free it.
+ *
+ */
+extern "C" const SEL* (*vz_class_ivarn)(id cls);
+
+/** Implemented by the linker to load modules for an executable.
+ *
+ */
+extern "C" void vz_linker_entry(id argc, id argv);
+
+extern "C" id(*vz_msg_send)(id target, const char* sel, NUM argc, ...);
+extern "C" id(*vz_msg_send_v)(id target, const char* sel, NUM argc, va_list ap);
+extern "C" id(*vz_msg_send_a)(id target, const char* sel, NUM argc, id* args);
+extern "C" id(*vz_msg_send_s)(id target, SEL sel, NUM argc, ...);
+extern "C" id(*vz_msg_send_sv)(id target, SEL sel, NUM argc, va_list ap);
+extern "C" id(*vz_msg_send_sa)(id target, SEL sel, NUM argc, id* args);
+
+extern "C" id(*vz_msg_send_super)(id target, const char* sel, NUM argc, ...);
+extern "C" id(*vz_msg_send_super_v)(id target, const char* sel, NUM argc, va_list ap);
+extern "C" id(*vz_msg_send_super_a)(id target, const char* sel, NUM argc, id* args);
+extern "C" id(*vz_msg_send_super_s)(id target, SEL sel, NUM argc, ...);
+extern "C" id(*vz_msg_send_super_sv)(id target, SEL sel, NUM argc, va_list ap);
+extern "C" id(*vz_msg_send_super_sa)(id target, SEL sel, NUM argc, id* args);

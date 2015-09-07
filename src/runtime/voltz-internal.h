@@ -6,98 +6,33 @@
 
 #include <voltz.h>
 
-namespace voltz {
-
-    extern Int InternedInts[0x20 + 0xff];
-
-    int64_t HashString(const char* s);
-
-    extern Class StringClass;
-    extern Class ArrayClass;
-    extern Class IntClass;
-    extern Class SelectorClass;
-    extern Class ImpClass;
-
-    extern Selector AllocSel;
-    extern Selector InitSel;
-    //extern Selector ArrayOpSel;
-
-    void AddSelector(Selector sel);
-
-    void IntPhase2();
-    void ReleaseRetainPhase2();
-    void SelectorPhase2();
-    void RegistryPhase2();
-    void StringPhase2();
-    
-    void InitializeObjectClass();
-    
-
-struct voltz_object {
-    Class isa;
-    int64_t refs;
-    int64_t weaks;
-    Object ivars[0];
+union vz_ivar {
+    id obj;
+    SEL sel;
+    NUM num;
+    IMP imp;
+    const char* str;
+    id* arr;
+    SEL* sarr;
 };
 
-struct voltz_class : public voltz_object {
-    Class super;
-    const char* name;
-    int64_t ivars; // Just for this class, need to sum all the way up for Allocate():std::Object
-    const char** ivarn;
-    Class* ivart;
-    Array prots;
-    Array mthds;
+struct vz_object {
+    id isa;
+    NUM refs;
+    NUM weaks;
+    vz_ivar ivars[0];
 };
 
-struct voltz_protocol : public voltz_object {
-    String name;
-    Array prots;
-    Array sels;
-};
-
-struct voltz_selector : public voltz_object {
+struct vz_sel {
     const char* value;
 };
 
-struct voltz_imp : public voltz_object {
-    FuncPtr value;
-};
+extern "C" void vz_bootstrap_runtime(int argc, const char** argv);
 
-struct voltz_int : public voltz_object {
-    int64_t value;
-};
+extern "C" id vz_object_alloc(NUM ivars);
 
-struct voltz_float : public voltz_object {
-    double value;
-};
+extern "C" NUM vz_string_hash(const char* s);
 
-struct voltz_char : public voltz_object {
-    int64_t value;
-};
-
-struct voltz_string : public voltz_object {
-    int64_t length;
-    const char* value;
-};
-
-struct voltz_array : public voltz_object {
-    int64_t count;
-    Object* value;
-};
-
-struct voltz_bool : public voltz_object {
-    int64_t value;
-};
-
-struct voltz_method : public voltz_object {
-    Selector sel;
-    Imp imp;
-};
-
-struct voltz_enum : public voltz_object {
-    int64_t size;
-    Object* values;
-};
-
-}
+extern "C" void vz_number_init();
+extern "C" void vz_string_init();
+extern "C" void vz_io_init();

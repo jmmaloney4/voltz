@@ -5,53 +5,27 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
-#include <stdlib.h>
-#include <string.h>
 
-using namespace voltz;
-
-String BoxStringPhase1(const char* str) {
-    String rv = (String) malloc(sizeof(struct voltz_string));
-    rv->isa = StringClass;
-    rv->refs = 1;
-    rv->weaks = 0;
-    rv->value = strdup(str);
-    rv->length = strlen(str);
-    
+id vz_string_boxI(const char* value) {
+    id strcls = vz_class_get("std::String");
+    id rv = vz_msg_send(strcls, "Alloc", 0);
+    rv = vz_msg_send(rv, "Init", 0);
+    rv->ivars[0].str = strdup(value);
+    rv->ivars[1].num = strlen(value);
     return rv;
 }
 
-String BoxStringPhase2(const char* str) {
-    Selector alloc = GetSelector("Alloc()");
-    Selector init = GetSelector("Init()");
-    Selector release = GetSelector("release()");
-    
-    Class stringClass = (Class) GetRegisteredObject("std::String");
-    
-    String rv = (String) SendMsg(stringClass, alloc, 0);
-    rv = (String) SendMsg(rv, init, 0);
-    rv->value = strdup(str);
-    rv->length = strlen(str);
-    
-    SendMsg(alloc, release, 0);
-    SendMsg(init, release, 0);
-    SendMsg(stringClass, release, 0);
-    SendMsg(release, release, 0);
-    
-    return rv;
-}
+id(*vz_string_box)(const char*) = vz_string_boxI;
 
-String (*voltz::BoxString)(const char*) = BoxStringPhase1;
-
-void voltz::StringPhase2() {
-    BoxString = BoxStringPhase2;
-}
-
-char* UnboxStringPhase1(String value) {
-    if (!value) {
+const char* vz_string_unboxI(id obj) {
+    if (obj == nil) {
         return nullptr;
     }
-    return strdup(value->value);
+    return strdup(obj->ivars[0].str);
 }
 
-char* (*voltz::UnboxString)(String) = UnboxStringPhase1;
+const char*(*vz_string_unbox)(id) = vz_string_unboxI;
+
+void vz_string_init() {
+    
+}

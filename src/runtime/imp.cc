@@ -5,23 +5,21 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
-#include <stdlib.h>
 
-using namespace voltz;
-
-Imp BoxImpPhase1(FuncPtr ptr) {
-    Imp rv = (Imp) malloc(sizeof(struct voltz_imp));
-    rv->isa = ImpClass;
-    rv->refs = 1;
-    rv->weaks = 0;
-    rv->value = ptr;
+id vz_imp_boxI(IMP imp) {
+    id impcls = vz_class_get("std::Imp");
+    id rv = vz_msg_send(impcls, "Alloc", 0);
+    rv = vz_msg_send(rv, "Init", 0);
+    
+    rv->ivars[0].imp = imp;
+    
     return rv;
 }
 
-Imp (*voltz::BoxImp)(FuncPtr) = BoxImpPhase1;
+id (*vz_imp_box)(IMP) = vz_imp_boxI;
 
-FuncPtr UnboxImpPhase1(Imp imp) {
-    return imp->value;
+IMP vz_imp_unboxI(id obj) {
+    return obj->ivars[0].imp;
 }
 
-FuncPtr (*voltz::UnboxImp)(Imp) = UnboxImpPhase1;
+IMP (*vz_imp_unbox)(id) = vz_imp_unboxI;
