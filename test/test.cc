@@ -7,11 +7,38 @@
 #include <voltz.h>
 #include <gtest/gtest.h>
 
-TEST(voltz, getsel) {
+void vz_linker_entry(id, id) {
+    ::testing::InitGoogleTest(&C_argc, (char**) C_argv);
+    int rv = RUN_ALL_TESTS();
+    if (rv != 0) {
+        abort();
+    }
+}
+
+TEST(voltz, SelectorIntegrity) {
     
-    SEL sel = vz_getSel("TestSelector(::)");
-    SEL sel2 = vz_getSel("TestSelector(::)");
+    SEL sel = vz_sel_get("TestSelector::");
+    SEL sel2 = vz_sel_get("TestSelector::");
     
     EXPECT_EQ(sel, sel2);
+    
+    sel = vz_sel_get("AnotherSelector::");
+    sel2 = vz_sel_get("AnotherSelector::");
+    
+    EXPECT_EQ(sel, sel2);
+    
+    sel = vz_sel_get("_!@#");
+    sel2 = vz_sel_get("_!@#");
+    
+    EXPECT_EQ(sel, sel2);
+    
+}
+
+TEST(voltz, test) {
+    id objcls = vz_class_get("std::Object");
+    id cls = vz_msg_send(objcls, "Subclass", 0);
+}
+
+TEST(voltz, HelloWorld) {
     
 }

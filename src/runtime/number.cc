@@ -8,8 +8,8 @@
 
 id vz_num_boxI(NUM value) {
     id numcls = vz_class_get("std::Number");
-    id rv = vz_msg_send(numcls, "Alloc()", 0);
-    rv = vz_msg_send(rv, "Init()", 0);
+    id rv = vz_msg_send(numcls, "Alloc", 0);
+    rv = vz_msg_send(rv, "Init", 0);
     
     rv->ivars[0].num = value;
     
@@ -17,3 +17,11 @@ id vz_num_boxI(NUM value) {
 }
 
 id(*vz_num_box)(NUM) = vz_num_boxI;
+
+void vz_number_init() {
+    
+    id objcls = vz_class_get("std::Object");
+    
+    id numcls = vz_msg_send(objcls, "Subclass", 0);
+    
+}

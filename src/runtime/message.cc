@@ -17,17 +17,17 @@ extern "C" id(*vz_msg_send_super_sa)(id target, SEL sel, NUM argc, id* args);
 id vz_msg_sendI(id target, const char* sel, NUM argc, ...) {
     va_list ap;
     va_start(ap, argc);
-    id rv = vz_msg_send_sv(target, vz_getSel(sel), argc, ap);
+    id rv = vz_msg_send_sv(target, vz_sel_get(sel), argc, ap);
     va_end(ap);
     return rv;
 }
 
 id vz_msg_send_vI(id target, const char* sel, NUM argc, va_list ap) {
-    return vz_msg_send_sv(target, vz_getSel(sel), argc, ap);
+    return vz_msg_send_sv(target, vz_sel_get(sel), argc, ap);
 }
 
 id vz_msg_send_aI(id target, const char* sel, NUM argc, id* args) {
-    return vz_msg_send_sa(target, vz_getSel(sel), argc, args);
+    return vz_msg_send_sa(target, vz_sel_get(sel), argc, args);
 }
 
 id vz_msg_send_sI(id target, SEL sel, NUM argc, ...) {
@@ -54,8 +54,8 @@ id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
     
     for (id c = target->isa; c != nil; c = vz_class_super(c)) {
         for (NUM k = 0; k < vz_class_mthdc(c); k++) {
-            if ((SEL) vz_object_getIvar(c->ivars[7].arr[(int64_t)k], "sel") == sel) {
-                return c->ivars[7].arr[(int64_t)k]->ivars[1].imp(target, sel, argc, args);
+            if (c->ivars[7].arr[(int64_t)k]->ivars[0].sel == sel) {
+                return c->ivars[7].arr[(int64_t)k]->ivars[1].imp->operator()(target, sel, argc, args);
             }
         }
     }

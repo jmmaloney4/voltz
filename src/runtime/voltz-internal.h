@@ -28,6 +28,9 @@ struct vz_sel {
 };
 
 extern "C" void vz_bootstrap_runtime(int argc, const char** argv);
+
 extern "C" id vz_object_alloc(NUM ivars);
 
 extern "C" NUM vz_string_hash(const char* s);
+
+extern "C" void vz_number_init();

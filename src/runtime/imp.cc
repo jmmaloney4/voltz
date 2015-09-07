@@ -8,8 +8,8 @@
 
 id vz_imp_boxI(IMP imp) {
     id impcls = vz_class_get("std::Imp");
-    id rv = vz_msg_send(impcls, "Alloc()", 0);
-    rv = vz_msg_send(rv, "Init()", 0);
+    id rv = vz_msg_send(impcls, "Alloc", 0);
+    rv = vz_msg_send(rv, "Init", 0);
     
     rv->ivars[0].imp = imp;
     

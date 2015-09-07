@@ -37,7 +37,7 @@ NUM vz_string_hash(const char* s) {
     return (NUM) hash;
 }
 
-SEL vz_getSelI(const char* value) {
+SEL vz_sel_getI(const char* value) {
     NUM hash = vz_string_hash(value);
     hash = fmod(hash, vz_selTable_size);
     if (hash < 0) {
@@ -49,6 +49,7 @@ SEL vz_getSelI(const char* value) {
     for(struct vz_selTable_entry* entry = vz_selTable[(int64_t) hash];
             entry != NULL; entry = entry->next) {
         if (strcmp(entry->sel->value, value) == 0) {
+            vz_selTable_mutex.unlock();
             return entry->sel;
         }
     }
@@ -66,12 +67,12 @@ SEL vz_getSelI(const char* value) {
     return rv;
 }
 
-SEL (*vz_getSel)(const char*) = vz_getSelI;
+SEL (*vz_sel_get)(const char*) = vz_sel_getI;
 
 id vz_sel_boxI(SEL sel) {
     id selcls = vz_class_get("std::Selector");
-    id rv = vz_msg_send(selcls, "Alloc()", 0);
-    rv = vz_msg_send(rv, "Init()", 0);
+    id rv = vz_msg_send(selcls, "Alloc", 0);
+    rv = vz_msg_send(rv, "Init", 0);
     
     vz_object_setIvar(rv, "value", (id) sel);
     

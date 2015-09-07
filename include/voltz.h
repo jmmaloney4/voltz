@@ -9,7 +9,15 @@
 #include <functional>
 #include <cstddef>
 
-#define vz_def (id self, SEL cmd, NUM argc, id* argv) -> id
+#define VZ_MAJOR_VERSION 0
+#define VZ_MINOR_VERSION 0
+#define VZ_PATCH_VERSION 1
+
+#define vz_def(func) new std::function<id(id, SEL, NUM, id*)>([] (id self,    \
+        SEL cmd, NUM argc, id* argv) -> id {func})
+
+#define vz_def_capture(list, func) new std::function<id(id, SEL, NUM, id*)>([list] (id self,    \
+SEL cmd, NUM argc, id* argv) -> id {func})
 
 const std::nullptr_t nil = NULL;
 
@@ -19,7 +27,7 @@ extern const char** C_argv;
 typedef struct vz_object* id;
 typedef struct vz_sel* SEL;
 typedef double NUM;
-typedef std::function<id(id, SEL, NUM, id*)> IMP;
+typedef std::function<id(id, SEL, NUM, id*)>* IMP;
 
 /* Class
  * - super
@@ -89,7 +97,7 @@ extern "C" IMP(*vz_imp_unbox)(id obj);
 /** Returns a SEL representing @c value.
  *
  */
-extern "C" SEL(*vz_getSel)(const char* value);
+extern "C" SEL(*vz_sel_get)(const char* value);
 
 /** Get an object's instance variable that is stored for @c name.
  * 
@@ -153,7 +161,7 @@ extern "C" void(*vz_class_register)(const char* name, id cls);
  */
 extern "C" id(*vz_class_super)(id cls);
 
-/** Get a class' name.
+/** Get a class' name. Must be freed after use.
  *
  */
 extern "C" const char* (*vz_class_name)(id cls);
@@ -163,10 +171,21 @@ extern "C" const char* (*vz_class_name)(id cls);
  */
 extern "C" NUM (*vz_class_mthdc)(id cls);
 
+/** Get the number of instance variables a class defines.
+ *
+ */
+extern "C" NUM (*vz_class_ivarc)(id cls);
+
+/** Get the names of the class' instance variables. This is the actual array 
+ *  used in the class, do NOT modify it and do NOT free it.
+ *
+ */
+extern "C" const SEL* (*vz_class_ivarn)(id cls);
+
 /** Implemented by the linker to load modules for an executable.
  *
  */
-extern "C" void(*vz_linker_entry)(id argc, id argv);
+extern "C" void vz_linker_entry(id argc, id argv);
 
 extern "C" id(*vz_msg_send)(id target, const char* sel, NUM argc, ...);
 extern "C" id(*vz_msg_send_v)(id target, const char* sel, NUM argc, va_list ap);
