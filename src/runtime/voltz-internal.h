@@ -35,4 +35,5 @@ extern "C" NUM vz_string_hash(const char* s);
 
 extern "C" void vz_number_init();
 extern "C" void vz_string_init();
+extern "C" void vz_protocol_init();
 extern "C" void vz_io_init();

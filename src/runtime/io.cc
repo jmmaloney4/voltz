@@ -10,9 +10,14 @@
 
 void vz_io_init() {
     id objcls = vz_class_get("std::Object");
+    id protocolcls = vz_class_get("std::Protocol");
+    
+    
+    
     id name = vz_string_box("std::io::FileOutputStream");
+    id iname = vz_string_box("std::io::FileOutputStream.isa");
     id ivarc = vz_num_box(1);
-    id fileoutputstream = vz_msg_send(objcls, "Subclass::", 2, name, ivarc);
+    id fileoutputstream = vz_msg_send(objcls, "Subclass:::", 3, name, iname, ivarc);
     fileoutputstream->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * fileoutputstream->ivars[2].num);
     fileoutputstream->ivars[3].sarr[0] = vz_sel_get("file");
     

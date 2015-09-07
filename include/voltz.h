@@ -40,6 +40,14 @@ typedef std::function<id(id, SEL, NUM, id*)>* IMP;
  * - mthdv
  */
 
+/* Protocol
+ * - name
+ * - superc
+ * - superv
+ * - selc
+ * - selv
+ */
+
 
 /** Box a NUM into an object of type Number.
  *
