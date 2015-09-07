@@ -19,9 +19,8 @@ id vz_num_boxI(NUM value) {
 id(*vz_num_box)(NUM) = vz_num_boxI;
 
 void vz_number_init() {
-    
     id objcls = vz_class_get("std::Object");
-    
     id numcls = vz_msg_send(objcls, "Subclass", 0);
+    numcls->ivars[1].str = "std::Number";
     
 }

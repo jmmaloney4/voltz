@@ -263,7 +263,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         rv->isa->ivars[0].obj = self->isa;
         rv->refs = 1;
         rv->weaks = 0;
-        rv->ivars[0].obj = vz_msg_send(argv[0], "Retain", 0);
+        rv->ivars[0].obj = vz_msg_send(self, "Retain", 0);
         rv->ivars[2].num = 0;
         rv->ivars[4].num = 0;
         rv->ivars[6].num = 0;
@@ -282,13 +282,13 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     
     id reg = vz_msg_send(mthdcls, "Alloc", 0);
     reg = vz_msg_send(reg, "Init", 0);
-    id sel = vz_sel_box(vz_sel_get("Register"));
-    id imp = vz_imp_box(vz_def({
+    id regsel = vz_sel_box(vz_sel_get("Register"));
+    id regimp = vz_imp_box(vz_def({
         vz_class_register(vz_class_name(self), self);
         return nil;
     }));
-    vz_msg_send(reg, "SetSel:", 1, sel);
-    vz_msg_send(reg, "SetImp:", 1, imp);
+    vz_msg_send(reg, "SetSel:", 1, regsel);
+    vz_msg_send(reg, "SetImp:", 1, regimp);
     vz_msg_send(clscls, "AddMethod:", 1, reg);
     
     vz_number_init();
