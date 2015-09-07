@@ -252,7 +252,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     // Subclass
     id subclass = vz_msg_send(mthdcls, "Alloc", 0);
     subclass = vz_msg_send(subclass, "Init", 0);
-    vz_object_setIvar(subclass, "sel", (id) vz_sel_get("Subclass"));
+    vz_object_setIvar(subclass, "sel", (id) vz_sel_get("Subclass::"));
     subclass->ivars[1].imp = vz_def({
         id clscls = vz_class_get("std::Class");
         id rv = vz_msg_send(clscls, "Alloc", 0);
@@ -264,21 +264,41 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         rv->refs = 1;
         rv->weaks = 0;
         rv->ivars[0].obj = vz_msg_send(self, "Retain", 0);
-        rv->ivars[2].num = 0;
+        rv->ivars[1].str = vz_string_unbox(argv[0]);
+        rv->ivars[2].num = vz_num_unbox(argv[1]);
         rv->ivars[4].num = 0;
         rv->ivars[6].num = 0;
         return rv;
     });
     vz_msg_send(clscls, "AddMethod:", 1, subclass);
     
+    // AddIvar
+    id addivar = vz_msg_send(mthdcls, "Alloc", 0);
+    addivar = vz_msg_send(addivar, "Init", 0);
+    vz_object_setIvar(addivar, "sel", (id) vz_sel_get("AddIvar:"));
+    addivar->ivars[1].imp = vz_def({
+        SEL* tmp = (SEL*) malloc(sizeof(SEL) * self->ivars[2].num + 1);
+        for (NUM k = 0; k < self->ivars[2].num; k++) {
+            tmp[(int64_t)k] = self->ivars[2].sarr[(int64_t)k];
+        }
+        
+        const char* s = vz_string_unbox(argv[0]);
+        tmp[(int64_t) self->ivars[2].num] = vz_sel_get(s);
+        free((void*) s);
+        
+        SEL* old = self->ivars[3].sarr;
+        self->ivars[3].sarr = tmp;
+        free(old);
+        
+        self->ivars[2].num += 1;
+    });
+    vz_msg_send(clscls, "AddMethod:", 1, addivar);
+    
     vz_class_register(objcls->ivars[1].str, objcls);
     vz_class_register(clscls->ivars[1].str, clscls);
     vz_class_register(mthdcls->ivars[1].str, mthdcls);
     vz_class_register(selcls->ivars[1].str, selcls);
     vz_class_register(impcls->ivars[1].str, impcls);
-    vz_class_register(mthdcls->isa->ivars[1].str, mthdcls);
-    vz_class_register(selcls->isa->ivars[1].str, selcls);
-    vz_class_register(impcls->isa->ivars[1].str, impcls);
     
     id reg = vz_msg_send(mthdcls, "Alloc", 0);
     reg = vz_msg_send(reg, "Init", 0);
@@ -291,6 +311,52 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_msg_send(reg, "SetImp:", 1, regimp);
     vz_msg_send(clscls, "AddMethod:", 1, reg);
     
-    vz_number_init();
     
+    id strcls = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
+    strcls->isa = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
+    strcls->ivars[0].obj = objcls;
+    strcls->isa->ivars[0].obj = clscls;
+    strcls->ivars[1].str = "std::String";
+    strcls->isa->ivars[1].str = "std::String.isa";
+    strcls->ivars[2].num = 2;
+    strcls->isa->ivars[2].num = 0;
+    strcls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * strcls->ivars[2].num);
+    strcls->ivars[3].sarr[0] = vz_sel_get("value");
+    strcls->ivars[3].sarr[1] = vz_sel_get("length");
+    strcls->isa->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * strcls->isa->ivars[2].num);
+    strcls->ivars[4].num = 0;
+    strcls->isa->ivars[4].num = 0;
+    strcls->ivars[5].arr = (id*) malloc(sizeof(id) * strcls->ivars[4].num);
+    strcls->isa->ivars[5].arr = (id*) malloc(sizeof(id) * strcls->isa->ivars[4].num);
+    strcls->ivars[6].num = 0;
+    strcls->isa->ivars[6].num = 0;
+    strcls->ivars[7].arr = (id*) malloc(sizeof(id) * strcls->ivars[4].num);
+    strcls->isa->ivars[7].arr = (id*) malloc(sizeof(id) * strcls->isa->ivars[4].num);
+    vz_class_register(strcls->ivars[1].str, strcls);
+    
+    id numcls = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
+    numcls->isa = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
+    numcls->ivars[0].obj = objcls;
+    numcls->isa->ivars[0].obj = clscls;
+    numcls->ivars[1].str = "std::Number";
+    numcls->isa->ivars[1].str = "std::Number.isa";
+    numcls->ivars[2].num = 1;
+    numcls->isa->ivars[2].num = 0;
+    numcls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * numcls->ivars[2].num);
+    numcls->ivars[3].sarr[0] = vz_sel_get("value");
+    numcls->isa->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * numcls->isa->ivars[2].num);
+    numcls->ivars[4].num = 0;
+    numcls->isa->ivars[4].num = 0;
+    numcls->ivars[5].arr = (id*) malloc(sizeof(id) * numcls->ivars[4].num);
+    numcls->isa->ivars[5].arr = (id*) malloc(sizeof(id) * numcls->isa->ivars[4].num);
+    numcls->ivars[6].num = 0;
+    numcls->isa->ivars[6].num = 0;
+    numcls->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->ivars[4].num);
+    numcls->isa->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->isa->ivars[4].num);
+    
+    vz_class_register(numcls->ivars[1].str, numcls);
+    
+    vz_number_init();
+    vz_string_init();
+    vz_io_init();
 }

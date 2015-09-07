@@ -5,6 +5,7 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
+#include <stdlib.h>
 
 id vz_num_boxI(NUM value) {
     id numcls = vz_class_get("std::Number");
@@ -18,9 +19,16 @@ id vz_num_boxI(NUM value) {
 
 id(*vz_num_box)(NUM) = vz_num_boxI;
 
+NUM vz_num_unboxI(id obj) {
+    if (obj == nil) {
+        return 0;
+    }
+    return obj->ivars[0].num;
+}
+
+NUM(*vz_num_unbox)(id) = vz_num_unboxI;
+
 void vz_number_init() {
-    id objcls = vz_class_get("std::Object");
-    id numcls = vz_msg_send(objcls, "Subclass", 0);
-    numcls->ivars[1].str = "std::Number";
+    id numcls = vz_class_get("std::Number");
     
 }

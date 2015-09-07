@@ -45,7 +45,6 @@ void vz_object_setIvar_sI(id obj, SEL name, id value) {
         for (NUM k = 0; k < vz_class_ivarc(c); k++) {
             if (vz_class_ivarn(c)[(int64_t)k] == name) {
                 obj->ivars[(int64_t)k].obj = value;
-                
             }
         }
     }

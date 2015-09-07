@@ -36,9 +36,15 @@ TEST(voltz, SelectorIntegrity) {
 
 TEST(voltz, test) {
     id objcls = vz_class_get("std::Object");
-    id cls = vz_msg_send(objcls, "Subclass", 0);
+    //id cls = vz_msg_send(objcls, "Subclass::", 0);
 }
 
 TEST(voltz, HelloWorld) {
+    id fos = vz_class_get("std::io::FileOutputStream");
+    id sout = vz_msg_send(fos, "Alloc", 0);
+    sout = vz_msg_send(sout, "Init", 0);
+    vz_object_setIvar(sout, "file", (id) stdout);
     
+    id str = vz_string_box("Hello, World!\n");
+    vz_msg_send(sout, "WriteString:", 1, str);
 }

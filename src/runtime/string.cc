@@ -25,3 +25,7 @@ const char* vz_string_unboxI(id obj) {
 }
 
 const char*(*vz_string_unbox)(id) = vz_string_unboxI;
+
+void vz_string_init() {
+    
+}
