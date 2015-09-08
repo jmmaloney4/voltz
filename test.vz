@@ -1,0 +1,23 @@
+import std.io;
+
+class Main < Object {
+    Main(argc, argv) {
+        io.stdout.WriteString("Hello, World!\n")
+    }
+}
+
+class Direction {
+    Init(degrees)
+}
+
+class Distance {
+    Init(miles)
+}
+
+protocol Vehicle {
+    Drive(direction, distance)
+}
+
+class Car < Object : Vehicle {
+    
+}
