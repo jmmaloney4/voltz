@@ -12,9 +12,41 @@ void vz_io_init() {
     id objcls = vz_class_get("std::Object");
     id protocolcls = vz_class_get("std::Protocol");
     
+    id outputstream = vz_msg_send(protocolcls, "Alloc", 0);
+    id name = vz_string_box("std::io::OutputStream");
+    id superc = vz_num_box(0);
+    outputstream = vz_msg_send(outputstream, "Init::", 2, name, superc);
+    id writesel = vz_sel_box(vz_sel_get("Write:"));
+    vz_msg_send(outputstream, "AddSelector:", 1, writesel);
+    vz_global_set(outputstream->ivars[0].str, outputstream);
     
+    vz_msg_send(name, "Release", 0);
+    vz_msg_send(superc, "Release", 0);
+    vz_msg_send(writesel, "Release", 0);
     
-    id name = vz_string_box("std::io::FileOutputStream");
+    id charoutputsream = vz_msg_send(protocolcls, "Alloc", 0);
+    name = vz_string_box("std::io::CharacterOutputStream");
+    superc = vz_num_box(1);
+    charoutputsream = vz_msg_send(charoutputsream, "Init::", 2, name, superc);
+    charoutputsream->ivars[2].arr[0] = vz_msg_send(outputstream, "Retain", 0);
+    id sel = vz_sel_box(vz_sel_get("Init:"));
+    vz_msg_send(charoutputsream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    sel = vz_sel_box(vz_sel_get("Write:"));
+    vz_msg_send(charoutputsream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    sel = vz_sel_box(vz_sel_get("Write::"));
+    vz_msg_send(charoutputsream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    sel = vz_sel_box(vz_sel_get("WriteString:"));
+    vz_msg_send(charoutputsream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    sel = vz_sel_box(vz_sel_get("WriteString::"));
+    vz_msg_send(charoutputsream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    vz_global_set(charoutputsream->ivars[0].str, charoutputsream);
+    
+    name = vz_string_box("std::io::FileOutputStream");
     id iname = vz_string_box("std::io::FileOutputStream.isa");
     id ivarc = vz_num_box(1);
     id fileoutputstream = vz_msg_send(objcls, "Subclass:::", 3, name, iname, ivarc);
@@ -27,7 +59,7 @@ void vz_io_init() {
     
     id writestr = vz_msg_send(mthdcls, "Alloc", 0);
     writestr = vz_msg_send(writestr, "Init", 0);
-    id sel = vz_sel_box(vz_sel_get("WriteString:"));
+    sel = vz_sel_box(vz_sel_get("WriteString:"));
     id imp = vz_imp_box(vz_def({
         FILE* f = (FILE*) vz_object_getIvar(self, "file");
         const char* str = vz_string_unbox(argv[0]);

@@ -61,6 +61,9 @@ void vz_protocol_init() {
         }
         return self;
     }));
+    vz_msg_send(init, "SetSel:", 1, sel);
+    vz_msg_send(init, "SetImp:", 1, imp);
+    vz_msg_send(protocol, "AddMethod:", 1, init);
     
     // Conforms?:
     /*

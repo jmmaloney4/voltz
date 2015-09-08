@@ -20,7 +20,7 @@ std::mutex vz_classTable_mutex;
 
 id vz_class_getI(const char* name) {
     NUM hash = vz_string_hash(name);
-    hash = fmod(hash, vz_classTable_size);
+    hash = (int64_t) fmod(hash, vz_classTable_size);
     if (hash < 0) {
         hash *= -1;
     }
