@@ -24,7 +24,7 @@ void vz_io_init() {
     vz_msg_send(writesel, "Release", 0);
     
     id charoutputsream = vz_msg_send(protocolcls, "Alloc", 0);
-    name = vz_string_box("std::io::CharacterOutputStream");
+    name = vz_string_box("std::io::CharOutputStream");
     superc = vz_num_box(1);
     charoutputsream = vz_msg_send(charoutputsream, "Init::", 2, name, superc);
     charoutputsream->ivars[2].arr[0] = vz_msg_send(outputstream, "Retain", 0);
@@ -46,7 +46,7 @@ void vz_io_init() {
     vz_class_register(charoutputsream->ivars[0].str, charoutputsream);
     
     id characterencoder = vz_msg_send(protocolcls, "Alloc", 0);
-    name = vz_string_box("std::io::CharacterEncoder");
+    name = vz_string_box("std::io::CharEncoder");
     superc = vz_num_box(0);
     characterencoder = vz_msg_send(characterencoder, "Init::", 2, name, superc);
     sel = vz_sel_box(vz_sel_get("Encode:"));
@@ -56,8 +56,8 @@ void vz_io_init() {
     
     id mthdcls = vz_class_get("std::Method");
     
-    name = vz_string_box("std::io::UTF8CharacterEncoder");
-    id iname = vz_string_box("std::io::UTF8CharacterEncoder.isa");
+    name = vz_string_box("std::io::UTF8CharEncoder");
+    id iname = vz_string_box("std::io::UTF8CharEncoder.isa");
     id ivarc = vz_num_box(0);
     id utf8charencoder = vz_msg_send(objcls, "Subclass:::", 3, name, iname, ivarc);
     vz_class_register(utf8charencoder->ivars[1].str, utf8charencoder);
@@ -70,6 +70,7 @@ void vz_io_init() {
     sel = vz_sel_box(vz_sel_get("Encode:"));
     id imp = vz_imp_box(vz_def({
         // Need bytes and arrays implemented
+        return nil;
     }));
     
     
