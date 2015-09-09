@@ -8,6 +8,7 @@
 #include <math.h>
 #include <mutex>
 #include <stdlib.h>
+#include <string.h>
 
 struct vz_classTable_entry {
     id cls;
