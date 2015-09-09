@@ -19,7 +19,6 @@ void vz_io_init() {
     id writesel = vz_sel_box(vz_sel_get("Write:"));
     vz_msg_send(outputstream, "AddSelector:", 1, writesel);
     vz_class_register(outputstream->ivars[0].str, outputstream);
-    
     vz_msg_send(name, "Release", 0);
     vz_msg_send(superc, "Release", 0);
     vz_msg_send(writesel, "Release", 0);
@@ -98,4 +97,6 @@ void vz_io_init() {
     vz_msg_send(writestr, "SetSel:", 1, sel);
     vz_msg_send(writestr, "SetImp:", 1, imp);
     vz_msg_send(fileoutputstream, "AddMethod:", 1, writestr);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
 }

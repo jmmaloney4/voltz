@@ -45,6 +45,8 @@ void vz_protocol_init() {
     vz_msg_send(addsel, "SetSel:", 1, sel);
     vz_msg_send(addsel, "SetImp:", 1, imp);
     vz_msg_send(protocol, "AddMethod:", 1, addsel);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
     
     // Init(name, superc)
     id init = vz_msg_send(mthdcls, "Alloc", 0);
@@ -64,6 +66,8 @@ void vz_protocol_init() {
     vz_msg_send(init, "SetSel:", 1, sel);
     vz_msg_send(init, "SetImp:", 1, imp);
     vz_msg_send(protocol, "AddMethod:", 1, init);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
     
     // Conforms?:
     /*

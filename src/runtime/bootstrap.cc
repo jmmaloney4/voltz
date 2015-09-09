@@ -107,7 +107,6 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     objcls->ivars[4].num = 0;
     clscls->ivars[4].num = 0;
     mthdcls->ivars[4].num = 0;
-    printf("%p\n", selcls->ivars[4].obj);
     selcls->ivars[4].num = 0;
     impcls->ivars[4].num = 0;
     
@@ -323,6 +322,8 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_msg_send(reg, "SetSel:", 1, regsel);
     vz_msg_send(reg, "SetImp:", 1, regimp);
     vz_msg_send(clscls, "AddMethod:", 1, reg);
+    vz_msg_send(regsel, "Release", 0);
+    vz_msg_send(regimp, "Release", 0);
     
     
     id strcls = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
@@ -366,7 +367,6 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     numcls->isa->ivars[6].num = 0;
     numcls->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->ivars[6].num);
     numcls->isa->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->isa->ivars[6].num);
-    
     vz_class_register(numcls->ivars[1].str, numcls);
     
     vz_protocol_init();
