@@ -6,6 +6,7 @@
 
 #include "voltz-internal.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 extern "C" id(*vz_msg_send_super)(id target, const char* sel, NUM argc, ...);
 extern "C" id(*vz_msg_send_super_v)(id target, const char* sel, NUM argc, va_list ap);
