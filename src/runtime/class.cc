@@ -31,7 +31,7 @@ id vz_class_getI(const char* name) {
     for(struct vz_classTable_entry* entry = vz_classTable[(int64_t) hash];
         entry != NULL; entry = entry->next) {
         if (strcmp(entry->cls->ivars[1].str, name) == 0) {
-            id rv = entry->cls;
+            id rv = vz_msg_send(entry->cls, "Retain", 0);
             vz_classTable_mutex.unlock();
             return rv;
         }
@@ -118,3 +118,32 @@ const SEL* vz_class_ivarnI(id cls) {
 }
 
 const SEL* (*vz_class_ivarn)(id) = vz_class_ivarnI;
+
+void vz_class_init() {
+    id clscls = vz_class_get("std::Class");
+    id mthdcls = vz_class_get("std::Method");
+    id addprotocol = vz_msg_send(mthdcls, "Alloc", 0);
+    id sel = vz_sel_box(vz_sel_get("AddProtocol:"));
+    id imp = vz_imp_box(vz_def({
+        id* tmp = (id*) malloc(sizeof(id) * (self->ivars[4].num + 1));
+        for (NUM k = 0; k < self->ivars[4].num; k++) {
+            tmp[(int64_t) k] = self->ivars[5].arr[(int64_t)k];
+        }
+        tmp[(int64_t) self->ivars[4].num] = vz_msg_send(argv[0], "Retain", 0);
+        
+        id* t = self->ivars[5].arr;
+        self->ivars[5].arr = tmp;
+        free(t);
+        
+        return nil;
+    }));
+    vz_msg_send(addprotocol, "SetSel:", 1, sel);
+    vz_msg_send(addprotocol, "SetImp:", 1, imp);
+    vz_msg_send(clscls, "AddMethod:", 1, addprotocol);
+    
+    vz_msg_send(clscls, "Release", 0);
+    vz_msg_send(mthdcls, "Release", 0);
+    vz_msg_send(addprotocol, "Release", 0);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(sel, "Release", 0);
+}

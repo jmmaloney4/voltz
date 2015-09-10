@@ -16,19 +16,26 @@ void vz_io_init() {
     id name = vz_string_box("std::io::OutputStream");
     id superc = vz_num_box(0);
     outputstream = vz_msg_send(outputstream, "Init::", 2, name, superc);
-    id writesel = vz_sel_box(vz_sel_get("Write:"));
-    vz_msg_send(outputstream, "AddSelector:", 1, writesel);
+    
+    id sel = vz_sel_box(vz_sel_get("Write:"));
+    vz_msg_send(outputstream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    
+    sel = vz_sel_box(vz_sel_get("Close"));
+    vz_msg_send(outputstream, "AddSelector:", 1, sel);
+    vz_msg_send(sel, "Release", 0);
+    
     vz_class_register(outputstream->ivars[0].str, outputstream);
     vz_msg_send(name, "Release", 0);
     vz_msg_send(superc, "Release", 0);
-    vz_msg_send(writesel, "Release", 0);
+    vz_msg_send(sel, "Release", 0);
     
     id charoutputsream = vz_msg_send(protocolcls, "Alloc", 0);
     name = vz_string_box("std::io::CharOutputStream");
     superc = vz_num_box(1);
     charoutputsream = vz_msg_send(charoutputsream, "Init::", 2, name, superc);
     charoutputsream->ivars[2].arr[0] = vz_msg_send(outputstream, "Retain", 0);
-    id sel = vz_sel_box(vz_sel_get("Init:"));
+    sel = vz_sel_box(vz_sel_get("Init:"));
     vz_msg_send(charoutputsream, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
     sel = vz_sel_box(vz_sel_get("Write:"));
@@ -100,4 +107,8 @@ void vz_io_init() {
     vz_msg_send(fileoutputstream, "AddMethod:", 1, writestr);
     vz_msg_send(sel, "Release", 0);
     vz_msg_send(imp, "Release", 0);
+    
+    
+    vz_msg_send(objcls, "Release", 0);
+    vz_msg_send(protocolcls, "Release", 0);
 }
