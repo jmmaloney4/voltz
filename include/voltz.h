@@ -74,6 +74,24 @@ extern "C" id(*vz_sel_box)(SEL value);
  */
 extern "C" id(*vz_imp_box)(IMP value);
 
+/** Box an array into an object of type Array.
+ *
+ *  Sets the generic type to Object.
+ */
+extern "C" id(*vz_array_box)(NUM count, ...);
+
+/** Box an array into an object of type Array.
+ * 
+ *  Sets the generic type to Object.
+ */
+extern "C" id(*vz_array_box_v)(NUM count, va_list ap);
+
+/** Box an array into an object of type Array.
+ *
+ *  Sets the generic type to Object.
+ */
+extern "C" id(*vz_array_box_a)(NUM count, id* value);
+
 /** Unbox an object of type Number into a NUM.
  *
  */

@@ -131,6 +131,8 @@ void vz_class_init() {
         }
         tmp[(int64_t) self->ivars[4].num] = vz_msg_send(argv[0], "Retain", 0);
         
+        self->ivars[4].num++;
+        
         id* t = self->ivars[5].arr;
         self->ivars[5].arr = tmp;
         free(t);
@@ -145,5 +147,5 @@ void vz_class_init() {
     vz_msg_send(mthdcls, "Release", 0);
     vz_msg_send(addprotocol, "Release", 0);
     vz_msg_send(sel, "Release", 0);
-    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
 }

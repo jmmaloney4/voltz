@@ -370,7 +370,9 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_class_register(numcls->ivars[1].str, numcls);
     
     vz_class_init();
+    
     vz_mthd_init();
+    vz_array_init();
     vz_protocol_init();
     vz_number_init();
     vz_string_init();
