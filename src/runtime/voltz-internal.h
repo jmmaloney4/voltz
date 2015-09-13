@@ -33,3 +33,4 @@ extern "C" id vz_object_alloc(NUM ivars);
 
 extern "C" NUM vz_string_hash(const char* s);
 
+extern "C" void vz_std_init();

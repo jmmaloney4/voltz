@@ -64,6 +64,11 @@ extern "C" id(*vz_string_box)(const char* value);
  */
 extern "C" id(*vz_char_box)(NUM value);
 
+/** Box a bool into an object of type Bool.
+ *
+ */
+extern "C" id(*vz_bool_box)(bool value);
+
 /** Box a SEL into a object of type Selector.
  *
  */
@@ -114,6 +119,11 @@ extern "C" const char*(*vz_string_unbox)(id obj);
  *
  */
 extern "C" NUM(*vz_char_unbox)(id obj);
+
+/** Unbox an object of type Bool.
+ *
+ */
+extern "C" bool(*vz_bool_unbox)(id obj);
 
 /** Unbox an object of type Selector into a SEL.
  *

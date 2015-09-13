@@ -19,5 +19,18 @@ protocol Vehicle {
 }
 
 class Car < Object : Vehicle {
-    
+
+}
+
+class Object {
+
+    Bool() {
+        return self == nil;
+    }
+
+    Copy() {
+        Object rv = self.Class().Alloc().Init();
+        
+    }
+
 }

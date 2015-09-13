@@ -34,9 +34,12 @@ TEST(voltz, SelectorIntegrity) {
     
 }
 
-TEST(voltz, test) {
-    id objcls = vz_class_get("std::Object");
-    //id cls = vz_msg_send(objcls, "Subclass::", 0);
+TEST(voltz, Bool) {
+    id boolcls = vz_class_get("std:Bool");
+    id t = vz_bool_box(true);
+    EXPECT_EQ(true, vz_bool_unbox(t));
+    id f = vz_bool_box(false);
+    EXPECT_EQ(false, vz_bool_unbox(f));
 }
 
 TEST(voltz, HelloWorld) {
