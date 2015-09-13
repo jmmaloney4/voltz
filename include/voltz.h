@@ -92,6 +92,11 @@ extern "C" id(*vz_array_box_v)(NUM count, va_list ap);
  */
 extern "C" id(*vz_array_box_a)(NUM count, id* value);
 
+/** Box objects into an object of type tuple.
+ *
+ */
+extern "C" id(*vz_tuple_box)(NUM count, ...);
+
 /** Unbox an object of type Number into a NUM.
  *
  */
@@ -119,6 +124,16 @@ extern "C" SEL(*vz_sel_unbox)(id obj);
  *
  */
 extern "C" IMP(*vz_imp_unbox)(id obj);
+
+/** Unbox an object of type Tuple.
+ *
+ *  @param count The number of pointers that get passed into @c ...
+ *  @param ... A set of id* that will get filled with the values in the tuple, pass @c nil 
+ *      to denote that that a value is unwanted.
+ *  
+ *  @return The number of objects in the tuple, regardless of @c count.
+ */
+extern "C" NUM vz_tuple_unbox(NUM count, ...);
 
 /** Returns a SEL representing @c value.
  *
