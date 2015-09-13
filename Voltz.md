@@ -21,9 +21,12 @@
 
 ## WriteStream
 - `Write(Data:std::Array[std::Byte]):std::Int`
+- `Flush()`
+- `Close()`
 
 ## ReadStream
 - `Read(Count:std::Int):std::Array[std::Byte]`
+- `Close()`
 
 ## CharacterEncoder
 - `Encode(Character:std::Character):std::Array[std::Byte]`

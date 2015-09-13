@@ -6,8 +6,8 @@
 
 #include <voltz.h>
 
-bool VoltzLoadModule() {
-
+void vz_linker_entry(id argc, id argv) {
     
-    return true;
+    
+    
 }

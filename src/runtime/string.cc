@@ -5,6 +5,7 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
+#include <string.h>
 
 id vz_string_boxI(const char* value) {
     id strcls = vz_class_get("std::String");

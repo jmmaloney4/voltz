@@ -39,7 +39,7 @@ NUM vz_string_hash(const char* s) {
 
 SEL vz_sel_getI(const char* value) {
     NUM hash = vz_string_hash(value);
-    hash = fmod(hash, vz_selTable_size);
+    hash = (int64_t) fmod(hash, vz_selTable_size);
     if (hash < 0) {
         hash *= -1;
     }

@@ -11,7 +11,7 @@
 
 #define VZ_MAJOR_VERSION 0
 #define VZ_MINOR_VERSION 0
-#define VZ_PATCH_VERSION 1
+#define VZ_PATCH_VERSION 2
 
 #define vz_def(func) new std::function<id(id, SEL, NUM, id*)>([] (id self,    \
         SEL cmd, NUM argc, id* argv) -> id {func})
@@ -40,6 +40,14 @@ typedef std::function<id(id, SEL, NUM, id*)>* IMP;
  * - mthdv
  */
 
+/* Protocol
+ * - name
+ * - superc
+ * - superv
+ * - selc
+ * - selv
+ */
+
 
 /** Box a NUM into an object of type Number.
  *
@@ -56,6 +64,11 @@ extern "C" id(*vz_string_box)(const char* value);
  */
 extern "C" id(*vz_char_box)(NUM value);
 
+/** Box a bool into an object of type Bool.
+ *
+ */
+extern "C" id(*vz_bool_box)(bool value);
+
 /** Box a SEL into a object of type Selector.
  *
  */
@@ -65,6 +78,29 @@ extern "C" id(*vz_sel_box)(SEL value);
  *
  */
 extern "C" id(*vz_imp_box)(IMP value);
+
+/** Box an array into an object of type Array.
+ *
+ *  Sets the generic type to Object.
+ */
+extern "C" id(*vz_array_box)(NUM count, ...);
+
+/** Box an array into an object of type Array.
+ * 
+ *  Sets the generic type to Object.
+ */
+extern "C" id(*vz_array_box_v)(NUM count, va_list ap);
+
+/** Box an array into an object of type Array.
+ *
+ *  Sets the generic type to Object.
+ */
+extern "C" id(*vz_array_box_a)(NUM count, id* value);
+
+/** Box objects into an object of type tuple.
+ *
+ */
+extern "C" id(*vz_tuple_box)(NUM count, ...);
 
 /** Unbox an object of type Number into a NUM.
  *
@@ -84,6 +120,11 @@ extern "C" const char*(*vz_string_unbox)(id obj);
  */
 extern "C" NUM(*vz_char_unbox)(id obj);
 
+/** Unbox an object of type Bool.
+ *
+ */
+extern "C" bool(*vz_bool_unbox)(id obj);
+
 /** Unbox an object of type Selector into a SEL.
  *
  */
@@ -93,6 +134,16 @@ extern "C" SEL(*vz_sel_unbox)(id obj);
  *
  */
 extern "C" IMP(*vz_imp_unbox)(id obj);
+
+/** Unbox an object of type Tuple.
+ *
+ *  @param count The number of pointers that get passed into @c ...
+ *  @param ... A set of id* that will get filled with the values in the tuple, pass @c nil 
+ *      to denote that that a value is unwanted.
+ *  
+ *  @return The number of objects in the tuple, regardless of @c count.
+ */
+extern "C" NUM vz_tuple_unbox(NUM count, ...);
 
 /** Returns a SEL representing @c value.
  *
