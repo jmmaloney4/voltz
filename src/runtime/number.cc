@@ -28,7 +28,3 @@ NUM vz_num_unboxI(id obj) {
 
 NUM(*vz_num_unbox)(id) = vz_num_unboxI;
 
-void vz_number_init() {
-    id numcls = vz_class_get("std::Number");
-    
-}

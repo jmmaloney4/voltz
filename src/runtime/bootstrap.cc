@@ -368,13 +368,4 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     numcls->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->ivars[6].num);
     numcls->isa->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->isa->ivars[6].num);
     vz_class_register(numcls->ivars[1].str, numcls);
-    
-    vz_class_init();
-    
-    vz_mthd_init();
-    vz_array_init();
-    vz_protocol_init();
-    vz_number_init();
-    vz_string_init();
-    vz_io_init();
 }
