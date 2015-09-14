@@ -11,7 +11,7 @@
 
 #define VZ_MAJOR_VERSION 0
 #define VZ_MINOR_VERSION 0
-#define VZ_PATCH_VERSION 3
+#define VZ_PATCH_VERSION 4
 
 #define vz_def(func) new std::function<id(id, SEL, NUM, id*)>([] (id self,    \
         SEL cmd, NUM argc, id* argv) -> id {func})
