@@ -12,6 +12,7 @@ add_library(voltz include/voltz.h src/runtime/voltz-internal.h src/runtime/voltz
 # add_library(std src/std/std.cc src/std/io.cc)
 
 add_executable(voltzc src/compiler/main.cc)
+target_link_libraries(voltzc voltz)
 
 if(test)
     add_subdirectory(lib/gtest)
