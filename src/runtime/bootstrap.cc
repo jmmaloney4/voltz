@@ -281,6 +281,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         return rv;
     });
     vz_msg_send(clscls, "AddMethod:", 1, subclass);
+    vz_msg_send(subclass, "Release", 0);
     
     // AddIvar
     id addivar = vz_msg_send(mthdcls, "Alloc", 0);
@@ -305,6 +306,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         return nil;
     });
     vz_msg_send(clscls, "AddMethod:", 1, addivar);
+    vz_msg_send(addivar, "Release", 0);
     
     vz_class_register(objcls->ivars[1].str, objcls);
     vz_class_register(clscls->ivars[1].str, clscls);
@@ -324,6 +326,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_msg_send(clscls, "AddMethod:", 1, reg);
     vz_msg_send(regsel, "Release", 0);
     vz_msg_send(regimp, "Release", 0);
+    vz_msg_send(reg, "Release", 0);
     
     
     id strcls = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);

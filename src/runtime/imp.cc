@@ -19,7 +19,8 @@ id vz_imp_boxI(IMP imp) {
 id (*vz_imp_box)(IMP) = vz_imp_boxI;
 
 IMP vz_imp_unboxI(id obj) {
-    return obj->ivars[0].imp;
+    IMP rv = new std::function<id(id, SEL, NUM, id*)>(*obj->ivars[0].imp);
+    return rv;
 }
 
 IMP (*vz_imp_unbox)(id) = vz_imp_unboxI;
