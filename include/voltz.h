@@ -44,8 +44,11 @@ typedef std::function<id(id, SEL, NUM, id*)>* IMP;
  * - name
  * - superc
  * - superv
- * - selc
- * - selv
+ * - iselc
+ * - iselv
+ * - cselc
+ * - cselv
+ *
  */
 
 
