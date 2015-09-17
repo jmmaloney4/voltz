@@ -1405,7 +1405,7 @@ void vz_std_init() {
     vz_msg_send(iterop, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     */
-    
+    /*
     // Map:
     sel = vz_sel_box(vz_sel_get("Map:"));
     vz_msg_send(iterop, "AddClassSelector:", 1, sel);
@@ -1420,6 +1420,7 @@ void vz_std_init() {
     sel = vz_sel_box(vz_sel_get("Reduce::"));
     vz_msg_send(iterop, "AddClassSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
+     */
     
 #pragma mark ContainerOperatorDelegate
     
