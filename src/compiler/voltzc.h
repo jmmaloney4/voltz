@@ -4,8 +4,21 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <voltz.h>
+#include <string>
 
-void vz_linker_entry(id argc, id argv) {
+namespace voltzc {
+    enum token {
+        NEWLINE,
+        TAB,
+        SPACE,
 
-}
+        OPEN_PAREN,
+        CLOSE_PAREN,
+        OPEN_BRACE,
+        CLOSE_BRACE,
+        OPEN_BRACKET,
+        CLOSE_BRACKET,
+        
+
+    }
+};

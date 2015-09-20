@@ -1,0 +1,38 @@
+module org.voltz.demo
+
+// Line Comment
+
+/*
+    Block Comment.
+    /*
+        Supports Nesting
+     */
+ */
+
+/// Line Doc Comment
+
+//! Line Doc Comment
+
+/**
+    Block Doc Comment
+    /**
+        Supports Nesting
+     */
+ */
+
+/*!
+    Block Doc Comment
+    /*!
+        Supports Nesting
+    */
+ */
+
+import std::os as os;
+import os::stdout as stdout;
+import std::String as String;
+
+func Main(String[] args) {
+    for k = 0; k < args.Count(); k++ {
+        stdout.WriteString(args[k].String());
+    }
+}
