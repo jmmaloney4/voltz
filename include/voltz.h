@@ -148,7 +148,13 @@ extern "C" IMP(*vz_imp_unbox)(id obj);
  *  
  *  @return The number of objects in the tuple, regardless of @c count.
  */
-extern "C" NUM vz_tuple_unbox(NUM count, ...);
+extern "C" NUM(*vz_tuple_unbox)(NUM count, ...);
+
+/** Unbox an object of type Array into an id*.
+ *
+ *  The return value of this function must be free'd after use.
+ */
+extern "C" id*(*vz_array_unbox)(id obj);
 
 /** Returns a SEL representing @c value.
  *

@@ -12,12 +12,12 @@ id booltrue = nil;
 id boolfalse = nil;
 
 void vz_std_init() {
-    
+
     id objcls = vz_class_get("std::Object");
     id mthdcls = vz_class_get("std::Method");
-    
+
 #pragma mark Bool
-    
+
     // std::Bool
     id name = vz_string_box("std::Bool");
     id iname = vz_string_box("std::Bool.isa");
@@ -26,20 +26,19 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     boolcls->ivars[3].sarr[0] = vz_sel_get("value");
-    
+
     vz_class_register("std::Bool", boolcls);
-    
+
     booltrue = vz_msg_send(boolcls, "Alloc", 0);
     booltrue = vz_msg_send(booltrue, "Init", 0);
     booltrue->ivars[0].num = 1;
-    
+
     boolfalse = vz_msg_send(boolcls, "Alloc", 0);
     boolfalse = vz_msg_send(boolfalse, "Init", 0);
     boolfalse->ivars[0].num = 0;
-    
-    
+
     // True()
     id mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -53,7 +52,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls->isa, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // False()
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -67,7 +66,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls->isa, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Bool
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -81,7 +80,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Copy
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -102,7 +101,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Init
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -117,7 +116,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // !
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -134,7 +133,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ==:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -155,7 +154,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // !=:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -176,7 +175,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // &&:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -192,7 +191,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ||:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -208,7 +207,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ^^:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -224,7 +223,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // String
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -238,13 +237,13 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     vz_msg_send(boolcls, "Release", 0);
-    
+
 #pragma mark Object
-    
+
     // Object
-    
+
     // Copy
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -264,7 +263,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // DeepCopy
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -281,7 +280,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // DeepCopy:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -293,14 +292,14 @@ void vz_std_init() {
             return vz_msg_send(self, "Retain", 0);
         }
         vz_msg_send(tmp0, "Release", 0);
-        
+
         if (self->isa->ivars[2].num == 0) {
             return vz_msg_send(self, "Copy", 0);
         }
-        
+
         id rv = vz_msg_send(self->isa, "Alloc", 0);
         rv = vz_msg_send(rv, "Init", 0);
-        
+
         id tmp1 = vz_num_box(1);
         id tmp2 = vz_msg_send(argv[0], "-:", 1, tmp1);
         vz_msg_send(tmp1, "Release", 0);
@@ -308,7 +307,7 @@ void vz_std_init() {
             rv->ivars[(int64_t) k].obj = vz_msg_send(self->ivars[(int64_t)k].obj, "DeepCopy:", 1, tmp2);
         }
         vz_msg_send(tmp2, "Release", 0);
-        
+
         return rv;
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
@@ -317,7 +316,23 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
+    // Description
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("Description"));
+    imp = vz_imp_box(vz_def({
+        char buf[100 + strlen(self->isa->ivars[1].str)];
+        sprintf(buf, "[%s:%p]", self->isa->ivars[1].str, self);
+        return vz_string_box(buf);
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+
     // Bool
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -331,7 +346,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // !
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -345,7 +360,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ===:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -359,7 +374,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ==:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -373,7 +388,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // !=:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -387,7 +402,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // <:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -401,7 +416,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // >:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -415,7 +430,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // <=:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -429,7 +444,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // >=:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -443,12 +458,12 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
 #pragma mark Class
-    
+
     // Class
     id cls = vz_class_get("std::Class");
-    
+
     // AddProtocol:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -459,13 +474,13 @@ void vz_std_init() {
             tmp[(int64_t) k] = self->ivars[5].arr[(int64_t)k];
         }
         tmp[(int64_t) self->ivars[4].num] = vz_msg_send(argv[0], "Retain", 0);
-        
+
         self->ivars[4].num++;
-        
+
         id* t = self->ivars[5].arr;
         self->ivars[5].arr = tmp;
         free(t);
-        
+
         return nil;
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
@@ -474,10 +489,10 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(cls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
-    
+
+
 #pragma mark Number
-    
+
     // Number
     name = vz_string_box("std::Bool");
     iname = vz_string_box("std::Bool.isa");
@@ -486,9 +501,9 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     numcls->ivars[3].sarr[0] = vz_sel_get("value");
-    
+
     // Abs()
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -512,7 +527,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ACos
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -528,7 +543,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ASin
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -544,7 +559,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ATan
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -560,7 +575,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Bool
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -577,7 +592,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Cbrt
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -593,7 +608,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Ceil
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -609,7 +624,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Copy()
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -627,7 +642,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Cos
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -643,7 +658,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Finite?
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -658,7 +673,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Floor
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -674,7 +689,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // GCD:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -696,7 +711,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Infinity
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -710,7 +725,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls->isa, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Integer?
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -725,7 +740,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // LCM:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -744,7 +759,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Log:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -761,7 +776,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // NaN
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -775,7 +790,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls->isa, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // NaN?
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -790,7 +805,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Root:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -806,7 +821,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Round
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -822,7 +837,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Sin
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -838,7 +853,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Sqrt
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -854,7 +869,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Tan
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -870,7 +885,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // -
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -885,7 +900,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // +:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -901,7 +916,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // -:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -917,7 +932,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // *:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -933,7 +948,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // **:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -949,7 +964,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // /:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -965,7 +980,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // %:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -981,7 +996,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // ==:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1002,7 +1017,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // <:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1023,7 +1038,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // >:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1044,7 +1059,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // <=:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1065,7 +1080,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // >=:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1086,9 +1101,9 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(numcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
 #pragma mark Protocol
-    
+
     // Protocol
     name = vz_string_box("std::Protocol");
     iname = vz_string_box("std::Protocol.isa");
@@ -1097,7 +1112,7 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     protocol->ivars[3].sarr[0] = vz_sel_get("name");
     protocol->ivars[3].sarr[1] = vz_sel_get("superc");
     protocol->ivars[3].sarr[2] = vz_sel_get("superv");
@@ -1105,7 +1120,7 @@ void vz_std_init() {
     protocol->ivars[3].sarr[4] = vz_sel_get("iselv");
     protocol->ivars[3].sarr[3] = vz_sel_get("cselc");
     protocol->ivars[3].sarr[4] = vz_sel_get("cselv");
-    
+
     // Init::
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1129,7 +1144,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(protocol, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Init
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1144,7 +1159,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(protocol, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // AddSelector:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1154,13 +1169,13 @@ void vz_std_init() {
         for (NUM k = 0; k < self->ivars[3].num; k++) {
             n[(int64_t) k] = self->ivars[4].sarr[(int64_t) k];
         }
-        
+
         n[(int64_t) self->ivars[3].num] = vz_sel_unbox(argv[0]);
-        
+
         SEL* old = self->ivars[4].sarr;
         self->ivars[4].sarr = n;
         free(old);
-        
+
         return nil;
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
@@ -1169,7 +1184,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(protocol, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // AddClassSelector:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1179,13 +1194,13 @@ void vz_std_init() {
         for (NUM k = 0; k < self->ivars[5].num; k++) {
             n[(int64_t) k] = self->ivars[6].sarr[(int64_t) k];
         }
-        
+
         n[(int64_t) self->ivars[5].num] = vz_sel_unbox(argv[0]);
-        
+
         SEL* old = self->ivars[6].sarr;
         self->ivars[6].sarr = n;
         free(old);
-        
+
         return nil;
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
@@ -1194,7 +1209,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(protocol, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // AddSuper:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1204,13 +1219,13 @@ void vz_std_init() {
         for (NUM k = 0; k < self->ivars[1].num; k++) {
             n[(int64_t) k] = self->ivars[2].arr[(int64_t) k];
         }
-        
+
         n[(int64_t) self->ivars[1].num] = vz_msg_send(argv[0], "Retain", 0);
-        
+
         id* old = self->ivars[2].arr;
         self->ivars[2].arr = n;
         free(old);
-        
+
         return nil;
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
@@ -1219,9 +1234,9 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(protocol, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-   
+
 #pragma mark Function
-    
+
     name = vz_string_box("std::Function");
     iname = vz_string_box("std::Function.isa");
     ivarc = vz_num_box(0);
@@ -1229,11 +1244,11 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     // Call
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("Call"));
+    sel = vz_sel_box(vz_sel_get("Call:"));
     imp = vz_imp_box(vz_def({
         return self->ivars[0].imp->operator()(self, cmd, argc, argv);
     }));
@@ -1243,21 +1258,21 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(function, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
 #pragma mark Iterable
-    
+
     id iterable = vz_msg_send(protocol, "Alloc", 0);
     name = vz_string_box("std::Iterable");
     iterable = vz_msg_send(iterable, "Init:", 1, name);
     vz_msg_send(name, "Release", 0);
-    
+
     // Iterator
     sel = vz_sel_box(vz_sel_get("Iterator:"));
     vz_msg_send(iterable, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
 #pragma mark IterableOperatorDelegate
-    
+
     // IterableOperatorDelegate
     name = vz_string_box("std::IterableOperatorDelegate");
     iname = vz_string_box("std::IterableOperatorDelegate.isa");
@@ -1266,7 +1281,7 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     // All::
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1277,8 +1292,8 @@ void vz_std_init() {
             id k = vz_msg_send(iter, "Next", 0);
             id d = vz_msg_send(iter, "Done?", 0);
             while (vz_bool_unbox(d)) {
-                
-                id rv = vz_msg_send(argv[1], "Call", 1, k);
+
+                id rv = vz_msg_send(argv[1], "Call:", 1, k);
                 if (!vz_bool_unbox(rv)) {
                     vz_msg_send(rv, "Release", 0);
                     vz_msg_send(d, "Release", 0);
@@ -1287,7 +1302,7 @@ void vz_std_init() {
                     return vz_bool_box(false);
                 }
                 vz_msg_send(rv, "Release", 0);
-            
+
                 // next
                 vz_msg_send(d, "Release", 0);
                 vz_msg_send(k, "Release", 0);
@@ -1304,7 +1319,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(iterop, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Any::
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1315,8 +1330,8 @@ void vz_std_init() {
             id k = vz_msg_send(iter, "Next", 0);
             id d = vz_msg_send(iter, "Done?", 0);
             while (vz_bool_unbox(d)) {
-                
-                id rv = vz_msg_send(argv[1], "Call", 1, k);
+
+                id rv = vz_msg_send(argv[1], "Call:", 1, k);
                 if (vz_bool_unbox(rv)) {
                     vz_msg_send(rv, "Release", 0);
                     vz_msg_send(d, "Release", 0);
@@ -1325,7 +1340,7 @@ void vz_std_init() {
                     return vz_bool_box(true);
                 }
                 vz_msg_send(rv, "Release", 0);
-                
+
                 // next
                 vz_msg_send(d, "Release", 0);
                 vz_msg_send(k, "Release", 0);
@@ -1342,7 +1357,7 @@ void vz_std_init() {
     vz_msg_send(imp, "Release", 0);
     vz_msg_send(iterop, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
-    
+
     // Do::
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -1353,10 +1368,10 @@ void vz_std_init() {
             id k = vz_msg_send(iter, "Next", 0);
             id d = vz_msg_send(iter, "Done?", 0);
             while (vz_bool_unbox(d)) {
-                
-                id rv = vz_msg_send(argv[1], "Call", 1, k);
+
+                id rv = vz_msg_send(argv[1], "Call:", 1, k);
                 vz_msg_send(rv, "Release", 0);
-                
+
                 // next
                 vz_msg_send(d, "Release", 0);
                 vz_msg_send(k, "Release", 0);
@@ -1384,10 +1399,10 @@ void vz_std_init() {
             id k = vz_msg_send(iter, "Next", 0);
             id d = vz_msg_send(iter, "Done?", 0);
             while (vz_bool_unbox(d)) {
-                
-                id rv = vz_msg_send(argv[1], "Call", 1, k);
+
+                id rv = vz_msg_send(argv[1], "Call:", 1, k);
                 vz_msg_send(rv, "Release", 0);
-                
+
                 // next
                 vz_msg_send(d, "Release", 0);
                 vz_msg_send(k, "Release", 0);
@@ -1410,125 +1425,170 @@ void vz_std_init() {
     sel = vz_sel_box(vz_sel_get("Map:"));
     vz_msg_send(iterop, "AddClassSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Reduce:
     sel = vz_sel_box(vz_sel_get("Reduce:"));
     vz_msg_send(iterop, "AddClassSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Reduce::
     sel = vz_sel_box(vz_sel_get("Reduce::"));
     vz_msg_send(iterop, "AddClassSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
      */
-    
+
 #pragma mark ContainerOperatorDelegate
-    
+
+    // ContainerOperatorDelegate
+    name = vz_string_box("std::ContainerOperatorDelegate");
+    iname = vz_string_box("std::ContainerOperatorDelegate.isa");
+    ivarc = vz_num_box(0);
+    id cntop = vz_msg_send(iterop, "Subclass:::", 3, name, iname, ivarc);
+    vz_msg_send(name, "Release", 0);
+    vz_msg_send(iname, "Release", 0);
+    vz_msg_send(ivarc, "Release", 0);
+
+    // Add::
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("Add::"));
+    imp = vz_imp_box(vz_def({
+        id* arr = vz_array_unbox(argv[0]);
+        id count = vz_msg_send(argv[0], "Count", 0);
+        NUM c = vz_num_unbox(count);
+        id* a = (id*) malloc(sizeof(id) * (c + 1));
+        for (NUM k = 0; k < c; k++) {
+            a[(int64_t)k] = arr[0];
+        }
+
+        vz_msg_send(count, "Release", 0);
+
+        return nil;
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(cntop, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+
 #pragma mark OrderedContainerOperatorDelegate
-    
+
+    // OrderedContainerOperatorDelegate
+    name = vz_string_box("std::OrderedContainerOperatorDelegate");
+    iname = vz_string_box("std::OrderedContainerOperatorDelegate.isa");
+    ivarc = vz_num_box(0);
+    id ocntop = vz_msg_send(cntop, "Subclass:::", 3, name, iname, ivarc);
+    vz_msg_send(name, "Release", 0);
+    vz_msg_send(iname, "Release", 0);
+    vz_msg_send(ivarc, "Release", 0);
+
+
+
 #pragma mark Iterator
-    
+
     id iterator = vz_msg_send(protocol, "Alloc", 0);
     name = vz_string_box("std::Iterator");
     iterator = vz_msg_send(iterator, "Init:", 1, name);
     vz_msg_send(name, "Release", 0);
-    
+
     // Array
     // Returns an array of the rest of the elements in the iterator.
     sel = vz_sel_box(vz_sel_get("Array"));
     vz_msg_send(iterator, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Done?
     sel = vz_sel_box(vz_sel_get("Done?"));
     vz_msg_send(iterator, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Next
     // Returns tuple of (value, done)
     sel = vz_sel_box(vz_sel_get("Iterator:"));
     vz_msg_send(iterator, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
 #pragma mark Container
-    
+
     // Container
     id container = vz_msg_send(protocol, "Alloc", 0);
     name = vz_string_box("std::Container");
     container = vz_msg_send(container, "Init:", 1, name);
     vz_msg_send(name, "Release", 0);
-    
-    vz_msg_send(container, "AddSuper:", 1, iterop);
-    
+
+    vz_msg_send(container, "AddSuper:", 1, iterable);
+
     // Add:
     sel = vz_sel_box(vz_sel_get("Add:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // AddAll:
     sel = vz_sel_box(vz_sel_get("AddAll:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Count
     sel = vz_sel_box(vz_sel_get("Count"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Contains?:
     sel = vz_sel_box(vz_sel_get("Contains:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // ContainsAll?:
     sel = vz_sel_box(vz_sel_get("ContainsAll?:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Empty?
     sel = vz_sel_box(vz_sel_get("Empty?"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
-    // Iterator:
-    sel = vz_sel_box(vz_sel_get("Iterator:"));
+
+    // Init
+    sel = vz_sel_box(vz_sel_get("Init:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
-#pragma mark OrderedCollection
-    
-    // Container
+
+
+#pragma mark OrderedContainer
+
+    // OrderedContainer
     id ocontainer = vz_msg_send(protocol, "Alloc", 0);
-    name = vz_string_box("std::Container");
+    name = vz_string_box("std::OrderedContainer");
     ocontainer = vz_msg_send(ocontainer, "Init:", 1, name);
-    
+
     vz_msg_send(ocontainer, "AddSuper:", 1, container);
-    
+
     // First
     sel = vz_sel_box(vz_sel_get("First"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Last
     sel = vz_sel_box(vz_sel_get("Last"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // ObjectAt:
     sel = vz_sel_box(vz_sel_get("ObjectAt:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Shuffle
     sel = vz_sel_box(vz_sel_get("Shuffle"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Shuffle:
     sel = vz_sel_box(vz_sel_get("Shuffle:"));
     vz_msg_send(container, "AddSelector:", 1, sel);
     vz_msg_send(sel, "Release", 0);
-    
+
     // Sort:
     // Takes a function that takes two arguments and returns `true` if the first
     // comes before the second, and returns `false` if they are out of order.
