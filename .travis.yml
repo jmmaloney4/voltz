@@ -5,9 +5,4 @@ compiler:
   - gcc
 
 script:
-  - git submodule init
-  - mkdir build
-  - cd build
-  - cmake .. -G Unix\ Makefiles
-  - make -k all
-  - make test
+  - ./make.sh
