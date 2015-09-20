@@ -7,7 +7,7 @@ if [[ $? != 0 ]]; then
 
   cd ..
 
-  echo -e "\n *** Build Failed. Retrying from scratch. *** \n"
+  echo -e "\n *** Build Failed. Retrying From Scratch. *** \n"
 
   rm -rf build
   mkdir -p build
