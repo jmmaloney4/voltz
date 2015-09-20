@@ -7,6 +7,7 @@
 #include "voltz-internal.h"
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 id booltrue = nil;
 id boolfalse = nil;
