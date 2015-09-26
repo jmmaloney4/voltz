@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 id vz_bool_boxI(bool value) {
-    id boolcls = vz_class_get("std::Bool");
+    id boolcls = vz_class_get("Std::Bool");
     id rv = vz_msg_send(boolcls, value ? "True" : "False", 0);
     vz_msg_send(boolcls, "Release", 0);
     return rv;
@@ -37,3 +37,33 @@ id* vz_array_unboxI(id obj) {
 }
 
 id*(*vz_array_unbox)(id) = vz_array_unboxI;
+
+id vz_array_boxI(NUM count, ...) {
+    va_list ap;
+    va_start(ap, count);
+    id rv = vz_array_box_v(count, ap);
+    va_end(ap);
+    return rv;
+}
+
+id (*vz_array_box)(NUM, ...) = vz_array_boxI;
+
+id vz_array_box_vI(NUM count, va_list ap) {
+    id* args = (id*) malloc(sizeof(id) * count);
+    for (NUM k = 0; k < count; k++) {
+        args[(int64_t)k] = va_arg(ap, id);
+    }
+    
+    id rv = vz_array_box_a(count, args);
+    free(args);
+    return rv;
+}
+
+id (*vz_array_box_v)(NUM, va_list) = vz_array_box_vI;
+
+id vz_array_box_aI(NUM count, id* args) {
+    id arrcls = vz_class_get("Std::Array");
+    id rv = vz_msg_send(arrcls, "Alloc", 0);
+    rv = vz_msg_send(rv, "Init", 0);
+    
+}

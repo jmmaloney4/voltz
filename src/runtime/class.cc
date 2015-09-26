@@ -120,8 +120,8 @@ const SEL* vz_class_ivarnI(id cls) {
 const SEL* (*vz_class_ivarn)(id) = vz_class_ivarnI;
 
 void vz_class_init() {
-    id clscls = vz_class_get("std::Class");
-    id mthdcls = vz_class_get("std::Method");
+    id clscls = vz_class_get("Std::Class");
+    id mthdcls = vz_class_get("Std::Method");
     id addprotocol = vz_msg_send(mthdcls, "Alloc", 0);
     id sel = vz_sel_box(vz_sel_get("AddProtocol:"));
     id imp = vz_imp_box(vz_def({

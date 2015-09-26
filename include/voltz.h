@@ -44,13 +44,16 @@ typedef std::function<id(id, SEL, NUM, id*)>* IMP;
  * - name
  * - superc
  * - superv
- * - iselc
- * - iselv
- * - cselc
- * - cselv
- *
+ * - imthdc
+ * - imthdv
+ * - cmthdc
+ * - cmthdv
  */
 
+/* Array
+ * - count
+ * - value
+ */
 
 /** Box a NUM into an object of type Number.
  *
