@@ -30,7 +30,7 @@ id* vz_array_unboxI(id obj) {
     NUM c = vz_num_unbox(count);
     id* rv = (id*) malloc(sizeof(id) * c);
     for (NUM k = 0; k < c; k++) {
-        rv[(int64_t)k] = vz_msg_send(obj->ivars[0].obj, "Retain", 0);
+        rv[(int64_t)k] = vz_msg_send(obj->ivars[1].arr[(int64_t)k], "Retain", 0);
     }
     vz_msg_send(count, "Release", 0);
     return rv;
@@ -66,4 +66,13 @@ id vz_array_box_aI(NUM count, id* args) {
     id rv = vz_msg_send(arrcls, "Alloc", 0);
     rv = vz_msg_send(rv, "Init", 0);
     
+    rv->ivars[0].num = count;
+    rv->ivars[1].arr = (id*) malloc(sizeof(id) * count);
+    for (NUM k = 0; k < count; k++) {
+        rv->ivars[1].arr[(int64_t)k] = vz_msg_send(args[(int64_t)k], "Retain", 0);
+    }
+    
+    return rv;
 }
+
+id (*vz_array_box_a)(NUM, id*) = vz_array_box_aI;
