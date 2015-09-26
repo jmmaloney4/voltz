@@ -8,7 +8,7 @@
 #include <string.h>
 
 id vz_string_boxI(const char* value) {
-    id strcls = vz_class_get("std::String");
+    id strcls = vz_class_get("Std::String");
     id rv = vz_msg_send(strcls, "Alloc", 0);
     rv = vz_msg_send(rv, "Init", 0);
     rv->ivars[0].str = strdup(value);

@@ -1,53 +1,50 @@
-# Voltz IO API
+# Naming Conventions
 
-## Iteratable[T]
-- `Iterator():std::Iterator[T]`
+Naming conventions in Voltz are heavily based off of
+[C# naming conventions](https://msdn.microsoft.com/en-us/library/ms229043.aspx).
 
-## Iterator[T]
-- `HasNext():std::Bool`
-- `Next():T`
-- `Remove()`
+## Pascal Case
+Pascal case capitalizes the first letter of the identifier and the first letter
+of every word after.
 
-## Collection[T] : Iteratable
-- `Empty():std::Bool`
-- `Count():std::Int`
-- `Contains(:T)`
-- `Add(:T):std::Collection[T]` - Returns a collection because collections are immutable.
-- `Add(Collection:std::Collection[T]):std::Collection[T]`
-- `ToArray():std::Array[T]`
+`ThisIsPascalCase`
 
-## Generic
-- `GetGenericTypes():std::Array[std::Class]`
+`thisIsNotPascalCase`
+`NeitherisThis`
+`orthis`
 
-## WriteStream
-- `Write(Data:std::Array[std::Byte]):std::Int`
-- `Flush()`
-- `Close()`
+## Camel Case
+Camel case does not capitalize the first letter of the identifier, but it
+capitalizes the first letter of every following word.
 
-## ReadStream
-- `Read(Count:std::Int):std::Array[std::Byte]`
-- `Close()`
+`thisIsCamelCase`
 
-## CharacterEncoder
-- `Encode(Character:std::Character):std::Array[std::Byte]`
+`ThisisnotCamelcase`
+`thisIsnotcamelCaseEither`
 
-## CharacterDecoder
-- `Decode(Get:():std::Byte):(std::Character,std::Int)`
+### Modules
+Modules are Pascal Case. `Std::Sync`.
 
-## CharacterWriteStream
-- `Init()`
-- `Init(Encoder:std::io::CharacterEncoder)`
-- `Write(Character:std::Character):std::Int`
-- `Write(Character:std::Character,Encoder:std::io::CharacterEncoder):std::Int`
-- `Write(String:std::String):std::Array[std::Int]`
-- `Write(String:std::String,Encoder:std::io::CharacterEncoder):std::Array[std::Int]`
+### Classes
+Classes are Pascal Case. `Std::IO::FileOutputStream`.
 
-## CharacterReadStream
-- `Init()`
-- `Init(Decoder:std::io::CharacterDecoder)`
-- `Read():(std::Character,std::Int)`
-- `Read(Decoder:std::io::CharacterDecoder):(std::Character,std::Int)`
-- `Read(Count:std::Int):(std::String,std::Array[std::Int])`
-- `Read(Count:std::Int,Decoder:std::io::CharacterDecoder):(std::String,std::Array[std::Int])`
+### Protocols
+Protocols are Pascal Case. `Std::IO::OutputStream`.
 
-## MultiWriteStream ?
+### Methods
+Methods are Pascal Case. `WriteString:`.
+
+### Properties
+Properties are Pascal Case. `myArray.Count`.
+
+### Enum Value
+Enum Values are Pascal Case. `MyEnum::MyEnumValue`.
+
+### Local Variables
+Local Variables are typically Camel Case, although this is more of a matter of
+preference. `myVariable`.
+
+### Parameters
+Parameters are Camel Case. `func(name)`.
+
+# Defining Classes

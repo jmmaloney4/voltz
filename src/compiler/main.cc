@@ -7,7 +7,5 @@
 #include <voltz.h>
 
 void vz_linker_entry(id argc, id argv) {
-    
-    
-    
+
 }

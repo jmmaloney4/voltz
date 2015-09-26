@@ -13,11 +13,11 @@
 #define VZ_MINOR_VERSION 0
 #define VZ_PATCH_VERSION 4
 
-#define vz_def(func) new std::function<id(id, SEL, NUM, id*)>([] (id self,    \
-        SEL cmd, NUM argc, id* argv) -> id {func})
+#define vz_def(func) (new std::function<id(id, SEL, NUM, id*)>([] (id self,    \
+        SEL cmd, NUM argc, id* argv) -> id {func}))
 
-#define vz_def_capture(list, func) new std::function<id(id, SEL, NUM, id*)>([list] (id self,    \
-SEL cmd, NUM argc, id* argv) -> id {func})
+#define vz_def_capture(list, func) new std::function<id(id, SEL, NUM, id*)>(   \
+        [list] (id self, SEL cmd, NUM argc, id* argv) -> id {func})
 
 const std::nullptr_t nil = NULL;
 
@@ -44,10 +44,16 @@ typedef std::function<id(id, SEL, NUM, id*)>* IMP;
  * - name
  * - superc
  * - superv
- * - selc
- * - selv
+ * - imthdc
+ * - imthdv
+ * - cmthdc
+ * - cmthdv
  */
 
+/* Array
+ * - count
+ * - value
+ */
 
 /** Box a NUM into an object of type Number.
  *
@@ -132,18 +138,26 @@ extern "C" SEL(*vz_sel_unbox)(id obj);
 
 /** Unbox an object of type Imp into a IMP.
  *
+ *  Return value must be deleted after use.
+ *
  */
 extern "C" IMP(*vz_imp_unbox)(id obj);
 
 /** Unbox an object of type Tuple.
  *
  *  @param count The number of pointers that get passed into @c ...
- *  @param ... A set of id* that will get filled with the values in the tuple, pass @c nil 
- *      to denote that that a value is unwanted.
+ *  @param ... A set of id* that will get filled with the values in the tuple, 
+ *  pass @c nil to denote that that a value is unwanted.
  *  
  *  @return The number of objects in the tuple, regardless of @c count.
  */
-extern "C" NUM vz_tuple_unbox(NUM count, ...);
+extern "C" NUM(*vz_tuple_unbox)(NUM count, ...);
+
+/** Unbox an object of type Array into an id*.
+ *
+ *  The return value of this function must be free'd after use.
+ */
+extern "C" id*(*vz_array_unbox)(id obj);
 
 /** Returns a SEL representing @c value.
  *

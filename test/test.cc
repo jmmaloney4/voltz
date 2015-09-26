@@ -43,7 +43,7 @@ TEST(voltz, Bool) {
 }
 
 TEST(voltz, HelloWorld) {
-    id fos = vz_class_get("std::io::FileOutputStream");
+    id fos = vz_class_get("Std::io::FileOutputStream");
     id sout = vz_msg_send(fos, "Alloc", 0);
     sout = vz_msg_send(sout, "Init", 0);
     vz_object_setIvar(sout, "file", (id) stdout);

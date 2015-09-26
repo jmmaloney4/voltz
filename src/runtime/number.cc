@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 id vz_num_boxI(NUM value) {
-    id numcls = vz_class_get("std::Number");
+    id numcls = vz_class_get("Std::Number");
     id rv = vz_msg_send(numcls, "Alloc", 0);
     rv = vz_msg_send(rv, "Init", 0);
     
