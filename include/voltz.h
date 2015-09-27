@@ -53,6 +53,13 @@ typedef std::function<id(id, SEL, NUM, id*)>* IMP;
 /* Array
  * - count
  * - value
+ * - types
+ */
+
+/* Tuple
+ * - count
+ * - value
+ * - types
  */
 
 /** Box a NUM into an object of type Number.
