@@ -23,3 +23,9 @@ if [[ $? != 0 ]]; then
     exit $r
   fi
 fi
+
+if [[ $1 == "test" ]]; then
+
+  ./tests
+  exit $?
+fi
