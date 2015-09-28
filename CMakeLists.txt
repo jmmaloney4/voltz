@@ -5,6 +5,11 @@ include_directories(include/)
 
 option(test "Build all tests." ON)
 
+if(APPLE)
+    SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Deployment target for OSX" FORCE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+endif(APPLE)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 
 add_library(voltz include/voltz.h src/runtime/voltz-internal.h src/runtime/voltz.cc src/runtime/main.cc src/runtime/bootstrap.cc src/runtime/sel.cc src/runtime/number.cc src/runtime/message.cc src/runtime/imp.cc src/runtime/class.cc src/runtime/object.cc src/runtime/string.cc src/runtime/global.cc src/runtime/std.cc)

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 git submodule init
 mkdir -p build
 cd ./build
@@ -22,4 +24,10 @@ if [[ $? != 0 ]]; then
     echo -e "\n *** Build Failed. *** \n"
     exit $r
   fi
+fi
+
+if [[ $1 == "test" ]]; then
+
+  ./tests
+  exit $?
 fi
