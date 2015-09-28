@@ -1,3 +1,5 @@
+#!/bin/bash
+
 git submodule init
 mkdir -p build
 cd ./build

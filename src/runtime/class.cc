@@ -16,7 +16,7 @@ struct vz_classTable_entry {
 };
 
 #define vz_classTable_size 0x500
-struct vz_classTable_entry* vz_classTable[vz_classTable_size];
+struct vz_classTable_entry* vz_classTable[vz_classTable_size] = {NULL};
 std::mutex vz_classTable_mutex;
 
 id vz_class_getI(const char* name) {
