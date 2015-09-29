@@ -356,7 +356,21 @@ void vz_std_init() {
         }
         
         return str;
-        
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
+    // UnrecognizedSelector
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("UnrecognizedSelector"));
+    imp = vz_imp_box(vz_def({
+        fprintf(stderr, "Unrecognized selector %s, sent to instance at %p.", vz_sel_unbox(argv[0])->value, self);
+        abort();
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
