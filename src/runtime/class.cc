@@ -12,6 +12,7 @@
 
 struct vz_classTable_entry {
     id cls;
+    const char* name;
     struct vz_classTable_entry* next;
 };
 
@@ -30,7 +31,7 @@ id vz_class_getI(const char* name) {
     
     for(struct vz_classTable_entry* entry = vz_classTable[(int64_t) hash];
         entry != NULL; entry = entry->next) {
-        if (strcmp(entry->cls->ivars[1].str, name) == 0) {
+        if (strcmp(entry->name, name) == 0) {
             id rv = vz_msg_send(entry->cls, "Retain", 0);
             vz_classTable_mutex.unlock();
             return rv;
@@ -55,7 +56,7 @@ void vz_class_registerI(const char* name, id cls) {
     
     for(struct vz_classTable_entry* entry = vz_classTable[(int64_t) hash];
         entry != NULL; entry = entry->next) {
-        if (strcmp(entry->cls->ivars[1].str, name) == 0) {
+        if (strcmp(entry->name, name) == 0) {
             entry->cls = vz_msg_send(cls, "Retain", 0);
             vz_classTable_mutex.unlock();
             return;
@@ -64,6 +65,7 @@ void vz_class_registerI(const char* name, id cls) {
     
     struct vz_classTable_entry* entry = (struct vz_classTable_entry*) malloc(sizeof(vz_classTable_entry));
     entry->cls = vz_msg_send(cls, "Retain", 0);
+    entry->name = strdup(name);
     entry->next = vz_classTable[(int64_t) hash];
     vz_classTable[(int64_t) hash] = entry;
     

@@ -1153,7 +1153,7 @@ void vz_std_init() {
     protocol->ivars[3].sarr[3] = vz_sel_get("cselc");
     protocol->ivars[3].sarr[4] = vz_sel_get("cselv");
 
-    // Init::
+    // Init:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("Init:"));
@@ -1356,6 +1356,7 @@ void vz_std_init() {
     generic = vz_msg_send(generic, "Init:", 1, name);
     vz_msg_send(name, "Release", 0);
     
+    fprintf(stderr, "%s (%p)\n", generic->ivars[0].str, generic);
     vz_class_register("Std::Generic", generic);
     
     // GenericTypes
