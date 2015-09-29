@@ -60,9 +60,10 @@ id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
             }
         }
     }
-    
-    fprintf(stderr, "%s (%p) does not implement the method %s\n", vz_class_name(target->isa), target->isa, sel->value);
-    abort();
+    id s = vz_sel_box(sel);
+    vz_msg_send(target, "UnrecognizedSelector:", 1, s);
+    vz_msg_send(s, "Release", 0);
+    return nil;
 }
 
 id(*vz_msg_send)(id target, const char* sel, NUM argc, ...) = vz_msg_sendI;
