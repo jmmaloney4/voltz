@@ -379,6 +379,56 @@ void vz_std_init() {
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     
+    // RespondsTo?:
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("RespondsTo?:"));
+    imp = vz_imp_box(vz_def({
+        id c = vz_msg_send(self, "Isa", 0);
+        while (c != nil) {
+            id tmp0 = vz_msg_send(c, "Methods", 0);
+            id tmp1 = vz_msg_send(tmp0, "Count", 0);
+            id k = vz_num_box(0);
+            while (vz_bool_unbox(vz_msg_send(k, "<", 1, tmp1))) {
+                id tmp2 = vz_msg_send(tmp0, "[]:", 1, k);
+                id tmp3 = vz_msg_send(tmp2, "Selector", 0);
+                
+                if (vz_bool_unbox(vz_msg_send(tmp3, "==:", 1, argv[0]))) {
+                    vz_msg_send(c, "Release", 0);
+                    vz_msg_send(tmp0, "Release", 0);
+                    vz_msg_send(tmp1, "Release", 0);
+                    vz_msg_send(k, "Release", 0);
+                    vz_msg_send(tmp2, "Release", 0);
+                    vz_msg_send(tmp3, "Release", 0);
+                    
+                    return vz_bool_box(true);
+                }
+                
+                id tmp4 = vz_num_box(1);
+                id tmp5 = vz_msg_send(k, "+:", 1, tmp4);
+                vz_msg_send(tmp4, "Release", 0);
+                vz_msg_send(k, "Release", 0);
+                k = tmp5;
+            }
+            
+            vz_msg_send(tmp0, "Release", 0);
+            vz_msg_send(tmp1, "Release", 0);
+            vz_msg_send(k, "Release", 0);
+            
+            id tmp6 = vz_msg_send(c, "Super", 0);
+            vz_msg_send(c, "Release", 0);
+            c = tmp6;
+        }
+        vz_msg_send(c, "Release", 0);
+        return vz_bool_box(false);
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
     // ResolveMessageSend::
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
