@@ -364,12 +364,12 @@ void vz_std_init() {
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     
-    // UnrecognizedSelector
+    // UnrecognizedSelector:
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("UnrecognizedSelector"));
+    sel = vz_sel_box(vz_sel_get("UnrecognizedSelector:"));
     imp = vz_imp_box(vz_def({
-        fprintf(stderr, "Unrecognized selector %s, sent to instance at %p.", vz_sel_unbox(argv[0])->value, self);
+        fprintf(stderr, "Unrecognized selector '%s', sent to instance at %p.\n", vz_sel_unbox(argv[0])->value, self);
         abort();
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
@@ -435,6 +435,35 @@ void vz_std_init() {
     sel = vz_sel_box(vz_sel_get("ResolveMessageSend::"));
     imp = vz_imp_box(vz_def({
         return vz_bool_box(false);
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
+    // Refrences
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("Refrences"));
+    imp = vz_imp_box(vz_def({
+        id rv = vz_num_box(self->refs);
+        return rv;
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
+    // WeakRefrences
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("WeakRefrences"));
+    imp = vz_imp_box(vz_def({
+        return vz_num_box(self->weaks);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -1434,7 +1463,6 @@ void vz_std_init() {
     generic = vz_msg_send(generic, "Init:", 1, name);
     vz_msg_send(name, "Release", 0);
     
-    fprintf(stderr, "%s (%p)\n", generic->ivars[0].str, generic);
     vz_class_register("Std::Generic", generic);
     
     // GenericTypes
