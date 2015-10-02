@@ -83,4 +83,18 @@ TEST(voltz, RetainRelease) {
     vz_msg_send(weaks, "Release", 0);
 
     vz_msg_send(obj, "Release", 0);
+    vz_msg_send(objcls, "Release", 0);
+}
+
+TEST(voltz, BoolEvalMethod) {
+    id objcls = vz_class_get("Std::Object");
+    id obj = vz_msg_send(objcls, "Alloc", 0);
+    obj = vz_msg_send(obj, "Init", 0);
+    
+    EXPECT_EQ(true, vz_bool_unbox(vz_msg_send(obj, "Bool", 0)));
+    
+    EXPECT_EQ(false, vz_bool_unbox(vz_msg_send(nil, "Bool", 0)));
+    
+    vz_msg_send(objcls, "Release", 0);
+    vz_msg_send(obj, "Release", 0);
 }
