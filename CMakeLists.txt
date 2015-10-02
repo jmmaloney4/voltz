@@ -10,7 +10,12 @@ if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif(APPLE)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -ferror-limit=0 -fdiagnostics-show-option -fdiagnostics-show-category=name -fdiagnostics-fixit-info")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ferror-limit=0 -fdiagnostics-show-option -fdiagnostics-show-category=name -fdiagnostics-fixit-info")
+endif()
+
 set(CXX_FLAGS_TMP "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -pedantic -Weverything")
 
