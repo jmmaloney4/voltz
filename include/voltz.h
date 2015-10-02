@@ -9,6 +9,10 @@
 #include <functional>
 #include <cstddef>
 
+//#ifdef DEBUG
+#define VOLTZ_DEBUG 1
+//#endif
+
 #define VZ_MAJOR_VERSION 0
 #define VZ_MINOR_VERSION 0
 #define VZ_PATCH_VERSION 4
@@ -20,6 +24,10 @@
         [list] (id self, SEL cmd, NUM argc, id* argv) -> id {func})
 
 const std::nullptr_t nil = NULL;
+
+namespace voltz {
+    extern double StartupTime;
+}
 
 extern int C_argc;
 extern const char** C_argv;

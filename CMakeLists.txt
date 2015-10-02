@@ -20,6 +20,9 @@ add_executable(voltzc src/compiler/main.cc)
 target_link_libraries(voltzc voltz)
 
 if(test)
+
+    include_directories(src/)
+
     add_subdirectory(lib/gtest)
 
     enable_testing()
