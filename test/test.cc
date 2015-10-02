@@ -91,10 +91,106 @@ TEST(voltz, BoolEvalMethod) {
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
-    EXPECT_EQ(true, vz_bool_unbox(vz_msg_send(obj, "Bool", 0)));
+    id tmp0 = vz_msg_send(obj, "Bool", 0);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
     
-    EXPECT_EQ(false, vz_bool_unbox(vz_msg_send(nil, "Bool", 0)));
+    tmp0 = vz_msg_send(nil, "Bool", 0);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj, "!", 0);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    // Weird behavior, but as of now it is correct.
+    tmp0 = vz_msg_send(nil, "!", 0);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
     
     vz_msg_send(objcls, "Release", 0);
     vz_msg_send(obj, "Release", 0);
+}
+
+TEST(voltz, ComparisonOperators) {
+    id objcls = vz_class_get("Std::Object");
+    
+    id obj1 = vz_msg_send(objcls, "Alloc", 0);
+    obj1 = vz_msg_send(obj1, "Init", 0);
+    id obj2 = vz_msg_send(objcls, "Alloc", 0);
+    obj2 = vz_msg_send(obj2, "Init", 0);
+    
+    // Tests default object behavior, not nessisarily true for all classes.
+    
+    id tmp0 = vz_msg_send(obj1, "==:", 1, obj1);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, "!=:", 1, obj1);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(obj1, "==:", 1, obj2);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, "!=:", 1, obj2);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+
+    
+    tmp0 = vz_msg_send(obj1, "===:", 1, obj1);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, "===:", 1, obj2);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(obj1, "!==:", 1, obj1);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, "!==:", 1, obj2);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+
+    
+    tmp0 = vz_msg_send(obj1, "<:", 1, obj1);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, "<:", 1, obj2);
+    EXPECT_EQ((obj1 < obj2), vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(obj1, ">:", 1, obj1);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, ">:", 1, obj2);
+    EXPECT_EQ((obj1 > obj2), vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(obj1, "<=:", 1, obj1);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, "<=:", 1, obj2);
+    EXPECT_EQ((obj1 <= obj2), vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(obj1, ">=:", 1, obj1);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(obj1, ">=:", 1, obj2);
+    EXPECT_EQ((obj1 >= obj2), vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
 }

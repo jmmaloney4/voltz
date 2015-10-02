@@ -9,9 +9,9 @@
 #include <functional>
 #include <cstddef>
 
-//#ifdef DEBUG
+#ifdef DEBUG
 #define VOLTZ_DEBUG 1
-//#endif
+#endif
 
 #define VZ_MAJOR_VERSION 0
 #define VZ_MINOR_VERSION 0
