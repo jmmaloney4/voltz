@@ -141,14 +141,9 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("==:"));
     imp = vz_imp_box(vz_def({
-        id boolcls = vz_class_get("Std::Bool");
-        if (argv[0] == nil) {
-            return vz_msg_send(boolcls, self->ivars[0].num == 0 ? "True" : "False", 0);
-        } else {
-            bool s = self->ivars[0].num != 0;
-            bool a = argv[0]->ivars[0].num != 0;
-            return vz_msg_send(boolcls, s == a ? "True" : "False", 0);
-        }
+        bool b1 = vz_bool_unbox(self);
+        bool b2 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(b1 == b2);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -162,14 +157,9 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("!=:"));
     imp = vz_imp_box(vz_def({
-        id boolcls = vz_class_get("Std::Bool");
-        if (argv[0] == nil) {
-            return vz_msg_send(boolcls, self->ivars[0].num != 0 ? "True" : "False", 0);
-        } else {
-            bool s = self->ivars[0].num != 0;
-            bool a = argv[0]->ivars[0].num != 0;
-            return vz_msg_send(boolcls, s != a ? "True" : "False", 0);
-        }
+        bool b1 = vz_bool_unbox(self);
+        bool b2 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(b1 != b2);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);

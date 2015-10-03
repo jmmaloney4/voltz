@@ -194,3 +194,84 @@ TEST(voltz, ComparisonOperators) {
     vz_msg_send(tmp0, "Release", 0);
     
 }
+
+TEST(voltz, BoolOperators) {
+    id t = vz_bool_box(true);
+    id f = vz_bool_box(false);
+
+    id tmp0 = vz_msg_send(t, "!", 0);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "!", 0);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(t, "&&:", 1, t);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(t, "&&:", 1, f);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "&&:", 1, t);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "&&:", 1, f);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+
+    
+    tmp0 = vz_msg_send(t, "||:", 1, t);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(t, "||:", 1, f);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "||:", 1, t);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "||:", 1, f);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    
+    tmp0 = vz_msg_send(t, "^^:", 1, t);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(t, "^^:", 1, f);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "^^:", 1, t);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "^^:", 1, f);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+
+    
+    tmp0 = vz_msg_send(t, "==:", 1, t);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(t, "!=:", 1, t);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "==:", 1, f);
+    EXPECT_EQ(true, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+    
+    tmp0 = vz_msg_send(f, "!=:", 1, t);
+    EXPECT_EQ(false, vz_bool_unbox(tmp0));
+    vz_msg_send(tmp0, "Release", 0);
+}
