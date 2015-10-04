@@ -461,10 +461,10 @@ void vz_std_init() {
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     
-    // Refrences
+    // References
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("Refrences"));
+    sel = vz_sel_box(vz_sel_get("Refe`rences"));
     imp = vz_imp_box(vz_def({
         id rv = vz_num_box(self->refs);
         return rv;
@@ -476,10 +476,10 @@ void vz_std_init() {
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     
-    // WeakRefrences
+    // WeakReferences
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("WeakRefrences"));
+    sel = vz_sel_box(vz_sel_get("WeakReferences"));
     imp = vz_imp_box(vz_def({
         return vz_num_box(self->weaks);
     }));

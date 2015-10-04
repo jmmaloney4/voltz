@@ -54,8 +54,8 @@ TEST(voltz, RetainRelease) {
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
-    id refs = vz_msg_send(obj, "Refrences", 0);
-    id weaks = vz_msg_send(obj, "WeakRefrences", 0);
+    id refs = vz_msg_send(obj, "References", 0);
+    id weaks = vz_msg_send(obj, "WeakReferences", 0);
     EXPECT_EQ(1, vz_num_unbox(refs));
     EXPECT_EQ(0, vz_num_unbox(weaks));
     
@@ -64,8 +64,8 @@ TEST(voltz, RetainRelease) {
     
     vz_msg_send(obj, "Retain", 0);
     
-    refs = vz_msg_send(obj, "Refrences", 0);
-    weaks = vz_msg_send(obj, "WeakRefrences", 0);
+    refs = vz_msg_send(obj, "References", 0);
+    weaks = vz_msg_send(obj, "WeakReferences", 0);
     EXPECT_EQ(2, vz_num_unbox(refs));
     EXPECT_EQ(0, vz_num_unbox(weaks));
     
@@ -74,8 +74,8 @@ TEST(voltz, RetainRelease) {
     
     vz_msg_send(obj, "Release", 0);
 
-    refs = vz_msg_send(obj, "Refrences", 0);
-    weaks = vz_msg_send(obj, "WeakRefrences", 0);
+    refs = vz_msg_send(obj, "References", 0);
+    weaks = vz_msg_send(obj, "WeakReferences", 0);
     EXPECT_EQ(1, vz_num_unbox(refs));
     EXPECT_EQ(0, vz_num_unbox(weaks));
     
@@ -315,3 +315,21 @@ TEST(voltz, RespondsTo) {
     vz_msg_send(r, "Release", 0);
 }
 */
+
+TEST(voltz, References) {
+    id objcls = vz_class_get("Std::Object");
+    id obj = vz_msg_send(objcls, "Alloc", 0);
+    obj = vz_msg_send(obj, "Init", 0);
+    
+    id rv = vz_msg_send(obj, "References", 0);
+    EXPECT_EQ(1, vz_num_unbox(rv));
+    vz_msg_send(rv, "Release", 0);
+    
+    rv = vz_msg_send(obj, "WeakReferences", 0);
+    EXPECT_EQ(0, vz_num_unbox(rv));
+    vz_msg_send(rv, "Release", 0);
+    
+    vz_msg_send(objcls, "Release", 0);
+    vz_msg_send(obj, "Release", 0);
+    
+}
