@@ -464,7 +464,7 @@ void vz_std_init() {
     // References
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("Refe`rences"));
+    sel = vz_sel_box(vz_sel_get("References"));
     imp = vz_imp_box(vz_def({
         id rv = vz_num_box(self->refs);
         return rv;
