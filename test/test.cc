@@ -271,7 +271,7 @@ TEST(voltz, BoolOperators) {
     EXPECT_EQ(true, vz_bool_unbox(tmp0));
     vz_msg_send(tmp0, "Release", 0);
     
-    tmp0 = vz_msg_send(f, "!=:", 1, t);
+    tmp0 = vz_msg_send(f, "!=:", 1, f);
     EXPECT_EQ(false, vz_bool_unbox(tmp0));
     vz_msg_send(tmp0, "Release", 0);
 }

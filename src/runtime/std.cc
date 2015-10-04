@@ -33,14 +33,6 @@ void vz_std_init() {
 
     vz_class_register("Std::Bool", boolcls);
 
-    booltrue = vz_msg_send(boolcls, "Alloc", 0);
-    booltrue = vz_msg_send(booltrue, "Init", 0);
-    booltrue->ivars[0].num = 1;
-
-    boolfalse = vz_msg_send(boolcls, "Alloc", 0);
-    boolfalse = vz_msg_send(boolfalse, "Init", 0);
-    boolfalse->ivars[0].num = 0;
-
     // True()
     id mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -72,7 +64,7 @@ void vz_std_init() {
     // Bool
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("==:"));
+    sel = vz_sel_box(vz_sel_get("Bool"));
     imp = vz_imp_box(vz_def({
         return vz_msg_send(self, "Retain", 0);
     }));
@@ -141,9 +133,9 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("==:"));
     imp = vz_imp_box(vz_def({
-        bool b1 = vz_bool_unbox(self);
-        bool b2 = vz_bool_unbox(argv[0]);
-        return vz_bool_box(b1 == b2);
+        bool bool0 = vz_bool_unbox(self);
+        bool bool1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(bool0 == bool1);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -157,9 +149,9 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("!=:"));
     imp = vz_imp_box(vz_def({
-        bool b1 = vz_bool_unbox(self);
-        bool b2 = vz_bool_unbox(argv[0]);
-        return vz_bool_box(b1 != b2);
+        bool bool0 = vz_bool_unbox(self);
+        bool bool1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(bool0 != bool1);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -230,6 +222,14 @@ void vz_std_init() {
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
 
+    booltrue = vz_msg_send(boolcls, "Alloc", 0);
+    booltrue = vz_msg_send(booltrue, "Init", 0);
+    booltrue->ivars[0].num = 1;
+    
+    boolfalse = vz_msg_send(boolcls, "Alloc", 0);
+    boolfalse = vz_msg_send(boolfalse, "Init", 0);
+    boolfalse->ivars[0].num = 0;
+    
     vz_msg_send(boolcls, "Release", 0);
 
 #pragma mark Object
