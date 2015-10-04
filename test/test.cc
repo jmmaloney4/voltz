@@ -275,3 +275,26 @@ TEST(voltz, BoolOperators) {
     EXPECT_EQ(false, vz_bool_unbox(tmp0));
     vz_msg_send(tmp0, "Release", 0);
 }
+
+TEST(voltz, Description) {
+    id objcls = vz_class_get("Std::Object");
+    id obj = vz_msg_send(objcls, "Alloc", 0);
+    obj = vz_msg_send(obj, "Init", 0);
+    
+    char buf[100 + strlen("Std::Object")];
+    sprintf(buf, "[Std::Object:%p]", obj);
+    
+    id des = vz_msg_send(obj, "Description", 0);
+    const char* str = vz_string_unbox(des);
+    
+    EXPECT_STREQ(buf, str);
+    
+    if (strcmp(buf, str) != 0) {
+        printf("Description: '%s'\n", str);
+    }
+    
+    vz_msg_send(objcls, "Release", 0);
+    vz_msg_send(obj, "Release", 0);
+    vz_msg_send(des, "Release", 0);
+    free((void*) str);
+}
