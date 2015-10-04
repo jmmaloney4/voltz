@@ -298,3 +298,20 @@ TEST(voltz, Description) {
     vz_msg_send(des, "Release", 0);
     free((void*) str);
 }
+/*
+TEST(voltz, RespondsTo) {
+    id objcls = vz_class_get("Std::Object");
+    id obj = vz_msg_send(objcls, "Alloc", 0);
+    obj = vz_msg_send(obj, "Init", 0);
+    
+    id sel = vz_sel_box(vz_sel_get("Init"));
+    id r = vz_msg_send(obj, "RespondsTo?:", 1, sel);
+    
+    EXPECT_EQ(true, vz_bool_unbox(r));
+    
+    vz_msg_send(objcls, "Release", 0);
+    vz_msg_send(obj, "Release", 0);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(r, "Release", 0);
+}
+*/
