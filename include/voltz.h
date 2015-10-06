@@ -10,7 +10,7 @@
 #include <cstddef>
 
 #ifdef DEBUG
-#define VOLTZ_DEBUG 1
+//#define VOLTZ_DEBUG 1
 #endif
 
 #define VZ_MAJOR_VERSION 0
@@ -24,6 +24,9 @@
         [list] (id self, SEL cmd, NUM argc, id* argv) -> id {func})
 
 const std::nullptr_t nil = NULL;
+
+#define VOLTZ_PATH_ENVVAR "VOLTZ_PATH"
+#define VOLTZ_MODULE_EXT "vzm"
 
 namespace voltz {
     extern double StartupTime;
@@ -266,6 +269,11 @@ extern "C" const SEL* (*vz_class_ivarn)(id cls);
  *
  */
 extern "C" void vz_linker_entry(id argc, id argv);
+
+/** Loads the module with the specified name. Searches the VOLTZ_PATH
+ *  enviroment variable.
+ */
+extern "C" bool(*vz_load_module)(const char* name);
 
 extern "C" id(*vz_msg_send)(id target, const char* sel, NUM argc, ...);
 extern "C" id(*vz_msg_send_v)(id target, const char* sel, NUM argc, va_list ap);

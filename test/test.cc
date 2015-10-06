@@ -86,6 +86,10 @@ TEST(voltz, RetainRelease) {
     vz_msg_send(objcls, "Release", 0);
 }
 
+TEST(voltz, LoadModule) {
+    vz_load_module("Std");
+}
+
 TEST(voltz, BoolEvalMethod) {
     id objcls = vz_class_get("Std::Object");
     id obj = vz_msg_send(objcls, "Alloc", 0);
