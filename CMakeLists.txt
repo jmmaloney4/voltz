@@ -12,12 +12,23 @@ endif(APPLE)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
 
-add_library(voltz include/voltz.h src/runtime/voltz-internal.h src/runtime/voltz.cc src/runtime/main.cc src/runtime/bootstrap.cc src/runtime/sel.cc src/runtime/number.cc src/runtime/message.cc src/runtime/imp.cc src/runtime/class.cc src/runtime/object.cc src/runtime/string.cc src/runtime/global.cc src/runtime/std.cc)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ferror-limit=0 -fdiagnostics-show-option -fdiagnostics-show-category=name -fdiagnostics-fixit-info")
+endif()
+
+set(CXX_FLAGS_TMP "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -pedantic -Weverything")
+
+add_library(voltz include/voltz.h src/runtime/voltz-internal.h src/runtime/voltz.cc src/runtime/main.cc src/runtime/bootstrap.cc src/runtime/sel.cc src/runtime/number.cc src/runtime/message.cc src/runtime/imp.cc src/runtime/class.cc src/runtime/object.cc src/runtime/string.cc src/runtime/global.cc src/runtime/std.cc src/runtime/load.cc)
+
+target_link_libraries(voltz dl)
 
 # add_library(std src/std/std.cc src/std/io.cc)
 
 add_executable(voltzc src/compiler/main.cc)
-target_link_libraries(voltzc voltz)
+target_link_libraries(voltzc voltz dl)
+
+set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
 
 if(test)
 
@@ -30,7 +41,7 @@ if(test)
     include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
     add_executable(tests test/test.cc)
-    target_link_libraries(tests voltz gtest gtest_main)
+    target_link_libraries(tests voltz dl gtest gtest_main)
 
     add_test(NAME tests COMMAND tests)
 endif()

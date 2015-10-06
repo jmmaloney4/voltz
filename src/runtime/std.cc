@@ -33,14 +33,6 @@ void vz_std_init() {
 
     vz_class_register("Std::Bool", boolcls);
 
-    booltrue = vz_msg_send(boolcls, "Alloc", 0);
-    booltrue = vz_msg_send(booltrue, "Init", 0);
-    booltrue->ivars[0].num = 1;
-
-    boolfalse = vz_msg_send(boolcls, "Alloc", 0);
-    boolfalse = vz_msg_send(boolfalse, "Init", 0);
-    boolfalse->ivars[0].num = 0;
-
     // True()
     id mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -72,7 +64,7 @@ void vz_std_init() {
     // Bool
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("==:"));
+    sel = vz_sel_box(vz_sel_get("Bool"));
     imp = vz_imp_box(vz_def({
         return vz_msg_send(self, "Retain", 0);
     }));
@@ -141,14 +133,9 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("==:"));
     imp = vz_imp_box(vz_def({
-        id boolcls = vz_class_get("Std::Bool");
-        if (argv[0] == nil) {
-            return vz_msg_send(boolcls, self->ivars[0].num == 0 ? "True" : "False", 0);
-        } else {
-            bool s = self->ivars[0].num != 0;
-            bool a = argv[0]->ivars[0].num != 0;
-            return vz_msg_send(boolcls, s == a ? "True" : "False", 0);
-        }
+        bool bool0 = vz_bool_unbox(self);
+        bool bool1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(bool0 == bool1);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -162,14 +149,9 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("!=:"));
     imp = vz_imp_box(vz_def({
-        id boolcls = vz_class_get("Std::Bool");
-        if (argv[0] == nil) {
-            return vz_msg_send(boolcls, self->ivars[0].num != 0 ? "True" : "False", 0);
-        } else {
-            bool s = self->ivars[0].num != 0;
-            bool a = argv[0]->ivars[0].num != 0;
-            return vz_msg_send(boolcls, s != a ? "True" : "False", 0);
-        }
+        bool bool0 = vz_bool_unbox(self);
+        bool bool1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(bool0 != bool1);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -240,12 +222,34 @@ void vz_std_init() {
     vz_msg_send(boolcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
 
+    booltrue = vz_msg_send(boolcls, "Alloc", 0);
+    booltrue = vz_msg_send(booltrue, "Init", 0);
+    booltrue->ivars[0].num = 1;
+    
+    boolfalse = vz_msg_send(boolcls, "Alloc", 0);
+    boolfalse = vz_msg_send(boolfalse, "Init", 0);
+    boolfalse->ivars[0].num = 0;
+    
     vz_msg_send(boolcls, "Release", 0);
 
 #pragma mark Object
 
     // Object
 
+    // Methods
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("Methods"));
+    imp = vz_imp_box(vz_def({
+        return vz_array_box_a(self->ivars[6].num, self->ivars[7].arr);
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls->isa, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
     // Copy
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
@@ -443,10 +447,24 @@ void vz_std_init() {
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     
-    // Refrences
+    // Isa
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("Refrences"));
+    sel = vz_sel_box(vz_sel_get("Isa"));
+    imp = vz_imp_box(vz_def({
+        return vz_msg_send(self->isa, "Retain", 0);
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
+    // References
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("References"));
     imp = vz_imp_box(vz_def({
         id rv = vz_num_box(self->refs);
         return rv;
@@ -458,10 +476,10 @@ void vz_std_init() {
     vz_msg_send(objcls, "AddMethod:", 1, mthd);
     vz_msg_send(mthd, "Release", 0);
     
-    // WeakRefrences
+    // WeakReferences
     mthd = vz_msg_send(mthdcls, "Alloc", 0);
     mthd = vz_msg_send(mthd, "Init", 0);
-    sel = vz_sel_box(vz_sel_get("WeakRefrences"));
+    sel = vz_sel_box(vz_sel_get("WeakReferences"));
     imp = vz_imp_box(vz_def({
         return vz_num_box(self->weaks);
     }));
@@ -506,6 +524,20 @@ void vz_std_init() {
     sel = vz_sel_box(vz_sel_get("===:"));
     imp = vz_imp_box(vz_def({
         return vz_bool_box(self == argv[0]);
+    }));
+    vz_msg_send(mthd, "SetSel:", 1, sel);
+    vz_msg_send(mthd, "SetImp:", 1, imp);
+    vz_msg_send(sel, "Release", 0);
+    vz_msg_send(imp, "Release", 0);
+    vz_msg_send(objcls, "AddMethod:", 1, mthd);
+    vz_msg_send(mthd, "Release", 0);
+    
+    // !==:
+    mthd = vz_msg_send(mthdcls, "Alloc", 0);
+    mthd = vz_msg_send(mthd, "Init", 0);
+    sel = vz_sel_box(vz_sel_get("!==:"));
+    imp = vz_imp_box(vz_def({
+        return vz_bool_box(self != argv[0]);
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
