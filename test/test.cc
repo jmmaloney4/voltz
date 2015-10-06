@@ -84,3 +84,7 @@ TEST(voltz, RetainRelease) {
 
     vz_msg_send(obj, "Release", 0);
 }
+
+TEST(voltz, LoadModule) {
+    vz_load_module("Std");
+}
