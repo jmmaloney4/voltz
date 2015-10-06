@@ -10,16 +10,6 @@
 #include <string.h>
 #include <mutex>
 
-struct vz_selTable_entry {
-    SEL sel;
-    struct vz_selTable_entry* next;
-};
-
-#define vz_selTable_size 0x1000
-
-struct vz_selTable_entry* vz_selTable[vz_selTable_size];
-std::mutex vz_selTable_mutex;
-
 NUM vz_string_hash(const char* s) {
     int64_t hash = 0;
     
@@ -44,12 +34,12 @@ SEL vz_sel_getI(const char* value) {
         hash *= -1;
     }
     
-    vz_selTable_mutex.lock();
+    VoltzVM.selmtx.lock();
     
-    for(struct vz_selTable_entry* entry = vz_selTable[(int64_t) hash];
+    for(struct vz_selTable_entry* entry = VoltzVM.seltbl[(int64_t) hash];
             entry != NULL; entry = entry->next) {
         if (strcmp(entry->sel->value, value) == 0) {
-            vz_selTable_mutex.unlock();
+            VoltzVM.selmtx.unlock();
             return entry->sel;
         }
     }
@@ -57,12 +47,12 @@ SEL vz_sel_getI(const char* value) {
     struct vz_selTable_entry* entry = (vz_selTable_entry*) malloc(sizeof(struct vz_selTable_entry));
     entry->sel = (SEL) malloc(sizeof(struct vz_sel));
     entry->sel->value = strdup(value);
-    entry->next = vz_selTable[(int64_t) hash];
-    vz_selTable[(int64_t) hash] = entry;
+    entry->next = VoltzVM.seltbl[(int64_t) hash];
+    VoltzVM.seltbl[(int64_t) hash] = entry;
     
     SEL rv = entry->sel;
     
-    vz_selTable_mutex.unlock();
+    VoltzVM.selmtx.unlock();
     
     return rv;
 }

@@ -10,16 +10,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct vz_globalTable_entry {
-    id value;
-    const char* name;
-    struct vz_globalTable_entry* next;
-};
-
-#define vz_globalTable_size 0x500
-struct vz_globalTable_entry* vz_globalTable[vz_globalTable_size];
-std::mutex vz_globalTable_mutex;
-
 id vz_global_getI(const char* str) {
     NUM hash = vz_string_hash(str);
     hash = (int64_t) fmod(hash, vz_globalTable_size);
@@ -27,11 +17,16 @@ id vz_global_getI(const char* str) {
         hash *= -1;
     }
     
-    for (struct vz_globalTable_entry* entry = vz_globalTable[(int64_t) hash]; entry != nil; entry = entry->next) {
+    VoltzVM.globalmtx.lock();
+    
+    for (struct vz_globalTable_entry* entry = VoltzVM.globaltbl[(int64_t) hash]; entry != nil; entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
+             VoltzVM.globalmtx.unlock();
             return vz_msg_send(entry->value, "Retain", 0);
         }
     }
+    
+    VoltzVM.globalmtx.unlock();
     
     return nil;
 }
@@ -45,7 +40,9 @@ void vz_global_setI(const char* str, id value) {
         hash *= -1;
     }
     
-    for (struct vz_globalTable_entry* entry = vz_globalTable[(int64_t) hash]; entry != nil; entry = entry->next) {
+    VoltzVM.globalmtx.lock();
+    
+    for (struct vz_globalTable_entry* entry = VoltzVM.globaltbl[(int64_t) hash]; entry != nil; entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
             id t = entry->value;
             entry->value = vz_msg_send(value, "Retain", 0);
@@ -56,8 +53,10 @@ void vz_global_setI(const char* str, id value) {
     struct vz_globalTable_entry* entry = (struct vz_globalTable_entry*) malloc(sizeof(struct vz_globalTable_entry));
     entry->name = strdup(str);
     entry->value = vz_msg_send(value, "Retain", 0);
-    entry->next = vz_globalTable[(int64_t) hash];
-    vz_globalTable[(int64_t) hash] = entry;
+    entry->next = VoltzVM.globaltbl[(int64_t) hash];
+    VoltzVM.globaltbl[(int64_t) hash] = entry;
+    
+    VoltzVM.globalmtx.unlock();
 }
 
 void(*vz_global_set)(const char*, id) = vz_global_setI;

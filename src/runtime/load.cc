@@ -42,6 +42,7 @@ bool vz_load_moduleI(const char* name) {
         
         free(str);
         free((void*) vz_path);
+        dlclose(lib);
         return initrv;
     }
     

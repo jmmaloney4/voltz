@@ -32,13 +32,16 @@ namespace voltz {
     extern double StartupTime;
 }
 
-extern int C_argc;
-extern const char** C_argv;
+extern "C" int C_argc;
+extern "C" const char** C_argv;
 
 typedef struct vz_object* id;
 typedef struct vz_sel* SEL;
 typedef double NUM;
 typedef std::function<id(id, SEL, NUM, id*)>* IMP;
+typedef struct vz_vm VM;
+
+extern "C" VM VoltzVM;
 
 /* Class
  * - super

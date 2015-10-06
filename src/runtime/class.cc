@@ -10,16 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct vz_classTable_entry {
-    id cls;
-    const char* name;
-    struct vz_classTable_entry* next;
-};
-
-#define vz_classTable_size 0x500
-struct vz_classTable_entry* vz_classTable[vz_classTable_size] = {NULL};
-std::mutex vz_classTable_mutex;
-
 id vz_class_getI(const char* name) {
     NUM hash = vz_string_hash(name);
     hash = (int64_t) fmod(hash, vz_classTable_size);
@@ -27,18 +17,18 @@ id vz_class_getI(const char* name) {
         hash *= -1;
     }
     
-    vz_classTable_mutex.lock();
+    VoltzVM.clsmtx.lock();
     
-    for(struct vz_classTable_entry* entry = vz_classTable[(int64_t) hash];
+    for(struct vz_classTable_entry* entry = VoltzVM.classtbl[(int64_t) hash];
         entry != NULL; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
             id rv = vz_msg_send(entry->cls, "Retain", 0);
-            vz_classTable_mutex.unlock();
+            VoltzVM.clsmtx.unlock();
             return rv;
         }
     }
     
-    vz_classTable_mutex.unlock();
+    VoltzVM.clsmtx.unlock();
     
     return nil;
 }
@@ -52,13 +42,13 @@ void vz_class_registerI(const char* name, id cls) {
         hash *= -1;
     }
     
-    vz_classTable_mutex.lock();
+    VoltzVM.clsmtx.lock();
     
-    for(struct vz_classTable_entry* entry = vz_classTable[(int64_t) hash];
+    for(struct vz_classTable_entry* entry = VoltzVM.classtbl[(int64_t) hash];
         entry != NULL; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
             entry->cls = vz_msg_send(cls, "Retain", 0);
-            vz_classTable_mutex.unlock();
+            VoltzVM.clsmtx.unlock();
             return;
         }
     }
@@ -66,10 +56,10 @@ void vz_class_registerI(const char* name, id cls) {
     struct vz_classTable_entry* entry = (struct vz_classTable_entry*) malloc(sizeof(vz_classTable_entry));
     entry->cls = vz_msg_send(cls, "Retain", 0);
     entry->name = strdup(name);
-    entry->next = vz_classTable[(int64_t) hash];
-    vz_classTable[(int64_t) hash] = entry;
+    entry->next = VoltzVM.classtbl[(int64_t) hash];
+    VoltzVM.classtbl[(int64_t) hash] = entry;
     
-    vz_classTable_mutex.unlock();
+    VoltzVM.clsmtx.unlock();
 }
 
 void (*vz_class_register)(const char*, id) = vz_class_registerI;
@@ -122,8 +112,8 @@ const SEL* vz_class_ivarnI(id cls) {
 const SEL* (*vz_class_ivarn)(id) = vz_class_ivarnI;
 
 void vz_class_init() {
-    id clscls = vz_class_get("Std::Class");
-    id mthdcls = vz_class_get("Std::Method");
+    id clscls = vz_class_get("std::Class");
+    id mthdcls = vz_class_get("std::Method");
     id addprotocol = vz_msg_send(mthdcls, "Alloc", 0);
     id sel = vz_sel_box(vz_sel_get("AddProtocol:"));
     id imp = vz_imp_box(vz_def({

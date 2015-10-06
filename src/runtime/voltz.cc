@@ -7,8 +7,10 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
+VM VoltzVM;
+
 id vz_bool_boxI(bool value) {
-    id boolcls = vz_class_get("Std::Bool");
+    id boolcls = vz_class_get("std::Bool");
     id rv = vz_msg_send(boolcls, value ? "True" : "False", 0);
     vz_msg_send(boolcls, "Release", 0);
     return rv;
@@ -62,7 +64,7 @@ id vz_array_box_vI(NUM count, va_list ap) {
 id (*vz_array_box_v)(NUM, va_list) = vz_array_box_vI;
 
 id vz_array_box_aI(NUM count, id* args) {
-    id arrcls = vz_class_get("Std::Array");
+    id arrcls = vz_class_get("std::Array");
     id rv = vz_msg_send(arrcls, "Alloc", 0);
     rv = vz_msg_send(rv, "Init", 0);
     

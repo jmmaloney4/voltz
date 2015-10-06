@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 void vz_linker_entry(id, id) {
+    vz_load_module("std");
     ::testing::InitGoogleTest(&C_argc, (char**) C_argv);
     int rv = RUN_ALL_TESTS();
     exit(rv);
@@ -20,8 +21,8 @@ TEST(voltz, SelectorIntegrity) {
     
     EXPECT_EQ(sel, sel2);
     
-    sel = vz_sel_get("AnotherSelector::");
-    sel2 = vz_sel_get("AnotherSelector::");
+    sel = vz_sel_get("AnotherSe:lector");
+    sel2 = vz_sel_get("AnotherSe:lector");
     
     EXPECT_EQ(sel, sel2);
     
@@ -40,7 +41,7 @@ TEST(voltz, Bool) {
 }
 
 TEST(voltz, HelloWorld) {
-    id fos = vz_class_get("Std::IO::FileOutputStream");
+    id fos = vz_class_get("std::io::FileOutputStream");
     id sout = vz_msg_send(fos, "Alloc", 0);
     sout = vz_msg_send(sout, "Init", 0);
     vz_object_setIvar(sout, "file", (id) stdout);
@@ -50,7 +51,7 @@ TEST(voltz, HelloWorld) {
 }
 
 TEST(voltz, RetainRelease) {
-    id objcls = vz_class_get("Std::Object");
+    id objcls = vz_class_get("std::Object");
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
@@ -91,7 +92,7 @@ TEST(voltz, LoadModule) {
 }
 
 TEST(voltz, BoolEvalMethod) {
-    id objcls = vz_class_get("Std::Object");
+    id objcls = vz_class_get("std::Object");
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
@@ -117,7 +118,7 @@ TEST(voltz, BoolEvalMethod) {
 }
 
 TEST(voltz, ComparisonOperators) {
-    id objcls = vz_class_get("Std::Object");
+    id objcls = vz_class_get("std::Object");
     
     id obj1 = vz_msg_send(objcls, "Alloc", 0);
     obj1 = vz_msg_send(obj1, "Init", 0);
@@ -281,12 +282,12 @@ TEST(voltz, BoolOperators) {
 }
 
 TEST(voltz, Description) {
-    id objcls = vz_class_get("Std::Object");
+    id objcls = vz_class_get("std::Object");
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
-    char buf[100 + strlen("Std::Object")];
-    sprintf(buf, "[Std::Object:%p]", obj);
+    char buf[100 + strlen("std::Object")];
+    sprintf(buf, "[std::Object:%p]", obj);
     
     id des = vz_msg_send(obj, "Description", 0);
     const char* str = vz_string_unbox(des);
@@ -304,7 +305,7 @@ TEST(voltz, Description) {
 }
 /*
 TEST(voltz, RespondsTo) {
-    id objcls = vz_class_get("Std::Object");
+    id objcls = vz_class_get("std::Object");
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
@@ -321,7 +322,7 @@ TEST(voltz, RespondsTo) {
 */
 
 TEST(voltz, References) {
-    id objcls = vz_class_get("Std::Object");
+    id objcls = vz_class_get("std::Object");
     id obj = vz_msg_send(objcls, "Alloc", 0);
     obj = vz_msg_send(obj, "Init", 0);
     
