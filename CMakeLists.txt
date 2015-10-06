@@ -25,9 +25,6 @@ target_link_libraries(voltz dl)
 
 # add_library(std src/std/std.cc src/std/io.cc)
 
-add_executable(voltzc src/compiler/main.cc)
-target_link_libraries(voltzc voltz dl)
-
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
 
 if(test)
