@@ -31,7 +31,7 @@ bool vz_load_moduleI(const char* name) {
         sprintf(buf, "%s/%s.%s", token, name, VOLTZ_MODULE_EXT);
         printf("%s\n", buf);
         
-        void* lib = dlopen(buf, RTLD_LOCAL | RTLD_NODELETE | RTLD_FIRST);
+        void* lib = dlopen(buf, RTLD_LOCAL | RTLD_NODELETE);
         
         if (!lib) {
             continue;
