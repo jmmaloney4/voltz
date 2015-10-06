@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <dlfcn.h>
+#include <cstring>
 
 bool vz_load_moduleI(const char* name) {
     
