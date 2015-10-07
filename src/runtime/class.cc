@@ -141,3 +141,15 @@ void vz_class_init() {
     vz_msg_send(sel, "Release", 0);
     vz_msg_send(imp, "Release", 0);
 }
+
+void vz_class_setIvarNameI(id cls, NUM index, const char* name) {
+    cls->ivars[3].sarr[(int64_t) index] = vz_sel_get(name);
+}
+
+void (*vz_class_setIvarName)(id, NUM, const char*) = vz_class_setIvarNameI;
+
+void vz_class_setIvarName_sI(id cls, NUM index, SEL name) {
+    cls->ivars[3].sarr[(int64_t) index] = name;
+}
+
+void (*vz_class_setIvarName_s)(id, NUM, SEL) = vz_class_setIvarName_sI;

@@ -4,6 +4,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
 
+#ifndef VOLTZ_INTERNAL_H
+#define VOLTZ_INTERNAL_H
+
 #include <voltz.h>
 #include <mutex>
 
@@ -67,3 +70,5 @@ extern "C" id vz_object_alloc(NUM ivars);
 extern "C" NUM vz_string_hash(const char* s);
 
 extern "C" void vz_std_init();
+
+#endif // VOLTZ_INTERNAL_H

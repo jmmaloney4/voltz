@@ -7,8 +7,10 @@
 #include "runtime/voltz-internal.h"
 #include <gtest/gtest.h>
 
+extern "C" bool VoltzModuleInitialize_std();
+
 void vz_linker_entry(id, id) {
-    vz_load_module("std");
+    VoltzModuleInitialize_std();
     ::testing::InitGoogleTest(&C_argc, (char**) C_argv);
     int rv = RUN_ALL_TESTS();
     exit(rv);

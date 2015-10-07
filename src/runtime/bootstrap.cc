@@ -11,82 +11,82 @@ int C_argc;
 const char** C_argv;
 
 void vz_bootstrap_runtime(int argc, const char** argv) {
-    
+
     C_argc = argc;
     C_argv = argv;
-    
+
     VoltzVM.classtbl = (vz_classTable_entry**) malloc(sizeof(vz_classTable_entry*) * vz_classTable_size);
     VoltzVM.globaltbl = (vz_globalTable_entry**) malloc(sizeof(vz_globalTable_entry*) * vz_globalTable_size);
     VoltzVM.seltbl = (vz_selTable_entry**) malloc(sizeof(vz_selTable_entry*) * vz_selTable_size);
-    
+
     id objcls = vz_object_alloc(8);
     id clscls = vz_object_alloc(8);
     id mthdcls = vz_object_alloc(8);
     id selcls = vz_object_alloc(8);
     id impcls = vz_object_alloc(8);
-    
+
     objcls->isa = clscls;
     clscls->isa = clscls;
-    
+
     mthdcls->isa = vz_object_alloc(8);
     selcls->isa = vz_object_alloc(8);
     impcls->isa = vz_object_alloc(8);
-    
+
     mthdcls->isa->isa = clscls;
     selcls->isa->isa = clscls;
     impcls->isa->isa = clscls;
-    
-    
+
+
     objcls->refs = 1;
     objcls->weaks = 0;
-    
+
     clscls->refs = 1;
     clscls->weaks = 0;
-    
+
     mthdcls->refs = 1;
     mthdcls->weaks = 0;
-    
+
     selcls->refs = 1;
     selcls->weaks = 0;
-    
+
     impcls->refs = 1;
     impcls->weaks = 0;
-    
+
     // super classes
     objcls->ivars[0].obj = nil;
     clscls->ivars[0].obj = objcls;
     mthdcls->ivars[0].obj = objcls;
     selcls->ivars[0].obj = objcls;
     impcls->ivars[0].obj = objcls;
-    
+
     mthdcls->isa->ivars[0].obj = clscls;
     selcls->isa->ivars[0].obj = clscls;
     impcls->isa->ivars[0].obj = clscls;
-    
-    
+
+
     // names
     objcls->ivars[1].str = "std::Object";
     clscls->ivars[1].str = "std::Class";
     mthdcls->ivars[1].str = "std::Method";
     selcls->ivars[1].str = "std::Selector";
     impcls->ivars[1].str = "std::Imp";
-    
+
     mthdcls->isa->ivars[1].str = "std::Method.isa";
     selcls->isa->ivars[1].str = "std::Selector.isa";
     impcls->isa->ivars[1].str = "std::Imp.isa";
-    
+
     // ivars
     objcls->ivars[2].num = 0;
     clscls->ivars[2].num = 8;
     mthdcls->ivars[2].num = 2;
     selcls->ivars[2].num = 1;
     impcls->ivars[2].num = 1;
-    
+
     mthdcls->isa->ivars[2].num = 0;
     selcls->isa->ivars[2].num = 0;
     impcls->isa->ivars[2].num = 0;
-    
-    
+
+
     // ivarn
     objcls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * objcls->ivars[2].num);
     clscls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * clscls->ivars[2].num);
@@ -105,44 +105,44 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     selcls->ivars[3].sarr[0] = vz_sel_get("value");
     impcls->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * impcls->ivars[2].num);
     impcls->ivars[3].sarr[0] = vz_sel_get("value");
-    
-    
+
+
     // protocolc
     objcls->ivars[4].num = 0;
     clscls->ivars[4].num = 0;
     mthdcls->ivars[4].num = 0;
     selcls->ivars[4].num = 0;
     impcls->ivars[4].num = 0;
-    
-    
+
+
     // protocolv
     objcls->ivars[5].arr = (id*) malloc(sizeof(id) * objcls->ivars[4].num);
     clscls->ivars[5].arr = (id*) malloc(sizeof(id) * clscls->ivars[4].num);
     mthdcls->ivars[5].arr = (id*) malloc(sizeof(id) * mthdcls->ivars[4].num);
     selcls->ivars[5].arr = (id*) malloc(sizeof(id) * selcls->ivars[4].num);
     impcls->ivars[5].arr = (id*) malloc(sizeof(id) * impcls->ivars[4].num);
-    
-    
+
+
     // mthdc
     objcls->ivars[6].num = 4;
     clscls->ivars[6].num = 2;
     mthdcls->ivars[6].num = 0;
     selcls->ivars[6].num = 0;
     impcls->ivars[6].num = 0;
-    
+
     mthdcls->isa->ivars[6].num = 0;
     selcls->isa->ivars[6].num = 0;
     impcls->isa->ivars[6].num = 0;
-    
-    
+
+
     // mthdv
     objcls->ivars[7].arr = (id*) malloc(sizeof(id) * objcls->ivars[6].num);
     clscls->ivars[7].arr = (id*) malloc(sizeof(id) * clscls->ivars[6].num);
     mthdcls->ivars[7].arr = (id*) malloc(sizeof(id) * mthdcls->ivars[6].num);
     selcls->ivars[7].arr = (id*) malloc(sizeof(id) * selcls->ivars[6].num);
     impcls->ivars[7].arr = (id*) malloc(sizeof(id) * impcls->ivars[6].num);
-    
-    
+
+
     // class methods
     clscls->ivars[7].arr[0] = vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     clscls->ivars[7].arr[0]->isa = mthdcls;
@@ -154,14 +154,14 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         for (id c = self->ivars[0].obj; c != nil; c = c->ivars[0].obj) {
             ivars += c->ivars[2].num;
         }
-        
+
         id rv = vz_object_alloc(ivars);
         rv->isa = self;
         rv->refs = 1;
         rv->weaks = 0;
         return rv;
     }));
-    
+
     clscls->ivars[7].arr[1] = vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     clscls->ivars[7].arr[1]->isa = mthdcls;
     clscls->ivars[7].arr[1]->refs = 1;
@@ -170,21 +170,21 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_object_setIvar(clscls->ivars[7].arr[1], "imp", (id) vz_def({
         NUM mthdc = self->ivars[6].num;
         id* mthdv = self->ivars[7].arr;
-        
+
         id* tmp = (id*) malloc(sizeof(id) * (mthdc + 1));
-        
+
         for (NUM k = 0; k < mthdc; k++) {
             tmp[(int64_t) k] = mthdv[(int64_t) k];
         }
         tmp[(int64_t) mthdc] = vz_msg_send(argv[0], "Retain", 0);
-        
+
         self->ivars[6].num += 1;
         self->ivars[7].arr = tmp;
         free(mthdv);
-        
+
         return nil;
     }));
-    
+
     // object methods
     objcls->ivars[7].arr[0] = vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     objcls->ivars[7].arr[0]->isa = mthdcls;
@@ -194,7 +194,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_object_setIvar(objcls->ivars[7].arr[0], "imp", (id) vz_def({
         return self;
     }));
-    
+
     objcls->ivars[7].arr[1] = vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     objcls->ivars[7].arr[1]->isa = mthdcls;
     objcls->ivars[7].arr[1]->refs = 1;
@@ -204,7 +204,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         self->refs++;
         return self;
     }));
-    
+
     objcls->ivars[7].arr[2] = vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     objcls->ivars[7].arr[2]->isa = mthdcls;
     objcls->ivars[7].arr[2]->refs = 1;
@@ -218,7 +218,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         }
         return nil;
     });
-    
+
     objcls->ivars[7].arr[3] = vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     objcls->ivars[7].arr[3]->isa = mthdcls;
     objcls->ivars[7].arr[3]->refs = 1;
@@ -228,7 +228,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         free(self);
         return nil;
     });
-    
+
     // SetSel:
     id setsel = vz_msg_send(mthdcls, "Alloc", 0);
     setsel = vz_msg_send(setsel, "Init", 0);
@@ -239,8 +239,8 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         return nil;
     });
     vz_msg_send(mthdcls, "AddMethod:", 1, setsel);
-    
-    
+
+
     // SetImp:
     id setimp = vz_msg_send(mthdcls, "Alloc", 0);
     setimp = vz_msg_send(setimp, "Init", 0);
@@ -251,6 +251,20 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         return nil;
     });
     vz_msg_send(mthdcls, "AddMethod:", 1, setimp);
+
+    // FIXME
+    // Init::
+    id init = vz_msg_send(mthdcls, "Alloc", 0);
+    init = vz_msg_send(init, "Init", 0);
+    vz_object_setIvar(init, "sel", (id) vz_sel_get("Init::"));
+    init->ivars[1].imp = vz_def({
+        SEL s = vz_sel_unbox(argv[0]);
+        vz_object_setIvar(self, "sel", (id) s);
+        IMP i = vz_imp_unbox(argv[1]);
+        vz_object_setIvar(self, "imp", (id) i);
+        return nil;
+    });
+    vz_msg_send(mthdcls, "AddMethod:", 1, init);
     
     // Subclass
     id subclass = vz_msg_send(mthdcls, "Alloc", 0);
@@ -281,12 +295,12 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         rv->ivars[5].arr = (id*) malloc(sizeof(id) * rv->ivars[4].num);
         rv->ivars[6].num = 0;
         rv->ivars[7].arr = (id*) malloc(sizeof(id) * rv->ivars[6].num);
-
+        
         return rv;
     });
     vz_msg_send(clscls, "AddMethod:", 1, subclass);
     vz_msg_send(subclass, "Release", 0);
-    
+
     // AddIvar
     id addivar = vz_msg_send(mthdcls, "Alloc", 0);
     addivar = vz_msg_send(addivar, "Init", 0);
@@ -296,22 +310,22 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         for (NUM k = 0; k < self->ivars[2].num; k++) {
             tmp[(int64_t)k] = self->ivars[2].sarr[(int64_t)k];
         }
-        
+
         const char* s = vz_string_unbox(argv[0]);
         tmp[(int64_t) self->ivars[2].num] = vz_sel_get(s);
         free((void*) s);
-        
+
         SEL* old = self->ivars[3].sarr;
         self->ivars[3].sarr = tmp;
         free(old);
-        
+
         self->ivars[2].num += 1;
-        
+
         return nil;
     });
     vz_msg_send(clscls, "AddMethod:", 1, addivar);
     vz_msg_send(addivar, "Release", 0);
-    
+
     vz_class_register(objcls->ivars[1].str, objcls);
     vz_class_register(clscls->ivars[1].str, clscls);
     vz_class_register(mthdcls->ivars[1].str, mthdcls);
@@ -332,7 +346,19 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     vz_msg_send(regimp, "Release", 0);
     vz_msg_send(reg, "Release", 0);
     
-    
+    id isa = vz_msg_send(mthdcls, "Alloc", 0);
+    isa = vz_msg_send(isa, "Init", 0);
+    id isasel = vz_sel_box(vz_sel_get("Isa"));
+    id isaimp = vz_imp_box(vz_def({
+        return vz_msg_send(self->isa, "Retain", 0);
+    }));
+    vz_msg_send(isa, "SetSel:", 1, isasel);
+    vz_msg_send(isa, "SetImp:", 1, isaimp);
+    vz_msg_send(objcls, "AddMethod:", 1, isa);
+    vz_msg_send(isasel, "Release", 0);
+    vz_msg_send(isaimp, "Release", 0);
+    vz_msg_send(isa, "Release", 0);
+
     id strcls = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
     strcls->isa = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
     strcls->ivars[0].obj = objcls;
@@ -354,7 +380,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     strcls->ivars[7].arr = (id*) malloc(sizeof(id) * strcls->ivars[6].num);
     strcls->isa->ivars[7].arr = (id*) malloc(sizeof(id) * strcls->isa->ivars[6].num);
     vz_class_register(strcls->ivars[1].str, strcls);
-    
+
     id numcls = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
     numcls->isa = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
     numcls->ivars[0].obj = objcls;
