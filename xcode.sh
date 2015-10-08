@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git submodule init
+git submodule update --init
 mkdir -p xcode
 cd ./xcode
 
