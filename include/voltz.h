@@ -4,6 +4,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
 
+#ifndef VOLTZ_VOLTZ_H
+#define VOLTZ_VOLTZ_H
+
 #include <cstdint>
 #include <cstdarg>
 #include <functional>
@@ -34,13 +37,16 @@ namespace voltz {
     extern double StartupTime;
 }
 
-extern int C_argc;
-extern const char** C_argv;
+extern "C" int C_argc;
+extern "C" const char** C_argv;
 
 typedef struct vz_object* id;
 typedef struct vz_sel* SEL;
 typedef double NUM;
 typedef std::function<id(id, SEL, NUM, id*)>* IMP;
+typedef struct vz_vm VM;
+
+extern "C" VM VoltzVM;
 
 /* Class
  * - super
@@ -267,6 +273,16 @@ extern "C" NUM (*vz_class_ivarc)(id cls);
  */
 extern "C" const SEL* (*vz_class_ivarn)(id cls);
 
+/** Set the name for a class' instance variable.
+ *
+ */
+extern "C" void (*vz_class_setIvarName)(id cls, NUM index, const char* name);
+
+/** Set the name for a class' instance variable.
+ *
+ */
+extern "C" void (*vz_class_setIvarName_s)(id cls, NUM index, SEL name);
+
 /** Implemented by the linker to load modules for an executable.
  *
  */
@@ -299,3 +315,5 @@ extern "C" id (*vz_msg_send_super_a)(id target,
 extern "C" id (*vz_msg_send_super_s)(id target, SEL sel, NUM argc, ...);
 extern "C" id (*vz_msg_send_super_sv)(id target, SEL sel, NUM argc, va_list ap);
 extern "C" id (*vz_msg_send_super_sa)(id target, SEL sel, NUM argc, id* args);
+
+#endif // VOLTZ_VOLTZ_H

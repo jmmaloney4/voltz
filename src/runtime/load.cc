@@ -37,11 +37,12 @@ bool vz_load_moduleI(const char* name) {
             continue;
         }
 
-        bool (*initfn)() = (bool (*) ()) dlsym(lib, "VoltzInitializeModule");
+        bool (*initfn)() = (bool (*) ()) dlsym(lib, "VoltzModuleInitialize");
         bool initrv = initfn();
 
         free(str);
         free((void*) vz_path);
+        dlclose(lib);
         return initrv;
     }
 

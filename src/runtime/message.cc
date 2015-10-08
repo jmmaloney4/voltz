@@ -67,9 +67,15 @@ id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
             }
         }
     }
-    id s = vz_sel_box(sel);
-    vz_msg_send(target, "UnrecognizedSelector:", 1, s);
+    id s     = vz_sel_box(sel);
+    id argsa = vz_array_box_a(argc, args);
+    id tmp0 = vz_msg_send(target, "ResolveMessageSend::", 2, sel, argsa);
+    if (!vz_bool_unbox(tmp0)) {
+        vz_msg_send(target, "UnrecognizedSelector:", 1, s);
+    }
     vz_msg_send(s, "Release", 0);
+    vz_msg_send(argsa, "Release", 0);
+    vz_msg_send(tmp0, "Release", 0);
     return nil;
 }
 

@@ -25,5 +25,5 @@ int main(int argc, const char** argv) {
     printf("Took %f seconds to startup.\n", StartupTime);
 #endif
 
-    vz_linker_entry(nil, nil);
+    vz_linker_entry(vz_num_box(argc), nil);
 }
