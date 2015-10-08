@@ -1,7 +1,6 @@
 ---
 Language:        Cpp
 BasedOnStyle:  LLVM
-AccessModifierOffset: -2
 AlignAfterOpenBracket: true
 AlignConsecutiveAssignments: true
 AlignEscapedNewlinesLeft: false
@@ -19,6 +18,7 @@ ColumnLimit:     80
 DisableFormat:   false
 IndentWidth: 4
 MaxEmptyLinesToKeep: 1
+IndentWrappedFunctionNames: true
 NamespaceIndentation: All
 PointerAlignment: Left
 SpaceAfterCStyleCast: true
