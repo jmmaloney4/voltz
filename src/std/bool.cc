@@ -7,6 +7,9 @@
 #include <voltz.h>
 #include "std.h"
 
+id booltrue  = nil;
+id boolfalse = nil;
+
 bool InitBoolClass() {
     id objcls = vz_class_get("std::Object");
 
@@ -14,23 +17,68 @@ bool InitBoolClass() {
     vz_class_register("std::Bool", boolcls);
     vz_class_setIvarName(boolcls, 0, "value");
 
-    id boolclsisa = vz_msg_send(boolcls, "Isa", 0);
-    /*ADD_MTHD(boolclsisa, "True", {
-        return nil;
-    });*/
-    {
-        id _mthdcls = vz_class_get("std::Method");
-        id _mthd    = vz_msg_send(_mthdcls, "Alloc", 0);
-        id _sel     = vz_sel_box(vz_sel_get("True"));
-        id _imp = vz_imp_box((new std::function<id(id, SEL, NUM, id*) >(
-            [](id self, SEL cmd, NUM argc, id* argv) -> id {
-                { return nil; }
-            })));
-        _mthd = vz_msg_send(_mthd, "Init::", 2, _sel, _imp);
-        vz_msg_send(boolclsisa, "AddMethod:", 1, _mthd);
-        vz_msg_send(_mthdcls, "Release", 0);
-        vz_msg_send(_mthd, "Release", 0);
-        vz_msg_send(_sel, "Release", 0);
-        vz_msg_send(_imp, "Release", 0);
-    };
+    booltrue = vz_msg_send(boolcls, "Alloc", 0);
+    booltrue = vz_msg_send(booltrue, "Init", 0);
+    vz_object_setIvar(booltrue, "value", (id) true);
+
+    boolfalse = vz_msg_send(boolcls, "Alloc", 0);
+    boolfalse = vz_msg_send(boolfalse, "Init", 0);
+    vz_object_setIvar(boolfalse, "value", (id) false);
+
+    id boolisa = vz_msg_send(boolcls, "Isa", 0);
+    ADD_MTHD(boolisa, "True", { return vz_msg_send(booltrue, "Retain", 0); });
+    ADD_MTHD(boolisa, "False", { return vz_msg_send(boolfalse, "Retain", 0); });
+
+    ADD_MTHD(boolcls,
+             "!",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 return vz_bool_box(!b0);
+             });
+
+    ADD_MTHD(boolcls,
+             "==:",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 bool b1 = vz_bool_unbox(argv[0]);
+                 return vz_bool_box(b0 == b1);
+             });
+    ADD_MTHD(boolcls,
+             "!=:",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 bool b1 = vz_bool_unbox(argv[0]);
+                 return vz_bool_box(b0 != b1);
+             });
+
+    ADD_MTHD(boolcls,
+             "&&:",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 bool b1 = vz_bool_unbox(argv[0]);
+                 return vz_bool_box(b0 && b1);
+             });
+    ADD_MTHD(boolcls,
+             "||:",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 bool b1 = vz_bool_unbox(argv[0]);
+                 return vz_bool_box(b0 || b1);
+             });
+    ADD_MTHD(boolcls,
+             "^^:",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 bool b1 = vz_bool_unbox(argv[0]);
+                 return vz_bool_box(!b0 != !b1);
+             });
+
+    ADD_MTHD(boolcls,
+             "String",
+             {
+                 bool b0 = vz_bool_unbox(self);
+                 return vz_string_box(b0 ? "True" : "False");
+             });
+
+    return true;
 }

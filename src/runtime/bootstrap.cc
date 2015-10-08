@@ -261,17 +261,19 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     });
     vz_msg_send(mthdcls, "AddMethod:", 1, setimp);
 
-    // FIXME
     // Init::
     id init = vz_msg_send(mthdcls, "Alloc", 0);
     init = vz_msg_send(init, "Init", 0);
     vz_object_setIvar(init, "sel", (id) vz_sel_get("Init::"));
     init->ivars[1].imp = vz_def({
-        SEL s = vz_sel_unbox(argv[0]);
-        vz_object_setIvar(self, "sel", (id) s);
-        IMP i = vz_imp_unbox(argv[1]);
-        vz_object_setIvar(self, "imp", (id) i);
-        return nil;
+        self = vz_msg_send_super(self, "Init", 0);
+        if (self) {
+            id sel = vz_msg_send(argv[0], "Retain", 0);
+            id imp = vz_msg_send(argv[1], "Retain", 0);
+            vz_msg_send(self, "SetSel:", 1, sel);
+            vz_msg_send(self, "SetImp:", 1, imp);
+        }
+        return self;
     });
     vz_msg_send(mthdcls, "AddMethod:", 1, init);
 
