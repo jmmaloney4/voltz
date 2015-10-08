@@ -206,6 +206,22 @@ extern "C" id (*vz_object_getIvar)(id obj, const char* name);
  */
 extern "C" id (*vz_object_getIvar_s)(id obj, SEL name);
 
+/** Get an object's instance variable that is stored for @c name as a NUM.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ *
+ */
+extern "C" NUM (*vz_object_getIvar_n)(id obj, const char* name);
+
+/** Get an object's instance variable that is stored for @c name as a NUM.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ *
+ */
+extern "C" NUM (*vz_object_getIvar_sn)(id obj, SEL name);
+
 /** Set an object's instance variable for @c name, to @c value.
  *
  *  Don't use this except in the setter and getter methods for this class, as
@@ -219,6 +235,20 @@ extern "C" void (*vz_object_setIvar)(id obj, const char* name, id value);
  *  this can mess up the internal state of an object.
  */
 extern "C" void (*vz_object_setIvar_s)(id obj, SEL name, id value);
+
+/** Set an object's instance variable for @c name, to a NUM @c value.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ */
+extern "C" void (*vz_object_setIvar_n)(id obj, const char* name, NUM value);
+
+/** Set an object's instance variable for @c name, to a NUM @c value.
+ *
+ *  Don't use this except in the setter and getter methods for this class, as
+ *  this can mess up the internal state of an object.
+ */
+extern "C" void (*vz_object_setIvar_sn)(id obj, SEL name, NUM value);
 
 /** Get the type of an object.
  *
@@ -294,9 +324,7 @@ extern "C" void vz_linker_entry(id argc, id argv);
 extern "C" bool (*vz_load_module)(const char* name);
 
 extern "C" id (*vz_msg_send)(id target, const char* sel, NUM argc, ...);
-extern "C" id (*vz_msg_send_v)(id target,
-                               const char* sel,
-                               NUM argc,
+extern "C" id (*vz_msg_send_v)(id target, const char* sel, NUM argc,
                                va_list ap);
 extern "C" id (*vz_msg_send_a)(id target, const char* sel, NUM argc, id* args);
 extern "C" id (*vz_msg_send_s)(id target, SEL sel, NUM argc, ...);
@@ -304,13 +332,9 @@ extern "C" id (*vz_msg_send_sv)(id target, SEL sel, NUM argc, va_list ap);
 extern "C" id (*vz_msg_send_sa)(id target, SEL sel, NUM argc, id* args);
 
 extern "C" id (*vz_msg_send_super)(id target, const char* sel, NUM argc, ...);
-extern "C" id (*vz_msg_send_super_v)(id target,
-                                     const char* sel,
-                                     NUM argc,
+extern "C" id (*vz_msg_send_super_v)(id target, const char* sel, NUM argc,
                                      va_list ap);
-extern "C" id (*vz_msg_send_super_a)(id target,
-                                     const char* sel,
-                                     NUM argc,
+extern "C" id (*vz_msg_send_super_a)(id target, const char* sel, NUM argc,
                                      id* args);
 extern "C" id (*vz_msg_send_super_s)(id target, SEL sel, NUM argc, ...);
 extern "C" id (*vz_msg_send_super_sv)(id target, SEL sel, NUM argc, va_list ap);

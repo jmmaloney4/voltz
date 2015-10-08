@@ -672,7 +672,7 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     numcls->ivars[3].sarr[0] = vz_sel_get("value");
 
     // Abs()

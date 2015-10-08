@@ -11,7 +11,19 @@ extern "C" const char* VoltzModuleName = "std";
 
 extern "C" bool VoltzModuleInitialize_std() {
 
+    if (!InitObjectClass()) {
+        return false;
+    }
+
+    if (!InitClassClass()) {
+        return false;
+    }
+
     if (!InitBoolClass()) {
+        return false;
+    }
+
+    if (!InitNumberClass()) {
         return false;
     }
 

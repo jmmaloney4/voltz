@@ -15,8 +15,8 @@
         id var##_name  = vz_string_box(name);                                  \
         id var##_iname = vz_string_box(name ".Isa");                           \
         id var##_ivarc = vz_num_box(ivarc);                                    \
-        var = vz_msg_send(                                                     \
-            super, "Subclass:::", 3, var##_name, var##_iname, var##_ivarc);    \
+        var = vz_msg_send(super, "Subclass:::", 3, var##_name, var##_iname,    \
+                          var##_ivarc);                                        \
         vz_msg_send(var##_name, "Release", 0);                                 \
         vz_msg_send(var##_iname, "Release", 0);                                \
         vz_msg_send(var##_ivarc, "Release", 0);                                \
@@ -36,6 +36,9 @@
         vz_msg_send(_imp, "Release", 0);                                       \
     }
 
+bool InitObjectClass();
+bool InitClassClass();
 bool InitBoolClass();
+bool InitNumberClass();
 
 #endif // VOLTZ_STD_H
