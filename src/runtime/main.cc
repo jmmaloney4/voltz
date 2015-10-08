@@ -11,19 +11,19 @@
 double StartupTime;
 
 int main(int argc, const char** argv) {
-    
+
     clock_t begin, end;
     begin = clock();
 
     vz_bootstrap_runtime(argc, argv);
-    
+
     end = clock();
-    
+
     StartupTime = (end - begin) / CLOCKS_PER_SEC;
 
 #ifdef VOLTZ_DEBUG
     printf("Took %f seconds to startup.\n", StartupTime);
 #endif
-    
+
     vz_linker_entry(vz_num_box(argc), nil);
 }

@@ -8,18 +8,18 @@
 
 id vz_imp_boxI(IMP imp) {
     id impcls = vz_class_get("std::Imp");
-    id rv = vz_msg_send(impcls, "Alloc", 0);
-    rv = vz_msg_send(rv, "Init", 0);
-    
+    id rv     = vz_msg_send(impcls, "Alloc", 0);
+    rv        = vz_msg_send(rv, "Init", 0);
+
     rv->ivars[0].imp = imp;
-    
+
     return rv;
 }
 
 id (*vz_imp_box)(IMP) = vz_imp_boxI;
 
 IMP vz_imp_unboxI(id obj) {
-    IMP rv = new std::function<id(id, SEL, NUM, id*)>(*obj->ivars[0].imp);
+    IMP rv = new std::function<id(id, SEL, NUM, id*) >(*obj->ivars[0].imp);
     return rv;
 }
 
