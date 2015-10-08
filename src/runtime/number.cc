@@ -9,15 +9,15 @@
 
 id vz_num_boxI(NUM value) {
     id numcls = vz_class_get("Std::Number");
-    id rv = vz_msg_send(numcls, "Alloc", 0);
-    rv = vz_msg_send(rv, "Init", 0);
-    
+    id rv     = vz_msg_send(numcls, "Alloc", 0);
+    rv        = vz_msg_send(rv, "Init", 0);
+
     rv->ivars[0].num = value;
-    
+
     return rv;
 }
 
-id(*vz_num_box)(NUM) = vz_num_boxI;
+id (*vz_num_box)(NUM) = vz_num_boxI;
 
 NUM vz_num_unboxI(id obj) {
     if (obj == nil) {
@@ -26,5 +26,4 @@ NUM vz_num_unboxI(id obj) {
     return obj->ivars[0].num;
 }
 
-NUM(*vz_num_unbox)(id) = vz_num_unboxI;
-
+NUM (*vz_num_unbox)(id) = vz_num_unboxI;

@@ -11,7 +11,7 @@
 #include <cstring>
 
 bool vz_load_moduleI(const char* name) {
-    
+
     const char* vz_path = getenv(VOLTZ_PATH_ENVVAR);
     if (!vz_path) {
         const char* home = getenv("HOME");
@@ -22,33 +22,33 @@ bool vz_load_moduleI(const char* name) {
     } else {
         vz_path = strdup(vz_path);
     }
-    
+
     char* str = strdup(vz_path);
     char* token;
     while ((token = strsep(&str, ":")) != NULL) {
-        
+
         char buf[strlen(token) + strlen(name) + strlen(VOLTZ_MODULE_EXT) + 3];
         sprintf(buf, "%s/%s.%s", token, name, VOLTZ_MODULE_EXT);
         printf("%s\n", buf);
-        
+
         void* lib = dlopen(buf, RTLD_LOCAL | RTLD_NODELETE);
-        
+
         if (!lib) {
             continue;
         }
-        
-        bool(*initfn)() = (bool(*)()) dlsym(lib, "VoltzInitializeModule");
+
+        bool (*initfn)() = (bool (*) ()) dlsym(lib, "VoltzInitializeModule");
         bool initrv = initfn();
-        
+
         free(str);
         free((void*) vz_path);
         return initrv;
     }
-    
+
     free(str);
     free((void*) vz_path);
 
     return true;
 }
 
-bool(*vz_load_module)(const char*) = vz_load_moduleI;
+bool (*vz_load_module)(const char*) = vz_load_moduleI;

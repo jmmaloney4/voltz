@@ -22,18 +22,17 @@ std::mutex vz_selTable_mutex;
 
 NUM vz_string_hash(const char* s) {
     int64_t hash = 0;
-    
-    for(; *s; ++s)
-    {
+
+    for (; *s; ++s) {
         hash += *s;
         hash += (hash << 10);
         hash ^= (hash >> 6);
     }
-    
+
     hash += (hash << 3);
     hash ^= (hash >> 11);
     hash += (hash << 15);
-    
+
     return (NUM) hash;
 }
 
@@ -43,27 +42,29 @@ SEL vz_sel_getI(const char* value) {
     if (hash < 0) {
         hash *= -1;
     }
-    
+
     vz_selTable_mutex.lock();
-    
-    for(struct vz_selTable_entry* entry = vz_selTable[(int64_t) hash];
-            entry != NULL; entry = entry->next) {
+
+    for (struct vz_selTable_entry* entry = vz_selTable[(int64_t) hash];
+         entry != NULL;
+         entry = entry->next) {
         if (strcmp(entry->sel->value, value) == 0) {
             vz_selTable_mutex.unlock();
             return entry->sel;
         }
     }
-    
-    struct vz_selTable_entry* entry = (vz_selTable_entry*) malloc(sizeof(struct vz_selTable_entry));
-    entry->sel = (SEL) malloc(sizeof(struct vz_sel));
+
+    struct vz_selTable_entry* entry =
+        (vz_selTable_entry*) malloc(sizeof(struct vz_selTable_entry));
+    entry->sel        = (SEL) malloc(sizeof(struct vz_sel));
     entry->sel->value = strdup(value);
     entry->next = vz_selTable[(int64_t) hash];
     vz_selTable[(int64_t) hash] = entry;
-    
+
     SEL rv = entry->sel;
-    
+
     vz_selTable_mutex.unlock();
-    
+
     return rv;
 }
 
@@ -71,18 +72,16 @@ SEL (*vz_sel_get)(const char*) = vz_sel_getI;
 
 id vz_sel_boxI(SEL sel) {
     id selcls = vz_class_get("Std::Selector");
-    id rv = vz_msg_send(selcls, "Alloc", 0);
-    rv = vz_msg_send(rv, "Init", 0);
-    
+    id rv     = vz_msg_send(selcls, "Alloc", 0);
+    rv        = vz_msg_send(rv, "Init", 0);
+
     vz_object_setIvar(rv, "value", (id) sel);
-    
+
     return rv;
 }
 
 id (*vz_sel_box)(SEL) = vz_sel_boxI;
 
-SEL vz_sel_unboxI(id obj) {
-    return (SEL) vz_object_getIvar(obj, "value");
-}
+SEL vz_sel_unboxI(id obj) { return (SEL) vz_object_getIvar(obj, "value"); }
 
 SEL (*vz_sel_unbox)(id) = vz_sel_unboxI;

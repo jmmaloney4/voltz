@@ -26,17 +26,19 @@ id vz_global_getI(const char* str) {
     if (hash < 0) {
         hash *= -1;
     }
-    
-    for (struct vz_globalTable_entry* entry = vz_globalTable[(int64_t) hash]; entry != nil; entry = entry->next) {
+
+    for (struct vz_globalTable_entry* entry = vz_globalTable[(int64_t) hash];
+         entry != nil;
+         entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
             return vz_msg_send(entry->value, "Retain", 0);
         }
     }
-    
+
     return nil;
 }
 
-id(*vz_global_get)(const char*) = vz_global_getI;
+id (*vz_global_get)(const char*) = vz_global_getI;
 
 void vz_global_setI(const char* str, id value) {
     NUM hash = vz_string_hash(str);
@@ -44,20 +46,23 @@ void vz_global_setI(const char* str, id value) {
     if (hash < 0) {
         hash *= -1;
     }
-    
-    for (struct vz_globalTable_entry* entry = vz_globalTable[(int64_t) hash]; entry != nil; entry = entry->next) {
+
+    for (struct vz_globalTable_entry* entry = vz_globalTable[(int64_t) hash];
+         entry != nil;
+         entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
-            id t = entry->value;
+            id t         = entry->value;
             entry->value = vz_msg_send(value, "Retain", 0);
             vz_msg_send(t, "Release", 0);
         }
     }
-    
-    struct vz_globalTable_entry* entry = (struct vz_globalTable_entry*) malloc(sizeof(struct vz_globalTable_entry));
-    entry->name = strdup(str);
+
+    struct vz_globalTable_entry* entry = (struct vz_globalTable_entry*) malloc(
+        sizeof(struct vz_globalTable_entry));
+    entry->name  = strdup(str);
     entry->value = vz_msg_send(value, "Retain", 0);
     entry->next = vz_globalTable[(int64_t) hash];
     vz_globalTable[(int64_t) hash] = entry;
 }
 
-void(*vz_global_set)(const char*, id) = vz_global_setI;
+void (*vz_global_set)(const char*, id) = vz_global_setI;

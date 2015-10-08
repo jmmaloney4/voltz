@@ -1,0 +1,13 @@
+---
+Language:        Cpp
+BasedOnStyle:  LLVM
+IndentWidth: 4
+PointerAlignment: Left
+AlignConsecutiveAssignments: true
+BinPackArguments: false
+BinPackParameters: false
+SpaceAfterCStyleCast: true
+TabWidth: 4
+UseTab: Never
+IndentWrappedFunctionNames: true
+NamespaceIndentation: All
