@@ -13,7 +13,7 @@
 #include <cstddef>
 
 #ifdef DEBUG
-//#define VOLTZ_DEBUG 1
+#define VOLTZ_DEBUG 1
 #endif
 
 #define VZ_MAJOR_VERSION 0
