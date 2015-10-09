@@ -10,6 +10,30 @@
 int C_argc;
 const char** C_argv;
 
+std::mutex VoltzMemMutex0;
+std::mutex VoltzMemMutex1;
+std::mutex VoltzMemMutex2;
+std::mutex VoltzMemMutex3;
+std::mutex VoltzMemMutex4;
+
+std::mutex* VoltzGetMemMutex(id obj) {
+    switch (((int64_t) obj) % 5) {
+    case 0:
+        return &VoltzMemMutex0;
+    case 1:
+        return &VoltzMemMutex1;
+    case 2:
+        return &VoltzMemMutex2;
+    case 3:
+        return &VoltzMemMutex3;
+    case 4:
+        return &VoltzMemMutex4;
+    default:
+        abort();
+        break;
+    }
+}
+
 void vz_bootstrap_runtime(int argc, const char** argv) {
 
     C_argc = argc;
@@ -145,9 +169,7 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     clscls->ivars[7].arr[0]->refs  = 1;
     clscls->ivars[7].arr[0]->weaks = 0;
     vz_object_setIvar(clscls->ivars[7].arr[0], "sel", (id) vz_sel_get("Alloc"));
-    vz_object_setIvar(clscls->ivars[7].arr[0],
-                      "imp",
-                      (id) vz_def({
+    vz_object_setIvar(clscls->ivars[7].arr[0], "imp", (id) vz_def({
                           NUM ivars = self->ivars[2].num;
                           for (id c = self->ivars[0].obj; c != nil;
                                c = c->ivars[0].obj) {
@@ -166,11 +188,9 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     clscls->ivars[7].arr[1]->isa   = mthdcls;
     clscls->ivars[7].arr[1]->refs  = 1;
     clscls->ivars[7].arr[1]->weaks = 0;
-    vz_object_setIvar(
-        clscls->ivars[7].arr[1], "sel", (id) vz_sel_get("AddMethod:"));
-    vz_object_setIvar(clscls->ivars[7].arr[1],
-                      "imp",
-                      (id) vz_def({
+    vz_object_setIvar(clscls->ivars[7].arr[1], "sel",
+                      (id) vz_sel_get("AddMethod:"));
+    vz_object_setIvar(clscls->ivars[7].arr[1], "imp", (id) vz_def({
                           NUM mthdc = self->ivars[6].num;
                           id* mthdv = self->ivars[7].arr;
 
@@ -196,20 +216,21 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     objcls->ivars[7].arr[0]->refs  = 1;
     objcls->ivars[7].arr[0]->weaks = 0;
     vz_object_setIvar(objcls->ivars[7].arr[0], "sel", (id) vz_sel_get("Init"));
-    vz_object_setIvar(
-        objcls->ivars[7].arr[0], "imp", (id) vz_def({ return self; }));
+    vz_object_setIvar(objcls->ivars[7].arr[0], "imp",
+                      (id) vz_def({ return self; }));
 
     objcls->ivars[7].arr[1] =
         vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
     objcls->ivars[7].arr[1]->isa   = mthdcls;
     objcls->ivars[7].arr[1]->refs  = 1;
     objcls->ivars[7].arr[1]->weaks = 0;
-    vz_object_setIvar(
-        objcls->ivars[7].arr[1], "sel", (id) vz_sel_get("Retain"));
-    vz_object_setIvar(objcls->ivars[7].arr[1],
-                      "imp",
-                      (id) vz_def({
+    vz_object_setIvar(objcls->ivars[7].arr[1], "sel",
+                      (id) vz_sel_get("Retain"));
+    vz_object_setIvar(objcls->ivars[7].arr[1], "imp", (id) vz_def({
+                          std::mutex* mtx = VoltzGetMemMutex(self);
+                          mtx->lock();
                           self->refs++;
+                          mtx->unlock();
                           return self;
                       }));
 
@@ -220,10 +241,14 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     objcls->ivars[7].arr[2]->weaks        = 0;
     objcls->ivars[7].arr[2]->ivars[0].sel = vz_sel_get("Release");
     objcls->ivars[7].arr[2]->ivars[1].imp = vz_def({
+        std::mutex* mtx = VoltzGetMemMutex(self);
+        mtx->lock();
         if (self->refs <= 1) {
+            mtx->unlock();
             vz_msg_send(self, "Deinit", 0);
         } else {
             self->refs--;
+            mtx->unlock();
         }
         return nil;
     });
