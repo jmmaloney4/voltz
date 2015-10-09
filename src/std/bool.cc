@@ -29,56 +29,44 @@ bool InitBoolClass() {
     ADD_MTHD(boolisa, "True", { return vz_msg_send(booltrue, "Retain", 0); });
     ADD_MTHD(boolisa, "False", { return vz_msg_send(boolfalse, "Retain", 0); });
 
-    ADD_MTHD(boolcls,
-             "!",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 return vz_bool_box(!b0);
-             });
+    ADD_MTHD(boolcls, "Bool", { return vz_msg_send(self, "Retain", 0); });
 
-    ADD_MTHD(boolcls,
-             "==:",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 bool b1 = vz_bool_unbox(argv[0]);
-                 return vz_bool_box(b0 == b1);
-             });
-    ADD_MTHD(boolcls,
-             "!=:",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 bool b1 = vz_bool_unbox(argv[0]);
-                 return vz_bool_box(b0 != b1);
-             });
+    ADD_MTHD(boolcls, "!", {
+        bool b0 = vz_bool_unbox(self);
+        return vz_bool_box(!b0);
+    });
 
-    ADD_MTHD(boolcls,
-             "&&:",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 bool b1 = vz_bool_unbox(argv[0]);
-                 return vz_bool_box(b0 && b1);
-             });
-    ADD_MTHD(boolcls,
-             "||:",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 bool b1 = vz_bool_unbox(argv[0]);
-                 return vz_bool_box(b0 || b1);
-             });
-    ADD_MTHD(boolcls,
-             "^^:",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 bool b1 = vz_bool_unbox(argv[0]);
-                 return vz_bool_box(!b0 != !b1);
-             });
+    ADD_MTHD(boolcls, "==:", {
+        bool b0 = vz_bool_unbox(self);
+        bool b1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(b0 == b1);
+    });
+    ADD_MTHD(boolcls, "!=:", {
+        bool b0 = vz_bool_unbox(self);
+        bool b1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(b0 != b1);
+    });
 
-    ADD_MTHD(boolcls,
-             "String",
-             {
-                 bool b0 = vz_bool_unbox(self);
-                 return vz_string_box(b0 ? "True" : "False");
-             });
+    ADD_MTHD(boolcls, "&&:", {
+        bool b0 = vz_bool_unbox(self);
+        bool b1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(b0 && b1);
+    });
+    ADD_MTHD(boolcls, "||:", {
+        bool b0 = vz_bool_unbox(self);
+        bool b1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(b0 || b1);
+    });
+    ADD_MTHD(boolcls, "^^:", {
+        bool b0 = vz_bool_unbox(self);
+        bool b1 = vz_bool_unbox(argv[0]);
+        return vz_bool_box(!b0 != !b1);
+    });
+
+    ADD_MTHD(boolcls, "String", {
+        bool b0 = vz_bool_unbox(self);
+        return vz_string_box(b0 ? "True" : "False");
+    });
 
     return true;
 }

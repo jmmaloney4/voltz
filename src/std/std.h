@@ -40,5 +40,6 @@ bool InitObjectClass();
 bool InitClassClass();
 bool InitBoolClass();
 bool InitNumberClass();
+bool InitByteClass();
 
 #endif // VOLTZ_STD_H

@@ -43,6 +43,7 @@ extern "C" const char** C_argv;
 typedef struct vz_object* id;
 typedef struct vz_sel* SEL;
 typedef double NUM;
+typedef uint8_t BYTE;
 typedef std::function<id(id, SEL, NUM, id*)>* IMP;
 typedef struct vz_vm VM;
 
@@ -85,6 +86,11 @@ extern "C" VM VoltzVM;
  *
  */
 extern "C" id (*vz_num_box)(NUM value);
+
+/** Box a BYTE into an object of type Byte.
+ *
+ */
+extern "C" id (*vz_byte_box)(BYTE value);
 
 /** Box a const char* into an object of type String.
  *
@@ -138,6 +144,11 @@ extern "C" id (*vz_tuple_box)(NUM count, ...);
  *
  */
 extern "C" NUM (*vz_num_unbox)(id obj);
+
+/** Unbox an object of type Number into a NUM.
+ *
+ */
+extern "C" BYTE (*vz_byte_unbox)(id obj);
 
 /** Unbox an object of type String into a const char*.
  *

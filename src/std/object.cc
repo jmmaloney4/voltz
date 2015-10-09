@@ -11,6 +11,11 @@
 bool InitObjectClass() {
 
     id objcls = vz_class_get("std::Object");
+    id objisa = vz_msg_send(objcls, "Isa", 0);
+
+    ADD_MTHD(objcls, "Bool", { return vz_bool_box(true); });
+
+    ADD_MTHD(objisa, "Nil", { return nil; });
 
     ADD_MTHD(objcls, "String", {
         id isa          = vz_msg_send(self, "Isa", 0);
@@ -32,6 +37,13 @@ bool InitObjectClass() {
         fprintf(stderr, "Unrecognized selector '%s' sent to instance at %p.",
                 str, self);
         abort();
+    });
+
+    ADD_MTHD(objcls, "!", {
+        id id0  = vz_msg_send(self, "Bool", 0);
+        bool b0 = vz_bool_unbox(id0);
+        vz_msg_send(id0, "Release", 0);
+        return vz_bool_box(!b0);
     });
 
     return true;

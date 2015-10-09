@@ -128,6 +128,13 @@ bool InitNumberClass() {
         return vz_num_box(sqrt(n0));
     });
 
+    ADD_MTHD(numcls, "String", {
+        NUM n0 = vz_num_unbox(self);
+        char buf[200];
+        sprintf(buf, "%g", n0);
+        return vz_string_box(buf);
+    });
+
     ADD_MTHD(numcls, "Tan", {
         NUM n0 = vz_num_unbox(self);
         return vz_num_box(tan(n0));
