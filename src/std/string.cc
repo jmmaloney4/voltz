@@ -1,9 +1,8 @@
+// Copyright (C) 2015 Jack Maloney. All Rights Reserved.
 //
-//  string.cpp
-//  voltz
-//
-//  Created by Jack Maloney on 10/9/15.
-//
-//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <stdio.h>
+#include <voltz.h>
+#include "std.h"

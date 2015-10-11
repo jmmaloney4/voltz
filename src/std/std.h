@@ -61,5 +61,6 @@ bool InitBoolClass();
 bool InitNumberClass();
 bool InitByteClass();
 bool InitArrayClass();
+bool InitSelectorClass();
 
 #endif // VOLTZ_STD_H

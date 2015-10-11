@@ -39,5 +39,9 @@ extern "C" bool VoltzModuleInitialize_std() {
         return false;
     }
 
+    if (!InitSelectorClass()) {
+        return false;
+    }
+
     return true;
 }

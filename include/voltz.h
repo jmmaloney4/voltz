@@ -49,6 +49,27 @@ typedef struct vz_vm VM;
 
 extern "C" VM VoltzVM;
 
+union vz_ivar {
+    id obj;
+    SEL sel;
+    NUM num;
+    IMP imp;
+    const char* str;
+    id* arr;
+    SEL* sarr;
+};
+
+struct vz_object {
+    id isa;
+    NUM refs;
+    NUM weaks;
+    vz_ivar ivars[0];
+};
+
+struct vz_sel {
+    const char* value;
+};
+
 /* Class
  * - super
  * - name

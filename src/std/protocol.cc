@@ -40,4 +40,6 @@ bool InitProtocolClass() {
 
         return nil;
     });
+
+    return true;
 }

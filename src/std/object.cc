@@ -15,6 +15,13 @@ bool InitObjectClass() {
 
     ADD_MTHD(objcls, "Bool", { return vz_bool_box(true); });
 
+    ADD_MTHD(objcls, "!", {
+        id id0  = vz_msg_send(self, "Bool", 0);
+        bool b0 = vz_bool_unbox(id0);
+        vz_msg_send(id0, "Release", 0);
+        return vz_bool_box(!b0);
+    });
+
     ADD_MTHD(objisa, "Nil", { return nil; });
 
     ADD_MTHD(objcls, "String", {
@@ -39,12 +46,12 @@ bool InitObjectClass() {
         abort();
     });
 
-    ADD_MTHD(objcls, "!", {
-        id id0  = vz_msg_send(self, "Bool", 0);
-        bool b0 = vz_bool_unbox(id0);
-        vz_msg_send(id0, "Release", 0);
-        return vz_bool_box(!b0);
-    });
+    ADD_MTHD(objcls, "ResolveMessageSend::", { return vz_bool_box(false); });
+
+    ADD_MTHD(objcls, "==:", { return vz_bool_box(self == argv[0]); });
+    ADD_MTHD(objcls, "!=:", { return vz_bool_box(self != argv[0]); });
+    ADD_MTHD(objcls, "===:", { return vz_bool_box(self == argv[0]); });
+    ADD_MTHD(objcls, "!==:", { return vz_bool_box(self != argv[0]); });
 
     return true;
 }

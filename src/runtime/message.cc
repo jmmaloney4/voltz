@@ -134,9 +134,16 @@ id vz_msg_send_super_saI(id target, SEL sel, NUM argc, id* args) {
         }
     }
 
-    fprintf(stderr, "%s (%p) does not implement the method %s\n",
-            vz_class_name(target->isa), target->isa, sel->value);
-    abort();
+    id s     = vz_sel_box(sel);
+    id argsa = vz_array_box_a(argc, args);
+    id tmp0 = vz_msg_send(target, "ResolveMessageSend::", 2, sel, argsa);
+    if (!vz_bool_unbox(tmp0)) {
+        vz_msg_send(target, "UnrecognizedSelector:", 1, s);
+    }
+    vz_msg_send(s, "Release", 0);
+    vz_msg_send(argsa, "Release", 0);
+    vz_msg_send(tmp0, "Release", 0);
+    return nil;
 }
 
 id (*vz_msg_send_super)(id target, const char* sel, NUM argc,

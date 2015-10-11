@@ -11,8 +11,8 @@
 bool InitArrayClass() {
     id objcls = vz_class_get("std::Object");
     SUBCLASS(objcls, arrcls, "std::Array", 2);
-    vz_class_setIvarName(arrcls, 0, "value");
-    vz_class_setIvarName(arrcls, 1, "count");
+    vz_class_setIvarName(arrcls, 0, "count");
+    vz_class_setIvarName(arrcls, 1, "value");
     vz_class_register("std::Array", arrcls);
     id arrisa = vz_msg_send(arrcls, "Isa", 0);
 
@@ -159,4 +159,6 @@ bool InitArrayClass() {
     });
 
     ADD_MTHD(arrcls, "Count", { return vz_object_getIvar(self, "count"); });
+
+    return true;
 }
