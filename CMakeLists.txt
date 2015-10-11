@@ -43,7 +43,10 @@ add_library(std     src/std/std.cc
                     src/std/object.cc
                     src/std/class.cc
                     src/std/num.cc
-                    src/std/byte.cc)
+                    src/std/byte.cc
+                    src/std/array.cc
+                    src/std/protocol.cc
+                    src/std/string.cc)
 
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
 

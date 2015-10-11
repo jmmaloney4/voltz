@@ -22,6 +22,17 @@
         vz_msg_send(var##_ivarc, "Release", 0);                                \
     }
 
+#define PROTOCOL(name, var)                                                    \
+    id var = nil;                                                              \
+    {                                                                          \
+        id var##_name   = vz_string_box(name);                                 \
+        id protocol_cls = vz_class_get("std::Protocol");                       \
+        var             = vz_msg_send(protocol_cls, "Alloc", 0);               \
+        var = vz_msg_send(var, "Init:", 1, var##_name);                        \
+        vz_msg_send(var##_name, "Release", 0);                                 \
+        vz_msg_send(protocol_cls, "Release", 0);                               \
+    }
+
 #define ADD_MTHD(cls, sel, imp)                                                \
     {                                                                          \
         id _mthdcls = vz_class_get("std::Method");                             \
@@ -36,10 +47,19 @@
         vz_msg_send(_imp, "Release", 0);                                       \
     }
 
+#define ADD_SEL(prt, sel)                                                      \
+    {                                                                          \
+        id s = vz_sel_box(vz_sel_get(sel));                                    \
+        vz_msg_send(prt, "AddSelector:", 1, s);                                \
+        vz_msg_send(s, "Release", 0);                                          \
+    }
+
 bool InitObjectClass();
 bool InitClassClass();
+bool InitProtocolClass();
 bool InitBoolClass();
 bool InitNumberClass();
 bool InitByteClass();
+bool InitArrayClass();
 
 #endif // VOLTZ_STD_H

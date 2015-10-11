@@ -20,8 +20,7 @@ id vz_global_getI(const char* str) {
     VoltzVM.globalmtx.lock();
 
     for (struct vz_globalTable_entry* entry = VoltzVM.globaltbl[(int64_t) hash];
-         entry != nil;
-         entry = entry->next) {
+         entry != nil; entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
             VoltzVM.globalmtx.unlock();
             return vz_msg_send(entry->value, "Retain", 0);
@@ -45,8 +44,7 @@ void vz_global_setI(const char* str, id value) {
     VoltzVM.globalmtx.lock();
 
     for (struct vz_globalTable_entry* entry = VoltzVM.globaltbl[(int64_t) hash];
-         entry != nil;
-         entry = entry->next) {
+         entry != nil; entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
             id t         = entry->value;
             entry->value = vz_msg_send(value, "Retain", 0);

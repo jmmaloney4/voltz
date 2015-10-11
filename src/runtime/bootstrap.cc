@@ -209,6 +209,18 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
                           return nil;
                       }));
 
+    clscls->ivars[7].arr[2] =
+        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
+    clscls->ivars[7].arr[2]->isa   = mthdcls;
+    clscls->ivars[7].arr[2]->refs  = 1;
+    clscls->ivars[7].arr[2]->weaks = 0;
+    vz_object_setIvar(clscls->ivars[7].arr[2], "sel", (id) vz_sel_get("New"));
+    vz_object_setIvar(clscls->ivars[7].arr[2], "imp", (id) vz_def({
+                          id rv = vz_msg_send(self, "Alloc", 0);
+                          rv    = vz_msg_send(rv, "Init", 0);
+                          return rv;
+                      }));
+
     // object methods
     objcls->ivars[7].arr[0] =
         vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
@@ -301,6 +313,17 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         return self;
     });
     vz_msg_send(mthdcls, "AddMethod:", 1, init);
+
+    // New::
+    id nw = vz_msg_send(mthdcls, "Alloc", 0);
+    nw = vz_msg_send(nw, "Init", 0);
+    vz_object_setIvar(nw, "sel", (id) vz_sel_get("New::"));
+    init->ivars[1].imp = vz_def({
+        id rv          = vz_msg_send(self, "Alloc", 0);
+        rv             = vz_msg_send(rv, "Init::", 2, argv[0], argv[1]);
+        return rv;
+    });
+    vz_msg_send(mthdcls->isa, "AddMethod:", 1, nw);
 
     // Subclass
     id subclass = vz_msg_send(mthdcls, "Alloc", 0);

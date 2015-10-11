@@ -9,13 +9,9 @@
 #include <stdio.h>
 
 extern "C" id (*vz_msg_send_super)(id target, const char* sel, NUM argc, ...);
-extern "C" id (*vz_msg_send_super_v)(id target,
-                                     const char* sel,
-                                     NUM argc,
+extern "C" id (*vz_msg_send_super_v)(id target, const char* sel, NUM argc,
                                      va_list ap);
-extern "C" id (*vz_msg_send_super_a)(id target,
-                                     const char* sel,
-                                     NUM argc,
+extern "C" id (*vz_msg_send_super_a)(id target, const char* sel, NUM argc,
                                      id* args);
 extern "C" id (*vz_msg_send_super_s)(id target, SEL sel, NUM argc, ...);
 extern "C" id (*vz_msg_send_super_sv)(id target, SEL sel, NUM argc, va_list ap);
@@ -80,18 +76,12 @@ id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
 }
 
 id (*vz_msg_send)(id target, const char* sel, NUM argc, ...) = vz_msg_sendI;
-id (*vz_msg_send_v)(id target,
-                    const char* sel,
-                    NUM argc,
+id (*vz_msg_send_v)(id target, const char* sel, NUM argc,
                     va_list ap) = vz_msg_send_vI;
-id (*vz_msg_send_a)(id target,
-                    const char* sel,
-                    NUM argc,
+id (*vz_msg_send_a)(id target, const char* sel, NUM argc,
                     id* args) = vz_msg_send_aI;
 id (*vz_msg_send_s)(id target, SEL sel, NUM argc, ...) = vz_msg_send_sI;
-id (*vz_msg_send_sv)(id target,
-                     SEL sel,
-                     NUM argc,
+id (*vz_msg_send_sv)(id target, SEL sel, NUM argc,
                      va_list ap) = vz_msg_send_svI;
 id (*vz_msg_send_sa)(id target, SEL sel, NUM argc, id* args) = vz_msg_send_saI;
 
@@ -144,35 +134,20 @@ id vz_msg_send_super_saI(id target, SEL sel, NUM argc, id* args) {
         }
     }
 
-    fprintf(stderr,
-            "%s (%p) does not implement the method %s\n",
-            vz_class_name(target->isa),
-            target->isa,
-            sel->value);
+    fprintf(stderr, "%s (%p) does not implement the method %s\n",
+            vz_class_name(target->isa), target->isa, sel->value);
     abort();
 }
 
-id (*vz_msg_send_super)(id target,
-                        const char* sel,
-                        NUM argc,
+id (*vz_msg_send_super)(id target, const char* sel, NUM argc,
                         ...) = vz_msg_send_superI;
-id (*vz_msg_send_super_v)(id target,
-                          const char* sel,
-                          NUM argc,
+id (*vz_msg_send_super_v)(id target, const char* sel, NUM argc,
                           va_list ap) = vz_msg_send_super_vI;
-id (*vz_msg_send_super_a)(id target,
-                          const char* sel,
-                          NUM argc,
+id (*vz_msg_send_super_a)(id target, const char* sel, NUM argc,
                           id* args) = vz_msg_send_super_aI;
-id (*vz_msg_send_super_s)(id target,
-                          SEL sel,
-                          NUM argc,
+id (*vz_msg_send_super_s)(id target, SEL sel, NUM argc,
                           ...) = vz_msg_send_super_sI;
-id (*vz_msg_send_super_sv)(id target,
-                           SEL sel,
-                           NUM argc,
+id (*vz_msg_send_super_sv)(id target, SEL sel, NUM argc,
                            va_list ap) = vz_msg_send_super_svI;
-id (*vz_msg_send_super_sa)(id target,
-                           SEL sel,
-                           NUM argc,
+id (*vz_msg_send_super_sa)(id target, SEL sel, NUM argc,
                            id* args) = vz_msg_send_super_saI;

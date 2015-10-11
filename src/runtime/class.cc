@@ -20,8 +20,7 @@ id vz_class_getI(const char* name) {
     VoltzVM.clsmtx.lock();
 
     for (struct vz_classTable_entry* entry = VoltzVM.classtbl[(int64_t) hash];
-         entry != NULL;
-         entry = entry->next) {
+         entry != NULL; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
             id rv = vz_msg_send(entry->cls, "Retain", 0);
             VoltzVM.clsmtx.unlock();
@@ -46,8 +45,7 @@ void vz_class_registerI(const char* name, id cls) {
     VoltzVM.clsmtx.lock();
 
     for (struct vz_classTable_entry* entry = VoltzVM.classtbl[(int64_t) hash];
-         entry != NULL;
-         entry = entry->next) {
+         entry != NULL; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
             entry->cls = vz_msg_send(cls, "Retain", 0);
             VoltzVM.clsmtx.unlock();

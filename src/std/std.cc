@@ -27,5 +27,17 @@ extern "C" bool VoltzModuleInitialize_std() {
         return false;
     }
 
+    if (!InitByteClass()) {
+        return false;
+    }
+
+    if (!InitArrayClass()) {
+        return false;
+    }
+
+    if (!InitProtocolClass()) {
+        return false;
+    }
+
     return true;
 }

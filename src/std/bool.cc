@@ -31,6 +31,22 @@ bool InitBoolClass() {
 
     ADD_MTHD(boolcls, "Bool", { return vz_msg_send(self, "Retain", 0); });
 
+    ADD_MTHD(boolcls, "Init:", {
+        self = vz_msg_send_super(self, "Init", 0);
+        if (self) {
+            NUM n0 = vz_num_unbox(argv[0]);
+            vz_msg_send(self, "Release", 0);
+            self = vz_bool_box(n0);
+        }
+        return self;
+    });
+
+    ADD_MTHD(boolcls, "New:", {
+        id rv = vz_msg_send(self, "Alloc", 0);
+        rv    = vz_msg_send(rv, "Init", 0);
+        return rv;
+    });
+
     ADD_MTHD(boolcls, "!", {
         bool b0 = vz_bool_unbox(self);
         return vz_bool_box(!b0);

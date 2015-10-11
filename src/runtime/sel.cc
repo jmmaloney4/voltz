@@ -36,8 +36,7 @@ SEL vz_sel_getI(const char* value) {
     VoltzVM.selmtx.lock();
 
     for (struct vz_selTable_entry* entry = VoltzVM.seltbl[(int64_t) hash];
-         entry != NULL;
-         entry = entry->next) {
+         entry != NULL; entry = entry->next) {
         if (strcmp(entry->sel->value, value) == 0) {
             VoltzVM.selmtx.unlock();
             return entry->sel;

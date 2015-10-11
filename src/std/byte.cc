@@ -10,6 +10,7 @@
 bool InitByteClass() {
     id objcls = vz_class_get("std::Object");
     SUBCLASS(objcls, bytecls, "std::Byte", 1);
+    vz_class_register("std::Byte", bytecls);
     id byteisa = vz_msg_send(bytecls, "Isa", 0);
 
     ADD_MTHD(bytecls, "Bool", { return vz_bool_box(vz_byte_unbox(self)); });

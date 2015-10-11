@@ -29,8 +29,7 @@ class Object {
     }
 
     Copy() {
-        Object rv = self.Class().Alloc().Init();
-        
+        Object rv = self.Class().New();
     }
 
 }
