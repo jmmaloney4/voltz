@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ferror-limit=0 -fdiagnostics-show-optio
 endif()
 
 set(CXX_FLAGS_TMP "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -pedantic -Weverything -Wreturn-type")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -Wreturn-type")
 
 add_library(voltz   include/voltz.h
                     src/runtime/voltz-internal.h
@@ -49,7 +49,7 @@ add_library(std     src/std/std.cc
                     src/std/string.cc
                     src/std/selector.cc)
 
-set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
+# set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
 
 if(test)
 

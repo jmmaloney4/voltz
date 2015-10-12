@@ -17,15 +17,18 @@ bool InitArrayClass() {
     id arrisa = vz_msg_send(arrcls, "Isa", 0);
 
     PROTOCOL("std::Iterator", iterator);
+    vz_class_register("std::Iterator", iterator);
     ADD_SEL(iterator, "Array");
     ADD_SEL(iterator, "Array:");
     ADD_SEL(iterator, "Done?");
     ADD_SEL(iterator, "Next");
 
     PROTOCOL("std::Iterable", iterable);
+    vz_class_register("std::Iterable", iterable);
     ADD_SEL(iterable, "Iterator");
 
     PROTOCOL("std::Container", container);
+    vz_class_register("std::Container", container);
     ADD_SEL(container, "Add:");
     ADD_SEL(container, "AddAll:");
     ADD_SEL(container, "All?:");
@@ -41,6 +44,7 @@ bool InitArrayClass() {
     ADD_SEL(container, "Reduce:");
 
     PROTOCOL("std::OrderedContainer", ordcont);
+    vz_class_register("std::OrderedContainer", ordcont);
     ADD_SEL(ordcont, "Append:");
     ADD_SEL(ordcont, "AppendAll:");
     ADD_SEL(ordcont, "First");
@@ -139,7 +143,6 @@ bool InitArrayClass() {
         id rv      = vz_msg_send(arriter, "New:", 1, self);
         return rv;
     });
-
     ADD_MTHD(arrcls, "Add:", {
         id count = vz_msg_send(self, "Count", 0);
         NUM c    = vz_num_unbox(count);
