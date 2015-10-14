@@ -51,7 +51,7 @@ if(test)
     include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
     add_executable(tests test/test.cc)
-    target_link_libraries(tests voltz std dl gtest gtest_main)
+    target_link_libraries(tests voltz dl gtest gtest_main)
 
     add_test(NAME tests COMMAND tests)
 endif()
