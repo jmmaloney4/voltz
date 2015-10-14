@@ -10,6 +10,10 @@
 #include <dlfcn.h>
 #include <cstring>
 
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
 bool vz_load_moduleI(const char* name) {
 
     const char* vz_path = getenv(VOLTZ_PATH_ENVVAR);

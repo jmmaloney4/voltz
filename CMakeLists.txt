@@ -33,21 +33,10 @@ add_library(voltz   include/voltz.h
                     src/runtime/string.cc
                     src/runtime/global.cc
                     src/runtime/load.cc
-                    src/runtime/byte.cc)
+                    src/runtime/byte.cc
+                    src/runtime/thread.cc)
 
 target_link_libraries(voltz dl)
-
-add_library(std     src/std/std.cc
-                    src/std/std.h
-                    src/std/bool.cc
-                    src/std/object.cc
-                    src/std/class.cc
-                    src/std/num.cc
-                    src/std/byte.cc
-                    src/std/array.cc
-                    src/std/protocol.cc
-                    src/std/string.cc
-                    src/std/selector.cc)
 
 # set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
 

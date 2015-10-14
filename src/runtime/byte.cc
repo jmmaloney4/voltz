@@ -6,16 +6,18 @@
 
 #include "voltz-internal.h"
 
-id vz_byte_boxI(BYTE value) {
-    id bytecls       = vz_class_get("std::Byte");
-    id rv            = vz_msg_send(bytecls, "Alloc", 0);
-    rv               = vz_msg_send(rv, "Init", 0);
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+id BoxByte(BYTE value) {
+    id rv            = SendMsg(Byte, New, 0);
     rv->ivars[0].num = (NUM) value;
     return rv;
 }
 
-id (*vz_byte_box)(BYTE) = vz_byte_boxI;
+id (*voltz::BoxByte)(BYTE) = BoxByte;
 
-BYTE vz_byte_unboxI(id obj) { return (BYTE) obj->ivars[0].num; }
+BYTE UnboxByte(id obj) { return (BYTE) obj->ivars[0].num; }
 
-BYTE (*vz_byte_unbox)(id) = vz_byte_unboxI;
+BYTE (*voltz::UnboxByte)(id) = UnboxByte;

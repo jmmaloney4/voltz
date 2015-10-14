@@ -10,6 +10,10 @@
 #include <string.h>
 #include <mutex>
 
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
 NUM vz_string_hash(const char* s) {
     int64_t hash = 0;
 
@@ -59,18 +63,14 @@ SEL vz_sel_getI(const char* value) {
 
 SEL (*vz_sel_get)(const char*) = vz_sel_getI;
 
-id vz_sel_boxI(SEL sel) {
-    id selcls = vz_class_get("std::Selector");
-    id rv     = vz_msg_send(selcls, "Alloc", 0);
-    rv        = vz_msg_send(rv, "Init", 0);
-
-    vz_object_setIvar(rv, "value", (id) sel);
-
+id BoxSelector(SEL sel) {
+    id rv = SendMsg(Selector, Alloc, 0);
+    SetInstanceVariable(rv, value, (id) sel);
     return rv;
 }
 
-id (*vz_sel_box)(SEL) = vz_sel_boxI;
+id (*voltz::BoxSelector)(SEL) = BoxSelector;
 
-SEL vz_sel_unboxI(id obj) { return (SEL) vz_object_getIvar(obj, "value"); }
+SEL UnboxSelector(id obj) { return (SEL) GetInstanceVariable(obj, value); }
 
-SEL (*vz_sel_unbox)(id) = vz_sel_unboxI;
+SEL (*voltz::UnboxSelector)(id) = UnboxSelector;

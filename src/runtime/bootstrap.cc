@@ -7,8 +7,12 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
-int C_argc;
-const char** C_argv;
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+int voltz::C_argc;
+const char** voltz::C_argv;
 
 std::mutex VoltzMemMutex0;
 std::mutex VoltzMemMutex1;
@@ -34,7 +38,7 @@ std::mutex* VoltzGetMemMutex(id obj) {
     }
 }
 
-void vz_bootstrap_runtime(int argc, const char** argv) {
+void voltz::BootstrapRuntime(int argc, const char** argv) {
 
     C_argc = argc;
     C_argv = argv;
@@ -46,218 +50,216 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
     VoltzVM.seltbl = (vz_selTable_entry**) malloc(sizeof(vz_selTable_entry*) *
                                                   vz_selTable_size);
 
-    id objcls  = vz_object_alloc(8);
-    id clscls  = vz_object_alloc(8);
-    id mthdcls = vz_object_alloc(8);
-    id selcls  = vz_object_alloc(8);
-    id impcls  = vz_object_alloc(8);
+    Object   = AllocObject(8);
+    Class    = AllocObject(8);
+    Method   = AllocObject(8);
+    Selector = AllocObject(8);
+    Imp      = AllocObject(8);
 
-    objcls->isa = clscls;
-    clscls->isa = clscls;
+    Object->isa = Class;
+    Class->isa  = Class;
 
-    mthdcls->isa = vz_object_alloc(8);
-    selcls->isa  = vz_object_alloc(8);
-    impcls->isa  = vz_object_alloc(8);
+    Method->isa   = AllocObject(8);
+    Selector->isa = AllocObject(8);
+    Imp->isa      = AllocObject(8);
 
-    mthdcls->isa->isa = clscls;
-    selcls->isa->isa  = clscls;
-    impcls->isa->isa  = clscls;
+    Method->isa->isa   = Class;
+    Selector->isa->isa = Class;
+    Imp->isa->isa      = Class;
 
-    objcls->refs  = 1;
-    objcls->weaks = 0;
+    Object->refs  = 1;
+    Object->weaks = 0;
 
-    clscls->refs  = 1;
-    clscls->weaks = 0;
+    Class->refs  = 1;
+    Class->weaks = 0;
 
-    mthdcls->refs  = 1;
-    mthdcls->weaks = 0;
+    Method->refs  = 1;
+    Method->weaks = 0;
 
-    selcls->refs  = 1;
-    selcls->weaks = 0;
+    Selector->refs  = 1;
+    Selector->weaks = 0;
 
-    impcls->refs  = 1;
-    impcls->weaks = 0;
+    Imp->refs  = 1;
+    Imp->weaks = 0;
 
     // super classes
-    objcls->ivars[0].obj  = nil;
-    clscls->ivars[0].obj  = objcls;
-    mthdcls->ivars[0].obj = objcls;
-    selcls->ivars[0].obj  = objcls;
-    impcls->ivars[0].obj  = objcls;
+    Object->ivars[0].obj   = nil;
+    Class->ivars[0].obj    = Object;
+    Method->ivars[0].obj   = Object;
+    Selector->ivars[0].obj = Object;
+    Imp->ivars[0].obj      = Object;
 
-    mthdcls->isa->ivars[0].obj = clscls;
-    selcls->isa->ivars[0].obj  = clscls;
-    impcls->isa->ivars[0].obj  = clscls;
+    Method->isa->ivars[0].obj   = Class;
+    Selector->isa->ivars[0].obj = Class;
+    Imp->isa->ivars[0].obj      = Class;
 
     // names
-    objcls->ivars[1].str  = "std::Object";
-    clscls->ivars[1].str  = "std::Class";
-    mthdcls->ivars[1].str = "std::Method";
-    selcls->ivars[1].str  = "std::Selector";
-    impcls->ivars[1].str  = "std::Imp";
+    Object->ivars[1].str   = "std::Object";
+    Class->ivars[1].str    = "std::Class";
+    Method->ivars[1].str   = "std::Method";
+    Selector->ivars[1].str = "std::Selector";
+    Imp->ivars[1].str      = "std::Imp";
 
-    mthdcls->isa->ivars[1].str = "std::Method.isa";
-    selcls->isa->ivars[1].str  = "std::Selector.isa";
-    impcls->isa->ivars[1].str  = "std::Imp.isa";
+    Method->isa->ivars[1].str   = "std::Method.Isa";
+    Selector->isa->ivars[1].str = "std::Selector.Isa";
+    Imp->isa->ivars[1].str      = "std::Imp.Isa";
 
     // ivars
-    objcls->ivars[2].num  = 0;
-    clscls->ivars[2].num  = 8;
-    mthdcls->ivars[2].num = 2;
-    selcls->ivars[2].num  = 1;
-    impcls->ivars[2].num  = 1;
+    Object->ivars[2].num   = 0;
+    Class->ivars[2].num    = 8;
+    Method->ivars[2].num   = 2;
+    Selector->ivars[2].num = 1;
+    Imp->ivars[2].num      = 1;
 
-    mthdcls->isa->ivars[2].num = 0;
-    selcls->isa->ivars[2].num  = 0;
-    impcls->isa->ivars[2].num  = 0;
+    Method->isa->ivars[2].num   = 0;
+    Selector->isa->ivars[2].num = 0;
+    Imp->isa->ivars[2].num      = 0;
 
     // ivarn
-    objcls->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * objcls->ivars[2].num);
-    clscls->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * clscls->ivars[2].num);
-    clscls->ivars[3].sarr[0]  = vz_sel_get("super");
-    clscls->ivars[3].sarr[1]  = vz_sel_get("name");
-    clscls->ivars[3].sarr[2]  = vz_sel_get("ivars");
-    clscls->ivars[3].sarr[3]  = vz_sel_get("ivarn");
-    clscls->ivars[3].sarr[4]  = vz_sel_get("protocolc");
-    clscls->ivars[3].sarr[5]  = vz_sel_get("protocolv");
-    clscls->ivars[3].sarr[6]  = vz_sel_get("mthdc");
-    clscls->ivars[3].sarr[7]  = vz_sel_get("mthdv");
-    mthdcls->ivars[3].sarr    = (SEL*) malloc(sizeof(SEL) * mthdcls->ivars[2].num);
-    mthdcls->ivars[3].sarr[0] = vz_sel_get("sel");
-    mthdcls->ivars[3].sarr[1] = vz_sel_get("imp");
-    selcls->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * selcls->ivars[2].num);
-    selcls->ivars[3].sarr[0]  = vz_sel_get("value");
-    impcls->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * impcls->ivars[2].num);
-    impcls->ivars[3].sarr[0]  = vz_sel_get("value");
+    Object->ivars[3].sarr    = (SEL*) malloc(sizeof(SEL) * Object->ivars[2].num);
+    Class->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * Class->ivars[2].num);
+    Class->ivars[3].sarr[0]  = GetSelector("super");
+    Class->ivars[3].sarr[1]  = GetSelector("name");
+    Class->ivars[3].sarr[2]  = GetSelector("ivars");
+    Class->ivars[3].sarr[3]  = GetSelector("ivarn");
+    Class->ivars[3].sarr[4]  = GetSelector("protocolc");
+    Class->ivars[3].sarr[5]  = GetSelector("protocolv");
+    Class->ivars[3].sarr[6]  = GetSelector("mthdc");
+    Class->ivars[3].sarr[7]  = GetSelector("mthdv");
+    Method->ivars[3].sarr    = (SEL*) malloc(sizeof(SEL) * Method->ivars[2].num);
+    Method->ivars[3].sarr[0] = GetSelector("sel");
+    Method->ivars[3].sarr[1] = GetSelector("imp");
+    Selector->ivars[3].sarr =
+        (SEL*) malloc(sizeof(SEL) * Selector->ivars[2].num);
+    Selector->ivars[3].sarr[0] = GetSelector("value");
+    Imp->ivars[3].sarr         = (SEL*) malloc(sizeof(SEL) * Imp->ivars[2].num);
+    Imp->ivars[3].sarr[0]      = GetSelector("value");
 
     // protocolc
-    objcls->ivars[4].num  = 0;
-    clscls->ivars[4].num  = 0;
-    mthdcls->ivars[4].num = 0;
-    selcls->ivars[4].num  = 0;
-    impcls->ivars[4].num  = 0;
+    Object->ivars[4].num   = 0;
+    Class->ivars[4].num    = 0;
+    Method->ivars[4].num   = 0;
+    Selector->ivars[4].num = 0;
+    Imp->ivars[4].num      = 0;
 
     // protocolv
-    objcls->ivars[5].arr  = (id*) malloc(sizeof(id) * objcls->ivars[4].num);
-    clscls->ivars[5].arr  = (id*) malloc(sizeof(id) * clscls->ivars[4].num);
-    mthdcls->ivars[5].arr = (id*) malloc(sizeof(id) * mthdcls->ivars[4].num);
-    selcls->ivars[5].arr  = (id*) malloc(sizeof(id) * selcls->ivars[4].num);
-    impcls->ivars[5].arr  = (id*) malloc(sizeof(id) * impcls->ivars[4].num);
+    Object->ivars[5].arr   = (id*) malloc(sizeof(id) * Object->ivars[4].num);
+    Class->ivars[5].arr    = (id*) malloc(sizeof(id) * Class->ivars[4].num);
+    Method->ivars[5].arr   = (id*) malloc(sizeof(id) * Method->ivars[4].num);
+    Selector->ivars[5].arr = (id*) malloc(sizeof(id) * Selector->ivars[4].num);
+    Imp->ivars[5].arr      = (id*) malloc(sizeof(id) * Imp->ivars[4].num);
 
     // mthdc
-    objcls->ivars[6].num  = 4;
-    clscls->ivars[6].num  = 2;
-    mthdcls->ivars[6].num = 0;
-    selcls->ivars[6].num  = 0;
-    impcls->ivars[6].num  = 0;
+    Object->ivars[6].num   = 4;
+    Class->ivars[6].num    = 2;
+    Method->ivars[6].num   = 0;
+    Selector->ivars[6].num = 0;
+    Imp->ivars[6].num      = 0;
 
-    mthdcls->isa->ivars[6].num = 0;
-    selcls->isa->ivars[6].num  = 0;
-    impcls->isa->ivars[6].num  = 0;
+    Method->isa->ivars[6].num   = 0;
+    Selector->isa->ivars[6].num = 0;
+    Imp->isa->ivars[6].num      = 0;
 
     // mthdv
-    objcls->ivars[7].arr  = (id*) malloc(sizeof(id) * objcls->ivars[6].num);
-    clscls->ivars[7].arr  = (id*) malloc(sizeof(id) * clscls->ivars[6].num);
-    mthdcls->ivars[7].arr = (id*) malloc(sizeof(id) * mthdcls->ivars[6].num);
-    selcls->ivars[7].arr  = (id*) malloc(sizeof(id) * selcls->ivars[6].num);
-    impcls->ivars[7].arr  = (id*) malloc(sizeof(id) * impcls->ivars[6].num);
+    Object->ivars[7].arr   = (id*) malloc(sizeof(id) * Object->ivars[6].num);
+    Class->ivars[7].arr    = (id*) malloc(sizeof(id) * Class->ivars[6].num);
+    Method->ivars[7].arr   = (id*) malloc(sizeof(id) * Method->ivars[6].num);
+    Selector->ivars[7].arr = (id*) malloc(sizeof(id) * Selector->ivars[6].num);
+    Imp->ivars[7].arr      = (id*) malloc(sizeof(id) * Imp->ivars[6].num);
 
     // class methods
-    clscls->ivars[7].arr[0] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    clscls->ivars[7].arr[0]->isa   = mthdcls;
-    clscls->ivars[7].arr[0]->refs  = 1;
-    clscls->ivars[7].arr[0]->weaks = 0;
-    vz_object_setIvar(clscls->ivars[7].arr[0], "sel", (id) vz_sel_get("Alloc"));
-    vz_object_setIvar(clscls->ivars[7].arr[0], "imp", (id) vz_def({
-                          NUM ivars = self->ivars[2].num;
-                          for (id c = self->ivars[0].obj; c != nil;
-                               c = c->ivars[0].obj) {
-                              ivars += c->ivars[2].num;
-                          }
+    Class->ivars[7].arr[0] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Class->ivars[7].arr[0]->isa   = Method;
+    Class->ivars[7].arr[0]->refs  = 1;
+    Class->ivars[7].arr[0]->weaks = 0;
+    SetInstanceVariable(Class->ivars[7].arr[0], sel, (id) Alloc);
+    SetInstanceVariable(Class->ivars[7].arr[0], imp, (id) vz_def({
+                            NUM ivars = self->ivars[2].num;
+                            for (id c = self->ivars[0].obj; c != nil;
+                                 c = c->ivars[0].obj) {
+                                ivars += c->ivars[2].num;
+                            }
 
-                          id rv     = vz_object_alloc(ivars);
-                          rv->isa   = self;
-                          rv->refs  = 1;
-                          rv->weaks = 0;
-                          return rv;
-                      }));
+                            id rv     = AllocObject(ivars);
+                            rv->isa   = self;
+                            rv->refs  = 1;
+                            rv->weaks = 0;
+                            return rv;
+                        }));
 
-    clscls->ivars[7].arr[1] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    clscls->ivars[7].arr[1]->isa   = mthdcls;
-    clscls->ivars[7].arr[1]->refs  = 1;
-    clscls->ivars[7].arr[1]->weaks = 0;
-    vz_object_setIvar(clscls->ivars[7].arr[1], "sel",
-                      (id) vz_sel_get("AddMethod:"));
-    vz_object_setIvar(clscls->ivars[7].arr[1], "imp", (id) vz_def({
-                          NUM mthdc = self->ivars[6].num;
-                          id* mthdv = self->ivars[7].arr;
+    Class->ivars[7].arr[1] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Class->ivars[7].arr[1]->isa   = Method;
+    Class->ivars[7].arr[1]->refs  = 1;
+    Class->ivars[7].arr[1]->weaks = 0;
+    SetInstanceVariable(Class->ivars[7].arr[1], sel, (id) AddMethod_);
+    SetInstanceVariable(Class->ivars[7].arr[1], imp, (id) vz_def({
+                            NUM mthdc = self->ivars[6].num;
+                            id* mthdv = self->ivars[7].arr;
 
-                          id* tmp = (id*) malloc(sizeof(id) * (mthdc + 1));
+                            id* tmp = (id*) malloc(sizeof(id) * (mthdc + 1));
 
-                          for (NUM k = 0; k < mthdc; k++) {
-                              tmp[(int64_t) k] = mthdv[(int64_t) k];
-                          }
-                          tmp[(int64_t) mthdc] =
-                              vz_msg_send(argv[0], "Retain", 0);
+                            for (NUM k = 0; k < mthdc; k++) {
+                                tmp[(int64_t) k] = mthdv[(int64_t) k];
+                            }
+                            tmp[(int64_t) mthdc] = SendMsg(argv[0], Retain, 0);
 
-                          self->ivars[6].num += 1;
-                          self->ivars[7].arr = tmp;
-                          free(mthdv);
+                            self->ivars[6].num += 1;
+                            self->ivars[7].arr = tmp;
+                            free(mthdv);
 
-                          return nil;
-                      }));
+                            return nil;
+                        }));
 
-    clscls->ivars[7].arr[2] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    clscls->ivars[7].arr[2]->isa   = mthdcls;
-    clscls->ivars[7].arr[2]->refs  = 1;
-    clscls->ivars[7].arr[2]->weaks = 0;
-    vz_object_setIvar(clscls->ivars[7].arr[2], "sel", (id) vz_sel_get("New"));
-    vz_object_setIvar(clscls->ivars[7].arr[2], "imp", (id) vz_def({
-                          id rv = vz_msg_send(self, "Alloc", 0);
-                          rv    = vz_msg_send(rv, "Init", 0);
-                          return rv;
-                      }));
+    Class->ivars[7].arr[2] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Class->ivars[7].arr[2]->isa   = Method;
+    Class->ivars[7].arr[2]->refs  = 1;
+    Class->ivars[7].arr[2]->weaks = 0;
+    SetInstanceVariable(Class->ivars[7].arr[2], sel, (id) New);
+    SetInstanceVariable(Class->ivars[7].arr[2], imp, (id) vz_def({
+                            id rv = SendMsg(self, Alloc, 0);
+                            rv    = SendMsg(rv, Init, 0);
+                            return rv;
+                        }));
 
     // object methods
-    objcls->ivars[7].arr[0] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    objcls->ivars[7].arr[0]->isa   = mthdcls;
-    objcls->ivars[7].arr[0]->refs  = 1;
-    objcls->ivars[7].arr[0]->weaks = 0;
-    vz_object_setIvar(objcls->ivars[7].arr[0], "sel", (id) vz_sel_get("Init"));
-    vz_object_setIvar(objcls->ivars[7].arr[0], "imp",
-                      (id) vz_def({ return self; }));
+    Object->ivars[7].arr[0] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Object->ivars[7].arr[0]->isa   = Method;
+    Object->ivars[7].arr[0]->refs  = 1;
+    Object->ivars[7].arr[0]->weaks = 0;
+    SetInstanceVariable(Object->ivars[7].arr[0], sel, (id) Init);
+    SetInstanceVariable(Object->ivars[7].arr[0], imp,
+                        (id) vz_def({ return self; }));
 
-    objcls->ivars[7].arr[1] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    objcls->ivars[7].arr[1]->isa   = mthdcls;
-    objcls->ivars[7].arr[1]->refs  = 1;
-    objcls->ivars[7].arr[1]->weaks = 0;
-    vz_object_setIvar(objcls->ivars[7].arr[1], "sel",
-                      (id) vz_sel_get("Retain"));
-    vz_object_setIvar(objcls->ivars[7].arr[1], "imp", (id) vz_def({
-                          std::mutex* mtx = VoltzGetMemMutex(self);
-                          mtx->lock();
-                          self->refs++;
-                          mtx->unlock();
-                          return self;
-                      }));
+    Object->ivars[7].arr[1] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Object->ivars[7].arr[1]->isa   = Method;
+    Object->ivars[7].arr[1]->refs  = 1;
+    Object->ivars[7].arr[1]->weaks = 0;
+    SetInstanceVariable(Object->ivars[7].arr[1], sel, (id) Retain);
+    SetInstanceVariable(Object->ivars[7].arr[1], imp, (id) vz_def({
+                            std::mutex* mtx = VoltzGetMemMutex(self);
+                            mtx->lock();
+                            self->refs++;
+                            mtx->unlock();
+                            return self;
+                        }));
 
-    objcls->ivars[7].arr[2] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    objcls->ivars[7].arr[2]->isa          = mthdcls;
-    objcls->ivars[7].arr[2]->refs         = 1;
-    objcls->ivars[7].arr[2]->weaks        = 0;
-    objcls->ivars[7].arr[2]->ivars[0].sel = vz_sel_get("Release");
-    objcls->ivars[7].arr[2]->ivars[1].imp = vz_def({
+    Object->ivars[7].arr[2] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Object->ivars[7].arr[2]->isa          = Method;
+    Object->ivars[7].arr[2]->refs         = 1;
+    Object->ivars[7].arr[2]->weaks        = 0;
+    Object->ivars[7].arr[2]->ivars[0].sel = Release;
+    Object->ivars[7].arr[2]->ivars[1].imp = vz_def({
         std::mutex* mtx = VoltzGetMemMutex(self);
         mtx->lock();
         if (self->refs <= 1) {
             mtx->unlock();
-            vz_msg_send(self, "Deinit", 0);
+            SendMsg(self, Deinit, 0);
         } else {
             self->refs--;
             mtx->unlock();
@@ -265,79 +267,78 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
         return nil;
     });
 
-    objcls->ivars[7].arr[3] =
-        vz_object_alloc(mthdcls->ivars[2].num + objcls->ivars[2].num);
-    objcls->ivars[7].arr[3]->isa          = mthdcls;
-    objcls->ivars[7].arr[3]->refs         = 1;
-    objcls->ivars[7].arr[3]->weaks        = 0;
-    objcls->ivars[7].arr[3]->ivars[0].sel = vz_sel_get("Deinit");
-    objcls->ivars[7].arr[3]->ivars[1].imp = vz_def({
+    Object->ivars[7].arr[3] =
+        AllocObject(Method->ivars[2].num + Object->ivars[2].num);
+    Object->ivars[7].arr[3]->isa          = Method;
+    Object->ivars[7].arr[3]->refs         = 1;
+    Object->ivars[7].arr[3]->weaks        = 0;
+    Object->ivars[7].arr[3]->ivars[0].sel = Deinit;
+    Object->ivars[7].arr[3]->ivars[1].imp = vz_def({
         free(self);
         return nil;
     });
 
     // SetSel:
-    id setsel = vz_msg_send(mthdcls, "Alloc", 0);
-    setsel = vz_msg_send(setsel, "Init", 0);
-    vz_object_setIvar(setsel, "sel", (id) vz_sel_get("SetSel:"));
+    id setsel = SendMsg(Method, Alloc, 0);
+    setsel = SendMsg(setsel, Init, 0);
+    SetInstanceVariable(setsel, sel, (id) SetSel_);
     setsel->ivars[1].imp = vz_def({
-        SEL s = vz_sel_unbox(argv[0]);
-        vz_object_setIvar(self, "sel", (id) s);
+        SEL s = UnboxSelector(argv[0]);
+        SetInstanceVariable(self, sel, (id) s);
         return nil;
     });
-    vz_msg_send(mthdcls, "AddMethod:", 1, setsel);
+    SendMsg(Method, AddMethod_, 1, setsel);
+    SendMsg(setsel, Release, 0);
 
     // SetImp:
-    id setimp = vz_msg_send(mthdcls, "Alloc", 0);
-    setimp = vz_msg_send(setimp, "Init", 0);
-    vz_object_setIvar(setimp, "sel", (id) vz_sel_get("SetImp:"));
+    id setimp = SendMsg(Method, Alloc, 0);
+    setimp = SendMsg(setimp, Init, 0);
+    SetInstanceVariable(setimp, sel, (id) SetImp_);
     setimp->ivars[1].imp = vz_def({
-        IMP i = vz_imp_unbox(argv[0]);
-        vz_object_setIvar(self, "imp", (id) i);
+        IMP i = UnboxImp(argv[0]);
+        SetInstanceVariable(self, imp, (id) i);
         return nil;
     });
-    vz_msg_send(mthdcls, "AddMethod:", 1, setimp);
+    SendMsg(Method, AddMethod_, 1, setimp);
+    SendMsg(setimp, Release, 0);
 
     // Init::
-    id init = vz_msg_send(mthdcls, "Alloc", 0);
-    init = vz_msg_send(init, "Init", 0);
-    vz_object_setIvar(init, "sel", (id) vz_sel_get("Init::"));
+    id init = SendMsg(Method, New, 0);
+    SetInstanceVariable(init, sel, (id) Init__);
     init->ivars[1].imp = vz_def({
-        self = vz_msg_send_super(self, "Init", 0);
+        self = SendMsgSuper(self, Init, 0);
         if (self) {
-            id sel = vz_msg_send(argv[0], "Retain", 0);
-            id imp = vz_msg_send(argv[1], "Retain", 0);
-            vz_msg_send(self, "SetSel:", 1, sel);
-            vz_msg_send(self, "SetImp:", 1, imp);
+            id sel = SendMsg(argv[0], Retain, 0);
+            id imp = SendMsg(argv[1], Retain, 0);
+            SendMsg(self, SetSel_, 1, sel);
+            SendMsg(self, SetImp_, 1, imp);
         }
         return self;
     });
-    vz_msg_send(mthdcls, "AddMethod:", 1, init);
+    SendMsg(Method, AddMethod_, 1, init);
+    SendMsg(init, Release, 0);
 
     // New::
-    id nw = vz_msg_send(mthdcls, "Alloc", 0);
-    nw = vz_msg_send(nw, "Init", 0);
-    vz_object_setIvar(nw, "sel", (id) vz_sel_get("New::"));
+    id nw = SendMsg(Method, Alloc, 0);
+    nw = SendMsg(nw, Init, 0);
+    SetInstanceVariable(nw, sel, (id) New__);
     nw->ivars[1].imp = vz_def({
-        id rv        = vz_msg_send(self, "Alloc", 0);
-        rv           = vz_msg_send(rv, "Init::", 2, argv[0], argv[1]);
+        id rv        = SendMsg(self, Alloc, 0);
+        rv           = SendMsg(rv, Init__, 2, argv[0], argv[1]);
         return rv;
     });
-    vz_msg_send(mthdcls->isa, "AddMethod:", 1, nw);
+    SendMsg(Method->isa, AddMethod_, 1, nw);
+    SendMsg(nw, Release, 0);
 
     // Subclass
-    id subclass = vz_msg_send(mthdcls, "Alloc", 0);
-    subclass = vz_msg_send(subclass, "Init", 0);
-    vz_object_setIvar(subclass, "sel", (id) vz_sel_get("Subclass:::"));
+    id subclass = SendMsg(Method, New, 0);
+    SetInstanceVariable(subclass, sel, (id) Subclass___);
     subclass->ivars[1].imp    = vz_def({
-        id clscls             = vz_class_get("std::Class");
-        id rv                 = vz_msg_send(clscls, "Alloc", 0);
-        rv                    = vz_msg_send(rv, "Init", 0);
-        rv->isa               = vz_msg_send(clscls, "Alloc", 0);
-        rv->isa               = vz_msg_send(rv->isa, "Init", 0);
-        rv->isa->isa          = clscls;
-        rv->isa->ivars[0].obj = vz_msg_send(self->isa, "Retain", 0);
-        rv->isa->ivars[1].str = vz_string_unbox(argv[1]);
+        id rv                 = SendMsg(Class, New, 0);
+        rv->isa               = SendMsg(Class, New, 0);
+        rv->isa->isa          = Class;
+        rv->isa->ivars[0].obj = SendMsg(self->isa, Retain, 0);
+        rv->isa->ivars[1].str = UnboxString(argv[1]);
         rv->isa->ivars[2].num = 0;
         rv->isa->ivars[3].sarr =
             (SEL*) malloc(sizeof(SEL) * rv->isa->ivars[2].num);
@@ -349,9 +350,9 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
             (id*) malloc(sizeof(id) * rv->isa->ivars[6].num);
         rv->refs          = 1;
         rv->weaks         = 0;
-        rv->ivars[0].obj  = vz_msg_send(self, "Retain", 0);
-        rv->ivars[1].str  = vz_string_unbox(argv[0]);
-        rv->ivars[2].num  = vz_num_unbox(argv[2]);
+        rv->ivars[0].obj  = SendMsg(self, Retain, 0);
+        rv->ivars[1].str  = UnboxString(argv[0]);
+        rv->ivars[2].num  = UnboxNumber(argv[2]);
         rv->ivars[3].sarr = (SEL*) malloc(sizeof(SEL) * rv->ivars[2].num);
         rv->ivars[4].num  = 0;
         rv->ivars[5].arr  = (id*) malloc(sizeof(id) * rv->ivars[4].num);
@@ -360,112 +361,147 @@ void vz_bootstrap_runtime(int argc, const char** argv) {
 
         return rv;
     });
-    vz_msg_send(clscls, "AddMethod:", 1, subclass);
-    vz_msg_send(subclass, "Release", 0);
+    SendMsg(Class, AddMethod_, 1, subclass);
+    SendMsg(subclass, Release, 0);
 
-    // AddIvar
-    id addivar = vz_msg_send(mthdcls, "Alloc", 0);
-    addivar = vz_msg_send(addivar, "Init", 0);
-    vz_object_setIvar(addivar, "sel", (id) vz_sel_get("AddIvar:"));
-    addivar->ivars[1].imp = vz_def({
-        SEL* tmp = (SEL*) malloc(sizeof(SEL) * self->ivars[2].num + 1);
-        for (NUM k = 0; k < self->ivars[2].num; k++) {
-            tmp[(int64_t) k] = self->ivars[2].sarr[(int64_t) k];
-        }
+    RegisterClass(Object->ivars[1].str, Object);
+    RegisterClass(Class->ivars[1].str, Class);
+    RegisterClass(Method->ivars[1].str, Method);
+    RegisterClass(Selector->ivars[1].str, Selector);
+    RegisterClass(Imp->ivars[1].str, Imp);
 
-        const char* s = vz_string_unbox(argv[0]);
-        tmp[(int64_t) self->ivars[2].num] = vz_sel_get(s);
-        free((void*) s);
-
-        SEL* old            = self->ivars[3].sarr;
-        self->ivars[3].sarr = tmp;
-        free(old);
-
-        self->ivars[2].num += 1;
-
-        return nil;
-    });
-    vz_msg_send(clscls, "AddMethod:", 1, addivar);
-    vz_msg_send(addivar, "Release", 0);
-
-    vz_class_register(objcls->ivars[1].str, objcls);
-    vz_class_register(clscls->ivars[1].str, clscls);
-    vz_class_register(mthdcls->ivars[1].str, mthdcls);
-    vz_class_register(selcls->ivars[1].str, selcls);
-    vz_class_register(impcls->ivars[1].str, impcls);
-
-    id reg    = vz_msg_send(mthdcls, "Alloc", 0);
-    reg       = vz_msg_send(reg, "Init", 0);
-    id regsel = vz_sel_box(vz_sel_get("Register"));
-    id regimp = vz_imp_box(vz_def({
-        vz_class_register(vz_class_name(self), self);
+    id reg    = SendMsg(Method, New, 0);
+    id regsel = BoxSelector(Register);
+    id regimp = BoxImp(vz_def({
+        RegisterClass(GetClassName(self), self);
         return nil;
     }));
-    vz_msg_send(reg, "SetSel:", 1, regsel);
-    vz_msg_send(reg, "SetImp:", 1, regimp);
-    vz_msg_send(clscls, "AddMethod:", 1, reg);
-    vz_msg_send(regsel, "Release", 0);
-    vz_msg_send(regimp, "Release", 0);
-    vz_msg_send(reg, "Release", 0);
+    SendMsg(reg, SetSel_, 1, regsel);
+    SendMsg(reg, SetImp_, 1, regimp);
+    SendMsg(Class, AddMethod_, 1, reg);
+    SendMsg(regsel, Release, 0);
+    SendMsg(regimp, Release, 0);
+    SendMsg(reg, Release, 0);
 
-    id isa    = vz_msg_send(mthdcls, "Alloc", 0);
-    isa       = vz_msg_send(isa, "Init", 0);
-    id isasel = vz_sel_box(vz_sel_get("Isa"));
-    id isaimp =
-        vz_imp_box(vz_def({ return vz_msg_send(self->isa, "Retain", 0); }));
-    vz_msg_send(isa, "SetSel:", 1, isasel);
-    vz_msg_send(isa, "SetImp:", 1, isaimp);
-    vz_msg_send(objcls, "AddMethod:", 1, isa);
-    vz_msg_send(isasel, "Release", 0);
-    vz_msg_send(isaimp, "Release", 0);
-    vz_msg_send(isa, "Release", 0);
+    id isa    = SendMsg(Method, New, 0);
+    id isasel = BoxSelector(Isa);
+    id isaimp = BoxImp(vz_def({ return SendMsg(self->isa, Retain, 0); }));
+    SendMsg(isa, SetSel_, 1, isasel);
+    SendMsg(isa, SetImp_, 1, isaimp);
+    SendMsg(Object, AddMethod_, 1, isa);
+    SendMsg(isasel, Release, 0);
+    SendMsg(isaimp, Release, 0);
+    SendMsg(isa, Release, 0);
 
-    id strcls                 = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
-    strcls->isa               = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
-    strcls->ivars[0].obj      = objcls;
-    strcls->isa->ivars[0].obj = clscls;
-    strcls->ivars[1].str      = "std::String";
-    strcls->isa->ivars[1].str = "std::String.isa";
-    strcls->ivars[2].num      = 2;
-    strcls->isa->ivars[2].num = 0;
-    strcls->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * strcls->ivars[2].num);
-    strcls->ivars[3].sarr[0]  = vz_sel_get("value");
-    strcls->ivars[3].sarr[1] = vz_sel_get("length");
-    strcls->isa->ivars[3].sarr =
-        (SEL*) malloc(sizeof(SEL) * strcls->isa->ivars[2].num);
-    strcls->ivars[4].num      = 0;
-    strcls->isa->ivars[4].num = 0;
-    strcls->ivars[5].arr = (id*) malloc(sizeof(id) * strcls->ivars[4].num);
-    strcls->isa->ivars[5].arr =
-        (id*) malloc(sizeof(id) * strcls->isa->ivars[4].num);
-    strcls->ivars[6].num      = 0;
-    strcls->isa->ivars[6].num = 0;
-    strcls->ivars[7].arr = (id*) malloc(sizeof(id) * strcls->ivars[6].num);
-    strcls->isa->ivars[7].arr =
-        (id*) malloc(sizeof(id) * strcls->isa->ivars[6].num);
-    vz_class_register(strcls->ivars[1].str, strcls);
+    String                    = AllocObject(Class->ivars[2].num + Object->ivars[2].num);
+    String->isa               = AllocObject(Class->ivars[2].num + Object->ivars[2].num);
+    String->ivars[0].obj      = Object;
+    String->isa->ivars[0].obj = Class;
+    String->ivars[1].str      = "std::String";
+    String->isa->ivars[1].str = "std::String.Isa";
+    String->ivars[2].num      = 2;
+    String->isa->ivars[2].num = 0;
+    String->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * String->ivars[2].num);
+    String->ivars[3].sarr[0]  = GetSelector("value");
+    String->ivars[3].sarr[1] = GetSelector("length");
+    String->isa->ivars[3].sarr =
+        (SEL*) malloc(sizeof(SEL) * String->isa->ivars[2].num);
+    String->ivars[4].num      = 0;
+    String->isa->ivars[4].num = 0;
+    String->ivars[5].arr = (id*) malloc(sizeof(id) * String->ivars[4].num);
+    String->isa->ivars[5].arr =
+        (id*) malloc(sizeof(id) * String->isa->ivars[4].num);
+    String->ivars[6].num      = 0;
+    String->isa->ivars[6].num = 0;
+    String->ivars[7].arr = (id*) malloc(sizeof(id) * String->ivars[6].num);
+    String->isa->ivars[7].arr =
+        (id*) malloc(sizeof(id) * String->isa->ivars[6].num);
+    RegisterClass(String->ivars[1].str, String);
 
-    id numcls                 = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
-    numcls->isa               = vz_object_alloc(clscls->ivars[2].num + objcls->ivars[2].num);
-    numcls->ivars[0].obj      = objcls;
-    numcls->isa->ivars[0].obj = clscls;
-    numcls->ivars[1].str      = "std::Number";
-    numcls->isa->ivars[1].str = "std::Number.isa";
-    numcls->ivars[2].num      = 1;
-    numcls->isa->ivars[2].num = 0;
-    numcls->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * numcls->ivars[2].num);
-    numcls->ivars[3].sarr[0] = vz_sel_get("value");
-    numcls->isa->ivars[3].sarr =
-        (SEL*) malloc(sizeof(SEL) * numcls->isa->ivars[2].num);
-    numcls->ivars[4].num      = 0;
-    numcls->isa->ivars[4].num = 0;
-    numcls->ivars[5].arr = (id*) malloc(sizeof(id) * numcls->ivars[4].num);
-    numcls->isa->ivars[5].arr =
-        (id*) malloc(sizeof(id) * numcls->isa->ivars[4].num);
-    numcls->ivars[6].num      = 0;
-    numcls->isa->ivars[6].num = 0;
-    numcls->ivars[7].arr = (id*) malloc(sizeof(id) * numcls->ivars[6].num);
-    numcls->isa->ivars[7].arr =
-        (id*) malloc(sizeof(id) * numcls->isa->ivars[6].num);
-    vz_class_register(numcls->ivars[1].str, numcls);
+    Number                    = AllocObject(Class->ivars[2].num + Object->ivars[2].num);
+    Number->isa               = AllocObject(Class->ivars[2].num + Object->ivars[2].num);
+    Number->ivars[0].obj      = Object;
+    Number->isa->ivars[0].obj = Class;
+    Number->ivars[1].str      = "std::Number";
+    Number->isa->ivars[1].str = "std::Number.Isa";
+    Number->ivars[2].num      = 1;
+    Number->isa->ivars[2].num = 0;
+    Number->ivars[3].sarr     = (SEL*) malloc(sizeof(SEL) * Number->ivars[2].num);
+    Number->ivars[3].sarr[0] = GetSelector("value");
+    Number->isa->ivars[3].sarr =
+        (SEL*) malloc(sizeof(SEL) * Number->isa->ivars[2].num);
+    Number->ivars[4].num      = 0;
+    Number->isa->ivars[4].num = 0;
+    Number->ivars[5].arr = (id*) malloc(sizeof(id) * Number->ivars[4].num);
+    Number->isa->ivars[5].arr =
+        (id*) malloc(sizeof(id) * Number->isa->ivars[4].num);
+    Number->ivars[6].num      = 0;
+    Number->isa->ivars[6].num = 0;
+    Number->ivars[7].arr = (id*) malloc(sizeof(id) * Number->ivars[6].num);
+    Number->isa->ivars[7].arr =
+        (id*) malloc(sizeof(id) * Number->isa->ivars[6].num);
+    RegisterClass(Number->ivars[1].str, Number);
+
+    id name  = BoxString("std::Byte");
+    id iname = BoxString("std::Byte.Isa");
+    id ivarc = BoxNumber(1);
+    Byte = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Byte", Byte);
+
+    name  = BoxString("std::Char");
+    iname = BoxString("std::Char.Isa");
+    ivarc = BoxNumber(1);
+    Char = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Char", Char);
+
+    name  = BoxString("std::Bool");
+    iname = BoxString("std::Bool.Isa");
+    ivarc = BoxNumber(1);
+    Bool = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Bool", Bool);
+
+    name  = BoxString("std::Array");
+    iname = BoxString("std::Array.Isa");
+    ivarc = BoxNumber(1);
+    Array = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Array", Array);
+
+    name  = BoxString("std::Tuple");
+    iname = BoxString("std::Tuple.Isa");
+    ivarc = BoxNumber(1);
+    Tuple = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Tuple", Tuple);
+
+    name   = BoxString("std::Thread");
+    iname  = BoxString("std::Thread.Isa");
+    ivarc  = BoxNumber(1);
+    Thread = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Thread", Thread);
+
+    name      = BoxString("std::Exception");
+    iname     = BoxString("std::Exception.Isa");
+    ivarc     = BoxNumber(1);
+    Exception = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+    SendMsg(name, Release, 0);
+    SendMsg(iname, Release, 0);
+    SendMsg(ivarc, Release, 0);
+    RegisterClass("std::Exception", Exception);
 }
