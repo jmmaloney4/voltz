@@ -37,7 +37,7 @@ id GetClass(const char* name) {
     return nil;
 }
 
-id (*voltz::GetClass)(const char*) = GetClass;
+id (*voltz::GetClass)(const char*) = ::GetClass;
 
 void RegisterClass(const char* name, id cls) {
     NUM hash = HashString(name);
@@ -67,7 +67,7 @@ void RegisterClass(const char* name, id cls) {
     VoltzVM.clsmtx.unlock();
 }
 
-void (*voltz::RegisterClass)(const char*, id) = RegisterClass;
+void (*voltz::RegisterClass)(const char*, id) = ::RegisterClass;
 
 id GetClassSuper(id cls) {
     if (cls == nil) {
@@ -76,7 +76,7 @@ id GetClassSuper(id cls) {
     return cls->ivars[0].obj;
 }
 
-id (*voltz::GetClassSuper)(id cls) = GetClassSuper;
+id (*voltz::GetClassSuper)(id cls) = ::GetClassSuper;
 
 const char* GetClassName(id cls) {
     if (cls == nil) {
@@ -85,7 +85,7 @@ const char* GetClassName(id cls) {
     return strdup(cls->ivars[0].str);
 }
 
-const char* (*voltz::GetClassName)(id cls) = GetClassName;
+const char* (*voltz::GetClassName)(id cls) = ::GetClassName;
 
 NUM GetClassMethodCount(id cls) {
     if (cls == nil) {
@@ -94,7 +94,7 @@ NUM GetClassMethodCount(id cls) {
     return cls->ivars[6].num;
 }
 
-NUM (*voltz::GetClassMethodCount)(id cls) = GetClassMethodCount;
+NUM (*voltz::GetClassMethodCount)(id cls) = ::GetClassMethodCount;
 
 NUM GetClassInstanceVariableCount(id cls) {
     if (cls == nil) {
@@ -104,7 +104,7 @@ NUM GetClassInstanceVariableCount(id cls) {
     return cls->ivars[2].num;
 }
 
-NUM (*voltz::GetClassInstanceVariableCount)(id) = GetClassInstanceVariableCount;
+NUM (*voltz::GetClassInstanceVariableCount)(id) = ::GetClassInstanceVariableCount;
 
 const SEL* GetClassInstanceVariableNames(id cls) {
     if (cls == nil) {
@@ -115,7 +115,7 @@ const SEL* GetClassInstanceVariableNames(id cls) {
 }
 
 const SEL* (*voltz::GetClassInstanceVariableNames)(id) =
-    GetClassInstanceVariableNames;
+    ::GetClassInstanceVariableNames;
 /*
 void vz_class_init() {
     id clscls      = vz_class_get("std::Class");
@@ -149,8 +149,9 @@ void vz_class_init() {
 }
 */
 
-void SetInstanceVariableName(id cls, NUM index, SEL name) {
+void SetClassInstanceVariableName(id cls, NUM index, SEL name) {
     cls->ivars[3].sarr[(int64_t) index] = name;
 }
 
-void (*vz_class_setIvarName)(id, NUM, SEL) = SetClassInstanceVariableName;
+void (*voltz::SetClassInstanceVariableName)(id, NUM, SEL) =
+    ::SetClassInstanceVariableName;

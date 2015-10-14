@@ -44,9 +44,11 @@ namespace voltz {
         vz_selTable_entry** seltbl;
     };
 
-    extern "C" void BootstrapRuntime(int argc, const char** argv);
-    extern "C" id AllocObject(NUM ivars);
-    extern "C" NUM HashString(const char* s);
+    void BootstrapRuntime(int argc, const char** argv);
+    id AllocObject(NUM ivars);
+    NUM HashString(const char* s);
+
+    void InitSelectors();
 
     namespace selectors {
         extern SEL Alloc;

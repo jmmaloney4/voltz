@@ -17,7 +17,7 @@ id BoxNumber(NUM value) {
     return rv;
 }
 
-id (*voltz::BoxNumber)(NUM) = BoxNumber;
+id (*voltz::BoxNumber)(NUM) = ::BoxNumber;
 
 NUM UnboxNumber(id obj) {
     if (obj == nil) {
@@ -26,4 +26,4 @@ NUM UnboxNumber(id obj) {
     return obj->ivars[0].num;
 }
 
-NUM (*voltz::UnboxNumber)(id) = UnboxNumber;
+NUM (*voltz::UnboxNumber)(id) = ::UnboxNumber;

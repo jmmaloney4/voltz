@@ -13,48 +13,27 @@ using namespace voltz::classes;
 
 VM voltz::VoltzVM;
 
-SEL selectors::Alloc                 = GetSelector("Alloc");
-SEL selectors::Init                  = GetSelector("Init");
-SEL selectors::Retain                = GetSelector("Retain");
-SEL selectors::Release               = GetSelector("Release");
-SEL selectors::AddMethod_            = GetSelector("AddMethod:");
-SEL selectors::New                   = GetSelector("New");
-SEL selectors::Deinit                = GetSelector("Deinit");
-SEL selectors::SetSel_               = GetSelector("SetSel:");
-SEL selectors::SetImp_               = GetSelector("SetImp:");
-SEL selectors::sel                   = GetSelector("sel");
-SEL selectors::imp                   = GetSelector("imp");
-SEL selectors::Init__                = GetSelector("Init::");
-SEL selectors::New__                 = GetSelector("New::");
-SEL selectors::Subclass___           = GetSelector("Subclass:::");
-SEL selectors::Register              = GetSelector("Register");
-SEL selectors::Isa                   = GetSelector("Isa");
-SEL selectors::True                  = GetSelector("True");
-SEL selectors::False                 = GetSelector("False");
-SEL selectors::Count                 = GetSelector("Count");
-SEL selectors::value                 = GetSelector("value");
-SEL selectors::ResolveMessageSend__  = GetSelector("ResolveMessageSend::");
-SEL selectors::UnrecognizedSelector_ = GetSelector("UnrecognizedSelector:");
-
-id voltz::classes::Object   = nil;
-id voltz::classes::Class    = nil;
-id voltz::classes::Method   = nil;
-id voltz::classes::Selector = nil;
-id voltz::classes::Imp      = nil;
-id voltz::classes::Number   = nil;
-id voltz::classes::Byte     = nil;
-id voltz::classes::String   = nil;
-id voltz::classes::Char     = nil;
-id voltz::classes::Bool     = nil;
-id voltz::classes::Array    = nil;
-id voltz::classes::Tuple    = nil;
+id voltz::classes::Object    = nil;
+id voltz::classes::Class     = nil;
+id voltz::classes::Method    = nil;
+id voltz::classes::Selector  = nil;
+id voltz::classes::Imp       = nil;
+id voltz::classes::Number    = nil;
+id voltz::classes::Byte      = nil;
+id voltz::classes::String    = nil;
+id voltz::classes::Char      = nil;
+id voltz::classes::Bool      = nil;
+id voltz::classes::Array     = nil;
+id voltz::classes::Tuple     = nil;
+id voltz::classes::Thread    = nil;
+id voltz::classes::Exception = nil;
 
 id BoxBool(bool value) {
     id rv = SendMsg(Bool, value ? True : False, 0);
     return rv;
 }
 
-id (*voltz::BoxBool)(bool) = BoxBool;
+id (*voltz::BoxBool)(bool) = ::BoxBool;
 
 bool UnboxBool(id obj) {
     if (obj == nil) {
@@ -63,7 +42,7 @@ bool UnboxBool(id obj) {
     return obj->ivars[0].num != 0;
 }
 
-bool (*voltz::UnboxBool)(id) = UnboxBool;
+bool (*voltz::UnboxBool)(id) = ::UnboxBool;
 
 id* UnboxArray(id obj, NUM* crv) {
     id count = SendMsg(obj, Count, 0);
@@ -79,7 +58,7 @@ id* UnboxArray(id obj, NUM* crv) {
     return rv;
 }
 
-id* (*voltz::UnboxArray)(id, NUM*) = UnboxArray;
+id* (*voltz::UnboxArray)(id, NUM*) = ::UnboxArray;
 
 id BoxArray(NUM count, ...) {
     va_list ap;
@@ -89,7 +68,7 @@ id BoxArray(NUM count, ...) {
     return rv;
 }
 
-id (*voltz::BoxArray)(NUM, ...) = BoxArray;
+id (*voltz::BoxArray)(NUM, ...) = ::BoxArray;
 
 id BoxArrayV(NUM count, va_list ap) {
     id* args = (id*) malloc(sizeof(id) * count);
@@ -102,7 +81,7 @@ id BoxArrayV(NUM count, va_list ap) {
     return rv;
 }
 
-id (*voltz::BoxArrayV)(NUM, va_list) = BoxArrayV;
+id (*voltz::BoxArrayV)(NUM, va_list) = ::BoxArrayV;
 
 id BoxArrayA(NUM count, id* args) {
     id rv = SendMsg(Array, New, 0);
@@ -116,4 +95,4 @@ id BoxArrayA(NUM count, id* args) {
     return rv;
 }
 
-id (*voltz::BoxArrayA)(NUM, id*) = BoxArrayA;
+id (*voltz::BoxArrayA)(NUM, id*) = ::BoxArrayA;

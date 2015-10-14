@@ -11,6 +11,9 @@ using namespace voltz;
 using namespace voltz::selectors;
 using namespace voltz::classes;
 
+extern "C" void LinkerEntry(id, id) { printf("Hello, World!\n"); }
+
+/*
 extern "C" bool VoltzModuleInitialize_std();
 
 void vz_linker_entry(id, id) {

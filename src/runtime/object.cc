@@ -31,7 +31,7 @@ id GetInstanceVariable(id obj, SEL name) {
     return nil;
 }
 
-id (*voltz::GetInstanceVariable)(id, SEL) = GetInstanceVariable;
+id (*voltz::GetInstanceVariable)(id, SEL) = ::GetInstanceVariable;
 
 void SetInstanceVariable(id obj, SEL name, id value) {
     if (obj == nil) {
@@ -47,7 +47,7 @@ void SetInstanceVariable(id obj, SEL name, id value) {
     }
 }
 
-void (*voltz::SetInstanceVariable)(id, SEL, id) = SetInstanceVariable;
+void (*voltz::SetInstanceVariable)(id, SEL, id) = ::SetInstanceVariable;
 
 NUM GetNumberInstanceVariable(id obj, SEL name) {
     if (obj == nil) {
@@ -65,7 +65,7 @@ NUM GetNumberInstanceVariable(id obj, SEL name) {
     return 0;
 }
 
-NUM (*voltz::GetNumberInstanceVariable)(id, SEL) = GetNumberInstanceVariable;
+NUM (*voltz::GetNumberInstanceVariable)(id, SEL) = ::GetNumberInstanceVariable;
 
 void SetNumberInstanceVariable(id obj, SEL name, NUM value) {
     if (obj == nil) {
@@ -82,4 +82,4 @@ void SetNumberInstanceVariable(id obj, SEL name, NUM value) {
 }
 
 void (*voltz::SetNumberInstanceVariable)(id, SEL,
-                                         NUM) = SetNumberInstanceVariable;
+                                         NUM) = ::SetNumberInstanceVariable;

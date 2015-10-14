@@ -18,15 +18,15 @@ id BoxString(const char* value) {
     return rv;
 }
 
-id (*voltz::BoxString)(const char*) = BoxString;
+id (*voltz::BoxString)(const char*) = ::BoxString;
 
-const char* vz_string_unboxI(id obj) {
+const char* UnboxString(id obj) {
     if (obj == nil) {
         return nullptr;
     }
     return strdup(obj->ivars[0].str);
 }
 
-const char* (*vz_string_unbox)(id) = vz_string_unboxI;
+const char* (*voltz::UnboxString)(id) = ::UnboxString;
 
 void vz_string_init() {}

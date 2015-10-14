@@ -397,7 +397,7 @@ namespace voltz {
     /** Implemented by the linker to load modules for an executable.
      *
      */
-    void LinkerEntry(id argc, id argv);
+    extern "C" void LinkerEntry(id argc, id argv);
 
     /** Loads the module with the specified name. Searches the VOLTZ_PATH
      *  enviroment variable.

@@ -29,7 +29,7 @@ id SendMsgV(id target, SEL sel, NUM argc, va_list ap) {
     return SendMsgA(target, sel, argc, args);
 }
 
-id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
+id SendMsgA(id target, SEL sel, NUM argc, id* args) {
     if (target == nil) {
         return nil;
     }
@@ -54,9 +54,9 @@ id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
     return nil;
 }
 
-id (*voltz::SendMsg)(id target, SEL sel, NUM argc, ...) = SendMsg;
-id (*voltz::SendMsgV)(id target, SEL sel, NUM argc, va_list ap) = SendMsgV;
-id (*voltz::SendMsgA)(id target, SEL sel, NUM argc, id* args) = SendMsgA;
+id (*voltz::SendMsg)(id target, SEL sel, NUM argc, ...) = ::SendMsg;
+id (*voltz::SendMsgV)(id target, SEL sel, NUM argc, va_list ap) = ::SendMsgV;
+id (*voltz::SendMsgA)(id target, SEL sel, NUM argc, id* args) = ::SendMsgA;
 
 // vz_msg_super
 
@@ -103,8 +103,8 @@ id SendMsgSuperA(id target, SEL sel, NUM argc, id* args) {
     return nil;
 }
 
-id (*voltz::SendMsgSuper)(id target, SEL sel, NUM argc, ...) = SendMsgSuper;
+id (*voltz::SendMsgSuper)(id target, SEL sel, NUM argc, ...) = ::SendMsgSuper;
 id (*voltz::SendMsgSuperV)(id target, SEL sel, NUM argc,
-                           va_list ap) = SendMsgSuperV;
+                           va_list ap) = ::SendMsgSuperV;
 id (*voltz::SendMsgSuperA)(id target, SEL sel, NUM argc,
-                           id* args) = SendMsgSuperA;
+                           id* args) = ::SendMsgSuperA;

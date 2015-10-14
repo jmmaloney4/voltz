@@ -50,6 +50,8 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     VoltzVM.seltbl = (vz_selTable_entry**) malloc(sizeof(vz_selTable_entry*) *
                                                   vz_selTable_size);
 
+    InitSelectors();
+
     Object   = AllocObject(8);
     Class    = AllocObject(8);
     Method   = AllocObject(8);
@@ -151,7 +153,7 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
 
     // mthdc
     Object->ivars[6].num   = 4;
-    Class->ivars[6].num    = 2;
+    Class->ivars[6].num    = 3;
     Method->ivars[6].num   = 0;
     Selector->ivars[6].num = 0;
     Imp->ivars[6].num      = 0;
@@ -277,6 +279,7 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
         free(self);
         return nil;
     });
+    
 
     // SetSel:
     id setsel = SendMsg(Method, Alloc, 0);

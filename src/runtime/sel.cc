@@ -14,7 +14,55 @@ using namespace voltz;
 using namespace voltz::selectors;
 using namespace voltz::classes;
 
-NUM vz_string_hash(const char* s) {
+SEL selectors::Alloc;
+SEL selectors::Init;
+SEL selectors::Retain;
+SEL selectors::Release;
+SEL selectors::AddMethod_;
+SEL selectors::New;
+SEL selectors::Deinit;
+SEL selectors::SetSel_;
+SEL selectors::SetImp_;
+SEL selectors::sel;
+SEL selectors::imp;
+SEL selectors::Init__;
+SEL selectors::New__;
+SEL selectors::Subclass___;
+SEL selectors::Register;
+SEL selectors::Isa;
+SEL selectors::True;
+SEL selectors::False;
+SEL selectors::Count;
+SEL selectors::value;
+SEL selectors::ResolveMessageSend__;
+SEL selectors::UnrecognizedSelector_;
+
+void voltz::InitSelectors() {
+    Alloc                 = GetSelector("Alloc");
+    Init                  = GetSelector("Init");
+    Retain                = GetSelector("Retain");
+    Release               = GetSelector("Release");
+    AddMethod_            = GetSelector("AddMethod:");
+    New                   = GetSelector("New");
+    Deinit                = GetSelector("Deinit");
+    SetSel_               = GetSelector("SetSel:");
+    SetImp_               = GetSelector("SetImp:");
+    sel                   = GetSelector("sel");
+    imp                   = GetSelector("imp");
+    Init__                = GetSelector("Init::");
+    New__                 = GetSelector("New::");
+    Subclass___           = GetSelector("Subclass:::");
+    Register              = GetSelector("Register");
+    Isa                   = GetSelector("Isa");
+    True                  = GetSelector("True");
+    False                 = GetSelector("False");
+    Count                 = GetSelector("Count");
+    value                 = GetSelector("value");
+    ResolveMessageSend__  = GetSelector("ResolveMessageSend::");
+    UnrecognizedSelector_ = GetSelector("UnrecognizedSelector:");
+}
+
+NUM voltz::HashString(const char* s) {
     int64_t hash = 0;
 
     for (; *s; ++s) {
@@ -30,8 +78,8 @@ NUM vz_string_hash(const char* s) {
     return (NUM) hash;
 }
 
-SEL vz_sel_getI(const char* value) {
-    NUM hash = vz_string_hash(value);
+SEL GetSelector(const char* value) {
+    NUM hash = HashString(value);
     hash = (int64_t) fmod(hash, vz_selTable_size);
     if (hash < 0) {
         hash *= -1;
@@ -61,7 +109,7 @@ SEL vz_sel_getI(const char* value) {
     return rv;
 }
 
-SEL (*vz_sel_get)(const char*) = vz_sel_getI;
+SEL (*voltz::GetSelector)(const char*) = ::GetSelector;
 
 id BoxSelector(SEL sel) {
     id rv = SendMsg(Selector, Alloc, 0);
@@ -69,8 +117,8 @@ id BoxSelector(SEL sel) {
     return rv;
 }
 
-id (*voltz::BoxSelector)(SEL) = BoxSelector;
+id (*voltz::BoxSelector)(SEL) = ::BoxSelector;
 
 SEL UnboxSelector(id obj) { return (SEL) GetInstanceVariable(obj, value); }
 
-SEL (*voltz::UnboxSelector)(id) = UnboxSelector;
+SEL (*voltz::UnboxSelector)(id) = ::UnboxSelector;

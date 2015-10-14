@@ -16,11 +16,11 @@ id BoxImp(IMP imp) {
     return rv;
 }
 
-id (*voltz::BoxImp)(IMP) = BoxImp;
+id (*voltz::BoxImp)(IMP) = ::BoxImp;
 
 IMP UnboxImp(id obj) {
     IMP rv = new std::function<id(id, SEL, NUM, id*) >(*obj->ivars[0].imp);
     return rv;
 }
 
-IMP (*voltz::UnboxImp)(id) = UnboxImp;
+IMP (*voltz::UnboxImp)(id) = ::UnboxImp;
