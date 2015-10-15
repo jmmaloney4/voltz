@@ -73,6 +73,12 @@ namespace voltz {
         extern SEL value;
         extern SEL ResolveMessageSend__;
         extern SEL UnrecognizedSelector_;
+        extern SEL count;
+        extern SEL handle;
+        extern SEL imp;
+        extern SEL rv;
+        extern SEL message;
+        extern SEL backtrace;
     }
 
     namespace classes {
@@ -90,6 +96,8 @@ namespace voltz {
         extern id Tuple;
         extern id Thread;
         extern id Exception;
+        extern id ExceptionFrame;
+        extern id ExceptionBacktraceFrame;
     }
 }
 

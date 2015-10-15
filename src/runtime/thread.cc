@@ -10,3 +10,5 @@
 using namespace voltz;
 using namespace voltz::selectors;
 using namespace voltz::classes;
+
+id CreateThread(IMP fn) { id thrd = SendMsg(Thread, New, 0); }

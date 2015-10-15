@@ -279,7 +279,6 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
         free(self);
         return nil;
     });
-    
 
     // SetSel:
     id setsel = SendMsg(Method, Alloc, 0);
@@ -452,6 +451,7 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Byte, 0, value);
     RegisterClass("std::Byte", Byte);
 
     name  = BoxString("std::Char");
@@ -461,6 +461,7 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Char, 0, value);
     RegisterClass("std::Char", Char);
 
     name  = BoxString("std::Bool");
@@ -470,41 +471,63 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Bool, 0, value);
     RegisterClass("std::Bool", Bool);
 
     name  = BoxString("std::Array");
     iname = BoxString("std::Array.Isa");
-    ivarc = BoxNumber(1);
+    ivarc = BoxNumber(2);
     Array = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Array, 0, count);
+    SetClassInstanceVariableName(Array, 1, value);
     RegisterClass("std::Array", Array);
 
     name  = BoxString("std::Tuple");
     iname = BoxString("std::Tuple.Isa");
-    ivarc = BoxNumber(1);
+    ivarc = BoxNumber(2);
     Tuple = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Tuple, 0, count);
+    SetClassInstanceVariableName(Tuple, 1, value);
     RegisterClass("std::Tuple", Tuple);
 
     name   = BoxString("std::Thread");
     iname  = BoxString("std::Thread.Isa");
-    ivarc  = BoxNumber(1);
+    ivarc  = BoxNumber(3);
     Thread = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Thread, 0, handle);
+    SetClassInstanceVariableName(Thread, 1, imp);
+    SetClassInstanceVariableName(Thread, 2, rv);
     RegisterClass("std::Thread", Thread);
 
     name      = BoxString("std::Exception");
     iname     = BoxString("std::Exception.Isa");
-    ivarc     = BoxNumber(1);
+    ivarc     = BoxNumber(2);
     Exception = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
+    SetClassInstanceVariableName(Exception, 0, message);
+    SetClassInstanceVariableName(Exception, 0, backtrace);
     RegisterClass("std::Exception", Exception);
+    /*
+        name      = BoxString("std::ExceptionFrame");
+        iname     = BoxString("std::ExceptionFrame.Isa");
+        ivarc     = BoxNumber(2);
+        Exception = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
+        SendMsg(name, Release, 0);
+        SendMsg(iname, Release, 0);
+        SendMsg(ivarc, Release, 0);
+        SetClassInstanceVariableName(Exception, 0, message);
+        SetClassInstanceVariableName(Exception, 0, backtrace);
+        RegisterClass("std::Exception", Exception);
+     */
 }

@@ -24,6 +24,8 @@
 // void StartThreadA(id, NUM, id*)
 // id JoinThread(id)
 //
+// void PushExceptionStack(id)
+//
 // id GetIsa(id)
 // NUM GetReferences(id)
 // NUM GetWeakReferences(id)
@@ -74,6 +76,7 @@
 #include <cstdarg>
 #include <functional>
 #include <cstddef>
+#include <csetjmp>
 
 namespace voltz {
 
@@ -95,6 +98,14 @@ namespace voltz {
 
 #define nil NULL
 
+#define SetJmp(buf) setjmp(buf.value)
+#define LongJmp(buf, val) longjmp(buf.value, val)
+
+#define Try(code)
+    
+#define Catch(code)
+#define Finally(code)
+
 #define VOLTZ_PATH_ENVVAR "VOLTZ_PATH"
 #define VOLTZ_MODULE_EXT "vzm"
 
@@ -109,6 +120,7 @@ namespace voltz {
     typedef uint8_t BYTE;
     typedef std::function<id(id, SEL, NUM, id*)>* IMP;
     typedef struct vz_vm VM;
+    typedef struct { jmp_buf value; } JmpBuf;
 
     extern VM VoltzVM;
 
@@ -157,7 +169,6 @@ namespace voltz {
     /* Array
      * - count
      * - value
-     * - types
      */
 
     /* Tuple
