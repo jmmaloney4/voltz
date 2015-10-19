@@ -37,6 +37,12 @@ SEL selectors::value;
 SEL selectors::ResolveMessageSend__;
 SEL selectors::UnrecognizedSelector_;
 SEL selectors::count;
+SEL selectors::handle;
+SEL selectors::rv;
+SEL selectors::message;
+SEL selectors::backtrace;
+SEL selectors::callstack;
+SEL selectors::excpstack;
 
 void voltz::InitSelectors() {
     Alloc                 = GetSelector("Alloc");
@@ -62,6 +68,11 @@ void voltz::InitSelectors() {
     ResolveMessageSend__  = GetSelector("ResolveMessageSend::");
     UnrecognizedSelector_ = GetSelector("UnrecognizedSelector:");
     count                 = GetSelector("count");
+    rv                    = GetSelector("rv");
+    message               = GetSelector("message");
+    backtrace             = GetSelector("backtrace");
+    callstack             = GetSelector("callstack");
+    excpstack             = GetSelector("excpstack");
 }
 
 NUM voltz::HashString(const char* s) {

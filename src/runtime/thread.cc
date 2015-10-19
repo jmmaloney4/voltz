@@ -20,6 +20,8 @@ id CreateThread(IMP fn) {
     return thrd;
 }
 
+id (*voltz::CreateThread)(IMP) = ::CreateThread;
+
 void StartThread(id thrd, NUM argc, ...) {
     va_list ap;
     va_start(ap, argc);
@@ -27,23 +29,36 @@ void StartThread(id thrd, NUM argc, ...) {
     va_end(ap);
 }
 
+void (*voltz::StartThread)(id, NUM, ...) = ::StartThread;
+
 void StartThreadV(id thrd, NUM argc, va_list ap) {
     id* args = (id*) alloca(sizeof(id) * argc);
     for (NUM k = 0; k < argc; k++) {
-        args[(int64_t)k] = va_arg(ap, id);
+        args[(int64_t) k] = va_arg(ap, id);
     }
-    
+
     StartThreadA(thrd, argc, args);
 }
 
+void (*voltz::StartThreadV)(id, NUM, va_list) = ::StartThreadV;
+
 void StartThreadA(id thrd, NUM argc, id* args) {
-    IMP fn = (IMP) GetInstanceVariable(thrd, imp);
-    std::thread* handle = new std::thread(fn, thrd, nil, args);
-    SetInstanceVariable(thrd, selectors::handle, (id) handle);
+    // IMP fn = (IMP)GetInstanceVariable(thrd, imp);
+    // std::thread* handle = new std::thread(fn, thrd, nil, args);
+    // SetInstanceVariable(thrd, selectors::handle, (id)handle);
 }
 
+void (*voltz::StartThreadA)(id, NUM, id*) = ::StartThreadA;
+
 id JoinThread(id thrd) {
-    std::thread* handle = (std::thread*) GetInstanceVariable(thrd, selectors::handle);
+    std::thread* handle =
+        (std::thread*) GetInstanceVariable(thrd, selectors::handle);
     handle->join();
     return GetInstanceVariable(thrd, rv);
 }
+
+__thread id CurrentThread = nil;
+
+id GetCurrentThread() { return CurrentThread; }
+
+void SetCurrentThread(id thrd) { CurrentThread = thrd; }

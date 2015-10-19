@@ -14,7 +14,7 @@ using namespace voltz::classes;
 
 double voltz::StartupTime;
 
-int main(int argc, const char** argv) {
+void Main(int argc, const char** argv, const char* lib, const char* cls) {
 
     clock_t begin, end;
     begin = clock();
@@ -29,5 +29,12 @@ int main(int argc, const char** argv) {
     printf("Took %f seconds to startup.\n", StartupTime);
 #endif
 
-    LinkerEntry(BoxNumber(argc), nil);
+    LoadModule("std");
+
+    LoadModule(lib);
+    id maincls = GetClass(cls);
+    id rv      = SendMsg(maincls, GetSelector("Main::"), 2, BoxNumber(argc), nil);
 }
+
+void (*voltz::Main)(int argc, const char** argv, const char* lib,
+                    const char* cls) = ::Main;

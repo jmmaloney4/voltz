@@ -98,8 +98,6 @@ namespace voltz {
         extern id Tuple;
         extern id Thread;
         extern id Exception;
-        extern id ExceptionFrame;
-        extern id ExceptionBacktraceFrame;
     }
 }
 

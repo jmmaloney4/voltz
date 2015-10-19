@@ -23,8 +23,10 @@
 // void StartThreadV(id, NUM, va_list)
 // void StartThreadA(id, NUM, id*)
 // id JoinThread(id)
+// id GetCurrentThread()
 //
-// void PushExceptionStack(id)
+// void PushExceptionFrame(JmpBuf)
+// JmpBuf PopExceptionFrame()
 //
 // id GetIsa(id)
 // NUM GetReferences(id)
@@ -102,17 +104,17 @@ namespace voltz {
 #define LongJmp(buf, val) longjmp(buf.value, val)
 
 #define Try(code)
-    
+
 #define Catch(code)
 #define Finally(code)
 
 #define VOLTZ_PATH_ENVVAR "VOLTZ_PATH"
 #define VOLTZ_MODULE_EXT "vzm"
 
-    extern double StartupTime;
+    extern "C" double StartupTime;
 
-    extern int C_argc;
-    extern const char** C_argv;
+    extern "C" int C_argc;
+    extern "C" const char** C_argv;
 
     typedef struct vz_object* id;
     typedef struct vz_sel* SEL;
@@ -122,7 +124,7 @@ namespace voltz {
     typedef struct vz_vm VM;
     typedef struct { jmp_buf value; } JmpBuf;
 
-    extern VM VoltzVM;
+    extern "C" VM VoltzVM;
 
     union vz_ivar {
         id obj;
@@ -146,283 +148,107 @@ namespace voltz {
     };
 
     /* Class
-     * - super
-     * - name
-     * - ivars (for this class only)
-     * - ivarn
-     * - protocolc
-     * - protocolv
-     * - mthdc
-     * - mthdv
-     */
+         * - super
+         * - name
+         * - ivars (for this class only)
+         * - ivarn
+         * - protocolc
+         * - protocolv
+         * - mthdc
+         * - mthdv
+         */
 
     /* Protocol
-     * - name
-     * - superc
-     * - superv
-     * - imthdc
-     * - imthdv
-     * - cmthdc
-     * - cmthdv
-     */
+         * - name
+         * - superc
+         * - superv
+         * - imthdc
+         * - imthdv
+         * - cmthdc
+         * - cmthdv
+         */
 
     /* Array
-     * - count
-     * - value
-     */
+         * - count
+         * - value
+         */
 
     /* Tuple
-     * - count
-     * - value
-     * - types
-     */
+         * - count
+         * - value
+         * - types
+         */
 
     /* Thread
-     * - handle
-     * - imp
-     * - rv
-     * - callstack
-     * - excpstack
-     */
+         * - handle
+         * - imp
+         * - rv
+         * - callstack
+         * - excpstack
+         */
 
-    /** Box a NUM into an object of type Number.
-     *
-     */
-    extern id (*BoxNumber)(NUM value);
+    extern "C" id (*BoxNumber)(NUM value);
+    extern "C" id (*BoxByte)(BYTE value);
+    extern "C" id (*BoxString)(const char* value);
+    extern "C" id (*BoxChar)(NUM value);
+    extern "C" id (*BoxBool)(bool value);
+    extern "C" id (*BoxSelector)(SEL value);
+    extern "C" id (*BoxImp)(IMP value);
+    extern "C" id (*BoxArray)(NUM count, ...);
+    extern "C" id (*BoxArrayV)(NUM count, va_list ap);
+    extern "C" id (*BoxArrayA)(NUM count, id* value);
+    extern "C" id (*BoxTuple)(NUM count, ...);
 
-    /** Box a BYTE into an object of type Byte.
-     *
-     */
-    extern id (*BoxByte)(BYTE value);
+    extern "C" NUM (*UnboxNumber)(id obj);
+    extern "C" BYTE (*UnboxByte)(id obj);
+    extern "C" const char* (*UnboxString)(id obj);
+    extern "C" NUM (*UnboxChar)(id obj);
+    extern "C" bool (*UnboxBool)(id obj);
+    extern "C" SEL (*UnboxSelector)(id obj);
+    extern "C" IMP (*UnboxImp)(id obj);
+    extern "C" NUM (*UnboxTuple)(NUM count, ...);
+    extern "C" id* (*UnboxArray)(id obj, NUM* count);
 
-    /** Box a const char* into an object of type String.
-     *
-     */
-    extern id (*BoxString)(const char* value);
+    extern "C" id GetIsa(id);
+    extern "C" NUM GetReferences(id);
+    extern "C" NUM GetWeakReferences(id);
 
-    /** Box a NUM (representing a Unicode Code Point) into an object of type
-     * Char.
-     *
-     */
-    extern id (*BoxChar)(NUM value);
+    extern "C" SEL (*GetSelector)(const char* value);
+    extern "C" id (*GetInstanceVariable)(id obj, SEL name);
+    extern "C" NUM (*GetNumberInstanceVariable)(id obj, SEL name);
+    extern "C" void (*SetInstanceVariable)(id obj, SEL name, id value);
+    extern "C" void (*SetNumberInstanceVariable)(id obj, SEL name, NUM value);
+    extern "C" id (*GetGlobal)(const char* name);
+    extern "C" void (*SetGlobal)(const char* name, id value);
+    extern "C" id (*GetClass)(const char* name);
+    extern "C" void (*RegisterClass)(const char* name, id cls);
+    extern "C" id (*GetClassSuper)(id cls);
+    extern "C" const char* (*GetClassName)(id cls);
 
-    /** Box a bool into an object of type Bool.
-     *
-     */
-    extern id (*BoxBool)(bool value);
+    extern "C" NUM (*GetClassMethodCount)(id cls);
+    extern "C" NUM (*GetClassInstanceVariableCount)(id cls);
+    extern "C" const SEL* (*GetClassInstanceVariableNames)(id cls);
 
-    /** Box a SEL into a object of type Selector.
-     *
-     */
-    extern id (*BoxSelector)(SEL value);
+    extern "C" void (*SetClassInstanceVariableName)(id cls, NUM index,
+                                                    SEL name);
 
-    /** Box an IMP into a object of type Imp.
-     *
-     */
-    extern id (*BoxImp)(IMP value);
+    extern "C" id (*CreateThread)(IMP fn);
+    extern "C" void (*StartThread)(id thrd, NUM argc, ...);
+    extern "C" void (*StartThreadV)(id thrd, NUM argc, va_list ap);
+    extern "C" void (*StartThreadA)(id thrd, NUM argc, id*);
+    extern "C" id (*JoinThread)(id thrd);
 
-    /** Box an array into an object of type Array.
-     *
-     *  Sets the generic type to Object.
-     */
-    extern id (*BoxArray)(NUM count, ...);
+    extern "C" void (*Main)(int argc, const char** argv, const char* lib,
+                            const char* cls);
 
-    /** Box an array into an object of type Array.
-     *
-     *  Sets the generic type to Object.
-     */
-    extern id (*BoxArrayV)(NUM count, va_list ap);
+    extern "C" bool (*LoadModule)(const char* name);
 
-    /** Box an array into an object of type Array.
-     *
-     *  Sets the generic type to Object.
-     */
-    extern id (*BoxArrayA)(NUM count, id* value);
+    extern "C" id (*SendMsg)(id target, SEL sel, NUM argc, ...);
+    extern "C" id (*SendMsgV)(id target, SEL sel, NUM argc, va_list ap);
+    extern "C" id (*SendMsgA)(id target, SEL sel, NUM argc, id* args);
 
-    /** Box objects into an object of type tuple.
-     *
-     */
-    extern id (*BoxTuple)(NUM count, ...);
-
-    /** Unbox an object of type Number into a NUM.
-     *
-     */
-    extern NUM (*UnboxNumber)(id obj);
-
-    /** Unbox an object of type Number into a NUM.
-     *
-     */
-    extern BYTE (*UnboxByte)(id obj);
-
-    /** Unbox an object of type String into a const char*.
-     *
-     *  The return value of this function must be freed after use.
-     *
-     */
-    extern const char* (*UnboxString)(id obj);
-
-    /** Unbox an object of type Char into NUM representing the Unicode Code
-     *  Point for that character.
-     *
-     */
-    extern NUM (*UnboxChar)(id obj);
-
-    /** Unbox an object of type Bool.
-     *
-     */
-    extern bool (*UnboxBool)(id obj);
-
-    /** Unbox an object of type Selector into a SEL.
-     *
-     */
-    extern SEL (*UnboxSelector)(id obj);
-
-    /** Unbox an object of type Imp into a IMP.
-     *
-     *  Return value must be deleted after use.
-     *
-     */
-    extern IMP (*UnboxImp)(id obj);
-
-    /** Unbox an object of type Tuple.
-     *
-     *  @param count The number of pointers that get passed into @c ...
-     *  @param ... A set of id* that will get filled with the values in the
-     * tuple,
-     *  pass @c nil to denote that that a value is unwanted.
-     *
-     *  @return The number of objects in the tuple, regardless of @c count.
-     */
-    extern NUM (*UnboxTuple)(NUM count, ...);
-
-    /** Unbox an object of type Array into an id*.
-     *
-     *  The return value of this function must be free'd after use.
-     *
-     *  @c count is filled in with the number of elements in the returned array.
-     *  If @c count is @c nil, nothing happens to it.
-     */
-    extern id* (*UnboxArray)(id obj, NUM* count);
-
-    /** Returns a SEL representing @c value.
-     *
-     */
-    extern SEL (*GetSelector)(const char* value);
-
-    /** Get an object's instance variable that is stored for @c name.
-     *
-     *  Don't use this except in the setter and getter methods for this class,
-     * as
-     *  this can mess up the internal state of an object.
-     *
-     */
-    extern id (*GetInstanceVariable)(id obj, SEL name);
-
-    /** Get an object's instance variable that is stored for @c name as a NUM.
-     *
-     *  Don't use this except in the setter and getter methods for this class,
-     * as
-     *  this can mess up the internal state of an object.
-     *
-     */
-    extern NUM (*GetNumberInstanceVariable)(id obj, SEL name);
-
-    /** Set an object's instance variable for @c name, to @c value.
-     *
-     *  Don't use this except in the setter and getter methods for this class,
-     * as
-     *  this can mess up the internal state of an object.
-     */
-    extern void (*SetInstanceVariable)(id obj, SEL name, id value);
-
-    /** Set an object's instance variable for @c name, to a NUM @c value.
-     *
-     *  Don't use this except in the setter and getter methods for this class,
-     * as
-     *  this can mess up the internal state of an object.
-     */
-    extern void (*SetNumberInstanceVariable)(id obj, SEL name, NUM value);
-
-    /** Get the type of an object.
-     *
-     *  Returns nil if @c obj is nil.
-     *
-     */
-    extern id (*GetType)(id obj);
-
-    /** Gets the global variable for the given name.
-     *
-     */
-    extern id (*GetGlobal)(const char* name);
-
-    /** Sets the global variable for the given name.
-     *
-     */
-    extern void (*SetGlobal)(const char* name, id value);
-
-    /** Lookup a class by name.
-     *
-     */
-    extern id (*GetClass)(const char* name);
-
-    /** Register a class to a name.
-     *
-     */
-    extern void (*RegisterClass)(const char* name, id cls);
-
-    /** Get a class' superclass.
-     *
-     */
-    extern id (*GetClassSuper)(id cls);
-
-    /** Get a class' name. Must be freed after use.
-     *
-     */
-    extern const char* (*GetClassName)(id cls);
-
-    /** Get the number of methods a class implements.
-     *
-     */
-    extern NUM (*GetClassMethodCount)(id cls);
-
-    /** Get the number of instance variables a class defines.
-     *
-     */
-    extern NUM (*GetClassInstanceVariableCount)(id cls);
-
-    /** Get the names of the class' instance variables. This is the actual array
-     *  used in the class, do NOT modify it and do NOT free it.
-     *
-     */
-    extern const SEL* (*GetClassInstanceVariableNames)(id cls);
-
-    /** Set the name for a class' instance variable.
-     *
-     */
-    extern void (*SetClassInstanceVariableName)(id cls, NUM index, SEL name);
-
-    extern id (*CreateThread)(IMP fn);
-    extern void (*StartThread)(id thrd, NUM argc, ...);
-    extern void (*StartThreadV)(id thrd, NUM argc, va_list ap);
-    extern void (*StartThreadA)(id thrd, NUM argc, id*);
-    extern id (*JoinThread)(id thrd);
-
-    /** Implemented by the linker to load modules for an executable.
-     *
-     */
-    extern "C" void LinkerEntry(id argc, id argv);
-
-    /** Loads the module with the specified name. Searches the VOLTZ_PATH
-     *  enviroment variable.
-     */
-    extern bool (*LoadModule)(const char* name);
-
-    extern id (*SendMsg)(id target, SEL sel, NUM argc, ...);
-    extern id (*SendMsgV)(id target, SEL sel, NUM argc, va_list ap);
-    extern id (*SendMsgA)(id target, SEL sel, NUM argc, id* args);
-
-    extern id (*SendMsgSuper)(id target, SEL sel, NUM argc, ...);
-    extern id (*SendMsgSuperV)(id target, SEL sel, NUM argc, va_list ap);
-    extern id (*SendMsgSuperA)(id target, SEL sel, NUM argc, id* args);
+    extern "C" id (*SendMsgSuper)(id target, SEL sel, NUM argc, ...);
+    extern "C" id (*SendMsgSuperV)(id target, SEL sel, NUM argc, va_list ap);
+    extern "C" id (*SendMsgSuperA)(id target, SEL sel, NUM argc, id* args);
 }
 #endif // VOLTZ_VOLTZ_H

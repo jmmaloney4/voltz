@@ -169,6 +169,12 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     Selector->ivars[7].arr = (id*) malloc(sizeof(id) * Selector->ivars[6].num);
     Imp->ivars[7].arr      = (id*) malloc(sizeof(id) * Imp->ivars[6].num);
 
+    Method->isa->ivars[7].arr =
+        (id*) malloc(sizeof(id) * Method->isa->ivars[6].num);
+    Selector->isa->ivars[7].arr =
+        (id*) malloc(sizeof(id) * Selector->isa->ivars[6].num);
+    Imp->isa->ivars[7].arr = (id*) malloc(sizeof(id) * Imp->isa->ivars[6].num);
+
     // class methods
     Class->ivars[7].arr[0] =
         AllocObject(Method->ivars[2].num + Object->ivars[2].num);
