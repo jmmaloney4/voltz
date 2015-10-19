@@ -79,6 +79,8 @@ namespace voltz {
         extern SEL rv;
         extern SEL message;
         extern SEL backtrace;
+        extern SEL callstack;
+        extern SEL excpstack;
     }
 
     namespace classes {

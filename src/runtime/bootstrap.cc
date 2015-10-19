@@ -498,7 +498,7 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
 
     name   = BoxString("std::Thread");
     iname  = BoxString("std::Thread.Isa");
-    ivarc  = BoxNumber(3);
+    ivarc  = BoxNumber(5);
     Thread = SendMsg(Object, Subclass___, 3, name, iname, ivarc);
     SendMsg(name, Release, 0);
     SendMsg(iname, Release, 0);
@@ -506,6 +506,8 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     SetClassInstanceVariableName(Thread, 0, handle);
     SetClassInstanceVariableName(Thread, 1, imp);
     SetClassInstanceVariableName(Thread, 2, rv);
+    SetClassInstanceVariableName(Thread, 3, callstack);
+    SetClassInstanceVariableName(Thread, 4, excpstack);
     RegisterClass("std::Thread", Thread);
 
     name      = BoxString("std::Exception");
@@ -516,7 +518,7 @@ void voltz::BootstrapRuntime(int argc, const char** argv) {
     SendMsg(iname, Release, 0);
     SendMsg(ivarc, Release, 0);
     SetClassInstanceVariableName(Exception, 0, message);
-    SetClassInstanceVariableName(Exception, 0, backtrace);
+    SetClassInstanceVariableName(Exception, 1, backtrace);
     RegisterClass("std::Exception", Exception);
     /*
         name      = BoxString("std::ExceptionFrame");

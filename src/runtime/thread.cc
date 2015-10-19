@@ -6,9 +6,44 @@
 
 #include "voltz-internal.h"
 #include <thread>
+#include <cstdlib>
 
 using namespace voltz;
 using namespace voltz::selectors;
 using namespace voltz::classes;
 
-id CreateThread(IMP fn) { id thrd = SendMsg(Thread, New, 0); }
+id CreateThread(IMP fn) {
+    id thrd = SendMsg(Thread, New, 0);
+    SetInstanceVariable(thrd, imp, (id) fn);
+    SetInstanceVariable(thrd, rv, nil);
+    SetInstanceVariable(thrd, handle, nil);
+    return thrd;
+}
+
+void StartThread(id thrd, NUM argc, ...) {
+    va_list ap;
+    va_start(ap, argc);
+    StartThreadV(thrd, argc, ap);
+    va_end(ap);
+}
+
+void StartThreadV(id thrd, NUM argc, va_list ap) {
+    id* args = (id*) alloca(sizeof(id) * argc);
+    for (NUM k = 0; k < argc; k++) {
+        args[(int64_t)k] = va_arg(ap, id);
+    }
+    
+    StartThreadA(thrd, argc, args);
+}
+
+void StartThreadA(id thrd, NUM argc, id* args) {
+    IMP fn = (IMP) GetInstanceVariable(thrd, imp);
+    std::thread* handle = new std::thread(fn, thrd, nil, args);
+    SetInstanceVariable(thrd, selectors::handle, (id) handle);
+}
+
+id JoinThread(id thrd) {
+    std::thread* handle = (std::thread*) GetInstanceVariable(thrd, selectors::handle);
+    handle->join();
+    return GetInstanceVariable(thrd, rv);
+}
