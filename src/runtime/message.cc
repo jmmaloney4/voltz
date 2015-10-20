@@ -8,125 +8,82 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-extern "C" id (*vz_msg_send_super)(id target, const char* sel, NUM argc, ...);
-extern "C" id (*vz_msg_send_super_v)(id target, const char* sel, NUM argc,
-                                     va_list ap);
-extern "C" id (*vz_msg_send_super_a)(id target, const char* sel, NUM argc,
-                                     id* args);
-extern "C" id (*vz_msg_send_super_s)(id target, SEL sel, NUM argc, ...);
-extern "C" id (*vz_msg_send_super_sv)(id target, SEL sel, NUM argc, va_list ap);
-extern "C" id (*vz_msg_send_super_sa)(id target, SEL sel, NUM argc, id* args);
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
 
-id vz_msg_sendI(id target, const char* sel, NUM argc, ...) {
+id SendMsg(id target, SEL sel, NUM argc, ...) {
     va_list ap;
     va_start(ap, argc);
-    id rv = vz_msg_send_sv(target, vz_sel_get(sel), argc, ap);
+    id rv = SendMsgV(target, sel, argc, ap);
     va_end(ap);
     return rv;
 }
 
-id vz_msg_send_vI(id target, const char* sel, NUM argc, va_list ap) {
-    return vz_msg_send_sv(target, vz_sel_get(sel), argc, ap);
-}
-
-id vz_msg_send_aI(id target, const char* sel, NUM argc, id* args) {
-    return vz_msg_send_sa(target, vz_sel_get(sel), argc, args);
-}
-
-id vz_msg_send_sI(id target, SEL sel, NUM argc, ...) {
-    va_list ap;
-    va_start(ap, argc);
-    id rv = vz_msg_send_sv(target, sel, argc, ap);
-    va_end(ap);
-    return rv;
-}
-
-id vz_msg_send_svI(id target, SEL sel, NUM argc, va_list ap) {
+id SendMsgV(id target, SEL sel, NUM argc, va_list ap) {
     id* args = (id*) alloca(sizeof(id) * argc);
     for (NUM k = 0; k < argc; k++) {
         args[(int64_t) k] = va_arg(ap, id);
     }
 
-    return vz_msg_send_sa(target, sel, argc, args);
+    return SendMsgA(target, sel, argc, args);
 }
 
-id vz_msg_send_saI(id target, SEL sel, NUM argc, id* args) {
+id SendMsgA(id target, SEL sel, NUM argc, id* args) {
     if (target == nil) {
         return nil;
     }
 
-    for (id c = target->isa; c != nil; c = vz_class_super(c)) {
-        for (NUM k = 0; k < vz_class_mthdc(c); k++) {
+    for (id c = target->isa; c != nil; c = GetClassSuper(c)) {
+        for (NUM k = 0; k < GetClassMethodCount(c); k++) {
             if (c->ivars[7].arr[(int64_t) k]->ivars[0].sel == sel) {
                 return c->ivars[7].arr[(int64_t) k]->ivars[1].imp->operator()(
                     target, sel, argc, args);
             }
         }
     }
-    id s     = vz_sel_box(sel);
-    id argsa = vz_array_box_a(argc, args);
-    id tmp0 = vz_msg_send(target, "ResolveMessageSend::", 2, sel, argsa);
-    if (!vz_bool_unbox(tmp0)) {
-        vz_msg_send(target, "UnrecognizedSelector:", 1, s);
+    id s     = BoxSelector(sel);
+    id argsa = BoxArray(argc, args);
+    id tmp0 = voltz::SendMsg(target, ResolveMessageSend__, 2, sel, argsa);
+    if (!UnboxBool(tmp0)) {
+        voltz::SendMsg(target, UnrecognizedSelector_, 1, s);
     }
-    vz_msg_send(s, "Release", 0);
-    vz_msg_send(argsa, "Release", 0);
-    vz_msg_send(tmp0, "Release", 0);
+    voltz::SendMsg(s, Release, 0);
+    voltz::SendMsg(argsa, Release, 0);
+    voltz::SendMsg(tmp0, Release, 0);
     return nil;
 }
 
-id (*vz_msg_send)(id target, const char* sel, NUM argc, ...) = vz_msg_sendI;
-id (*vz_msg_send_v)(id target, const char* sel, NUM argc,
-                    va_list ap) = vz_msg_send_vI;
-id (*vz_msg_send_a)(id target, const char* sel, NUM argc,
-                    id* args) = vz_msg_send_aI;
-id (*vz_msg_send_s)(id target, SEL sel, NUM argc, ...) = vz_msg_send_sI;
-id (*vz_msg_send_sv)(id target, SEL sel, NUM argc,
-                     va_list ap) = vz_msg_send_svI;
-id (*vz_msg_send_sa)(id target, SEL sel, NUM argc, id* args) = vz_msg_send_saI;
+id (*voltz::SendMsg)(id target, SEL sel, NUM argc, ...) = ::SendMsg;
+id (*voltz::SendMsgV)(id target, SEL sel, NUM argc, va_list ap) = ::SendMsgV;
+id (*voltz::SendMsgA)(id target, SEL sel, NUM argc, id* args) = ::SendMsgA;
 
 // vz_msg_super
 
-id vz_msg_send_superI(id target, const char* sel, NUM argc, ...) {
+id SendMsgSuper(id target, SEL sel, NUM argc, ...) {
     va_list ap;
     va_start(ap, argc);
-    id rv = vz_msg_send_super_sv(target, vz_sel_get(sel), argc, ap);
+    id rv = SendMsgSuperV(target, sel, argc, ap);
     va_end(ap);
     return rv;
 }
 
-id vz_msg_send_super_vI(id target, const char* sel, NUM argc, va_list ap) {
-    return vz_msg_send_super_sv(target, vz_sel_get(sel), argc, ap);
-}
-
-id vz_msg_send_super_aI(id target, const char* sel, NUM argc, id* args) {
-    return vz_msg_send_super_sa(target, vz_sel_get(sel), argc, args);
-}
-
-id vz_msg_send_super_sI(id target, SEL sel, NUM argc, ...) {
-    va_list ap;
-    va_start(ap, argc);
-    id rv = vz_msg_send_super_sv(target, sel, argc, ap);
-    va_end(ap);
-    return rv;
-}
-
-id vz_msg_send_super_svI(id target, SEL sel, NUM argc, va_list ap) {
+id SendMsgSuperV(id target, SEL sel, NUM argc, va_list ap) {
     id* args = (id*) alloca(sizeof(id) * argc);
     for (NUM k = 0; k < argc; k++) {
         args[(int64_t) k] = va_arg(ap, id);
     }
 
-    return vz_msg_send_super_sa(target, sel, argc, args);
+    return SendMsgSuperA(target, sel, argc, args);
 }
 
-id vz_msg_send_super_saI(id target, SEL sel, NUM argc, id* args) {
+id SendMsgSuperA(id target, SEL sel, NUM argc, id* args) {
     if (target == nil) {
         return nil;
     }
 
-    for (id c = target->isa->ivars[0].obj; c != nil; c = vz_class_super(c)) {
-        for (NUM k = 0; k < vz_class_mthdc(c); k++) {
+    for (id c = target->isa->ivars[0].obj; c != nil; c = GetClassSuper(c)) {
+        for (NUM k = 0; k < GetClassMethodCount(c); k++) {
             if (c->ivars[7].arr[(int64_t) k]->ivars[0].sel == sel) {
                 return c->ivars[7].arr[(int64_t) k]->ivars[1].imp->operator()(
                     target, sel, argc, args);
@@ -134,27 +91,20 @@ id vz_msg_send_super_saI(id target, SEL sel, NUM argc, id* args) {
         }
     }
 
-    id s     = vz_sel_box(sel);
-    id argsa = vz_array_box_a(argc, args);
-    id tmp0 = vz_msg_send(target, "ResolveMessageSend::", 2, sel, argsa);
-    if (!vz_bool_unbox(tmp0)) {
-        vz_msg_send(target, "UnrecognizedSelector:", 1, s);
+    id s     = BoxSelector(sel);
+    id argsa = BoxArrayA(argc, args);
+    id tmp0 = voltz::SendMsg(target, ResolveMessageSend__, 2, sel, argsa);
+    if (!UnboxBool(tmp0)) {
+        voltz::SendMsg(target, UnrecognizedSelector_, 1, s);
     }
-    vz_msg_send(s, "Release", 0);
-    vz_msg_send(argsa, "Release", 0);
-    vz_msg_send(tmp0, "Release", 0);
+    voltz::SendMsg(s, Release, 0);
+    voltz::SendMsg(argsa, Release, 0);
+    voltz::SendMsg(tmp0, Release, 0);
     return nil;
 }
 
-id (*vz_msg_send_super)(id target, const char* sel, NUM argc,
-                        ...) = vz_msg_send_superI;
-id (*vz_msg_send_super_v)(id target, const char* sel, NUM argc,
-                          va_list ap) = vz_msg_send_super_vI;
-id (*vz_msg_send_super_a)(id target, const char* sel, NUM argc,
-                          id* args) = vz_msg_send_super_aI;
-id (*vz_msg_send_super_s)(id target, SEL sel, NUM argc,
-                          ...) = vz_msg_send_super_sI;
-id (*vz_msg_send_super_sv)(id target, SEL sel, NUM argc,
-                           va_list ap) = vz_msg_send_super_svI;
-id (*vz_msg_send_super_sa)(id target, SEL sel, NUM argc,
-                           id* args) = vz_msg_send_super_saI;
+id (*voltz::SendMsgSuper)(id target, SEL sel, NUM argc, ...) = ::SendMsgSuper;
+id (*voltz::SendMsgSuperV)(id target, SEL sel, NUM argc,
+                           va_list ap) = ::SendMsgSuperV;
+id (*voltz::SendMsgSuperA)(id target, SEL sel, NUM argc,
+                           id* args) = ::SendMsgSuperA;

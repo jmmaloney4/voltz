@@ -7,6 +7,13 @@
 #include "runtime/voltz-internal.h"
 #include <gtest/gtest.h>
 
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+int main() { Main(0, NULL, NULL, NULL); }
+
+/*
 extern "C" bool VoltzModuleInitialize_std();
 
 void vz_linker_entry(id, id) {

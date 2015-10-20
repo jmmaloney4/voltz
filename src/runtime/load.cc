@@ -10,7 +10,11 @@
 #include <dlfcn.h>
 #include <cstring>
 
-bool vz_load_moduleI(const char* name) {
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+bool LoadModule(const char* name) {
 
     const char* vz_path = getenv(VOLTZ_PATH_ENVVAR);
     if (!vz_path) {
@@ -52,4 +56,4 @@ bool vz_load_moduleI(const char* name) {
     return true;
 }
 
-bool (*vz_load_module)(const char*) = vz_load_moduleI;
+bool (*voltz::LoadModule)(const char*) = ::LoadModule;

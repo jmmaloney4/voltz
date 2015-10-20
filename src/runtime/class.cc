@@ -10,8 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-id vz_class_getI(const char* name) {
-    NUM hash = vz_string_hash(name);
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+id GetClass(const char* name) {
+    NUM hash = HashString(name);
     hash = (int64_t) fmod(hash, vz_classTable_size);
     if (hash < 0) {
         hash *= -1;
@@ -22,7 +26,7 @@ id vz_class_getI(const char* name) {
     for (struct vz_classTable_entry* entry = VoltzVM.classtbl[(int64_t) hash];
          entry != NULL; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
-            id rv = vz_msg_send(entry->cls, "Retain", 0);
+            id rv = SendMsg(entry->cls, Retain, 0);
             VoltzVM.clsmtx.unlock();
             return rv;
         }
@@ -33,10 +37,10 @@ id vz_class_getI(const char* name) {
     return nil;
 }
 
-id (*vz_class_get)(const char*) = vz_class_getI;
+id (*voltz::GetClass)(const char*) = ::GetClass;
 
-void vz_class_registerI(const char* name, id cls) {
-    NUM hash = vz_string_hash(name);
+void RegisterClass(const char* name, id cls) {
+    NUM hash = HashString(name);
     hash = fmod(hash, vz_classTable_size);
     if (hash < 0) {
         hash *= -1;
@@ -47,7 +51,7 @@ void vz_class_registerI(const char* name, id cls) {
     for (struct vz_classTable_entry* entry = VoltzVM.classtbl[(int64_t) hash];
          entry != NULL; entry = entry->next) {
         if (strcmp(entry->name, name) == 0) {
-            entry->cls = vz_msg_send(cls, "Retain", 0);
+            entry->cls = SendMsg(cls, Retain, 0);
             VoltzVM.clsmtx.unlock();
             return;
         }
@@ -55,7 +59,7 @@ void vz_class_registerI(const char* name, id cls) {
 
     struct vz_classTable_entry* entry =
         (struct vz_classTable_entry*) malloc(sizeof(vz_classTable_entry));
-    entry->cls  = vz_msg_send(cls, "Retain", 0);
+    entry->cls  = SendMsg(cls, Retain, 0);
     entry->name = strdup(name);
     entry->next = VoltzVM.classtbl[(int64_t) hash];
     VoltzVM.classtbl[(int64_t) hash] = entry;
@@ -63,36 +67,36 @@ void vz_class_registerI(const char* name, id cls) {
     VoltzVM.clsmtx.unlock();
 }
 
-void (*vz_class_register)(const char*, id) = vz_class_registerI;
+void (*voltz::RegisterClass)(const char*, id) = ::RegisterClass;
 
-id vz_class_superI(id cls) {
+id GetClassSuper(id cls) {
     if (cls == nil) {
         return nil;
     }
     return cls->ivars[0].obj;
 }
 
-id (*vz_class_super)(id cls) = vz_class_superI;
+id (*voltz::GetClassSuper)(id cls) = ::GetClassSuper;
 
-const char* vz_class_nameI(id cls) {
+const char* GetClassName(id cls) {
     if (cls == nil) {
-        return strdup("");
+        return strdup("(null)");
     }
     return strdup(cls->ivars[0].str);
 }
 
-const char* (*vz_class_name)(id cls) = vz_class_nameI;
+const char* (*voltz::GetClassName)(id cls) = ::GetClassName;
 
-NUM vz_class_mthdcI(id cls) {
+NUM GetClassMethodCount(id cls) {
     if (cls == nil) {
         return 0;
     }
     return cls->ivars[6].num;
 }
 
-NUM (*vz_class_mthdc)(id cls) = vz_class_mthdcI;
+NUM (*voltz::GetClassMethodCount)(id cls) = ::GetClassMethodCount;
 
-NUM vz_class_ivarcI(id cls) {
+NUM GetClassInstanceVariableCount(id cls) {
     if (cls == nil) {
         return 0;
     }
@@ -100,9 +104,9 @@ NUM vz_class_ivarcI(id cls) {
     return cls->ivars[2].num;
 }
 
-NUM (*vz_class_ivarc)(id) = vz_class_ivarcI;
+NUM (*voltz::GetClassInstanceVariableCount)(id) = ::GetClassInstanceVariableCount;
 
-const SEL* vz_class_ivarnI(id cls) {
+const SEL* GetClassInstanceVariableNames(id cls) {
     if (cls == nil) {
         return nil;
     }
@@ -110,8 +114,9 @@ const SEL* vz_class_ivarnI(id cls) {
     return cls->ivars[3].sarr;
 }
 
-const SEL* (*vz_class_ivarn)(id) = vz_class_ivarnI;
-
+const SEL* (*voltz::GetClassInstanceVariableNames)(id) =
+    ::GetClassInstanceVariableNames;
+/*
 void vz_class_init() {
     id clscls      = vz_class_get("std::Class");
     id mthdcls     = vz_class_get("std::Method");
@@ -142,15 +147,11 @@ void vz_class_init() {
     vz_msg_send(sel, "Release", 0);
     vz_msg_send(imp, "Release", 0);
 }
+*/
 
-void vz_class_setIvarNameI(id cls, NUM index, const char* name) {
-    cls->ivars[3].sarr[(int64_t) index] = vz_sel_get(name);
-}
-
-void (*vz_class_setIvarName)(id, NUM, const char*) = vz_class_setIvarNameI;
-
-void vz_class_setIvarName_sI(id cls, NUM index, SEL name) {
+void SetClassInstanceVariableName(id cls, NUM index, SEL name) {
     cls->ivars[3].sarr[(int64_t) index] = name;
 }
 
-void (*vz_class_setIvarName_s)(id, NUM, SEL) = vz_class_setIvarName_sI;
+void (*voltz::SetClassInstanceVariableName)(id, NUM, SEL) =
+    ::SetClassInstanceVariableName;

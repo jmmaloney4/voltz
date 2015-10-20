@@ -1,35 +1,18 @@
-import std.io;
+import std::io;
+import std::crypto;
 
-class Main < Object {
-    Main(argc, argv) {
-        io.stdout.WriteString("Hello, World!\n")
-    }
-}
+public module Demo {
 
-class Direction {
-    Init(degrees)
-}
+  public class Demo {
 
-class Distance {
-    Init(miles)
-}
-
-protocol Vehicle {
-    Drive(direction, distance)
-}
-
-class Car < Object : Vehicle {
-
-}
-
-class Object {
-
-    Bool() {
-        return self == nil;
+    public mthd GenName(): String {
+      rv = String();
+      for k = 0; k < 12; k++ {
+        rv = rv + Rand.Next();
+      }
+      return rv;
     }
 
-    Copy() {
-        Object rv = self.Class().New();
-    }
+  }
 
 }

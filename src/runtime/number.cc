@@ -7,23 +7,23 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
-id vz_num_boxI(NUM value) {
-    id numcls = vz_class_get("std::Number");
-    id rv     = vz_msg_send(numcls, "Alloc", 0);
-    rv        = vz_msg_send(rv, "Init", 0);
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
 
+id BoxNumber(NUM value) {
+    id rv            = SendMsg(Number, New, 0);
     rv->ivars[0].num = value;
-
     return rv;
 }
 
-id (*vz_num_box)(NUM) = vz_num_boxI;
+id (*voltz::BoxNumber)(NUM) = ::BoxNumber;
 
-NUM vz_num_unboxI(id obj) {
+NUM UnboxNumber(id obj) {
     if (obj == nil) {
         return 0;
     }
     return obj->ivars[0].num;
 }
 
-NUM (*vz_num_unbox)(id) = vz_num_unboxI;
+NUM (*voltz::UnboxNumber)(id) = ::UnboxNumber;

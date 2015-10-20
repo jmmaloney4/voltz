@@ -19,35 +19,24 @@ endif()
 set(CXX_FLAGS_TMP "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x -Wreturn-type")
 
-add_library(voltz   include/voltz.h
-                    src/runtime/voltz-internal.h
-                    src/runtime/voltz.cc
-                    src/runtime/main.cc
-                    src/runtime/bootstrap.cc
-                    src/runtime/sel.cc
-                    src/runtime/number.cc
-                    src/runtime/message.cc
-                    src/runtime/imp.cc
-                    src/runtime/class.cc
-                    src/runtime/object.cc
-                    src/runtime/string.cc
-                    src/runtime/global.cc
-                    src/runtime/load.cc
-                    src/runtime/byte.cc)
+add_library(voltz SHARED    include/voltz.h
+                            src/runtime/voltz-internal.h
+                            src/runtime/voltz.cc
+                            src/runtime/main.cc
+                            src/runtime/bootstrap.cc
+                            src/runtime/sel.cc
+                            src/runtime/number.cc
+                            src/runtime/message.cc
+                            src/runtime/imp.cc
+                            src/runtime/class.cc
+                            src/runtime/object.cc
+                            src/runtime/string.cc
+                            src/runtime/global.cc
+                            src/runtime/load.cc
+                            src/runtime/byte.cc
+                            src/runtime/thread.cc)
 
 target_link_libraries(voltz dl)
-
-add_library(std     src/std/std.cc
-                    src/std/std.h
-                    src/std/bool.cc
-                    src/std/object.cc
-                    src/std/class.cc
-                    src/std/num.cc
-                    src/std/byte.cc
-                    src/std/array.cc
-                    src/std/protocol.cc
-                    src/std/string.cc
-                    src/std/selector.cc)
 
 # set(CMAKE_CXX_FLAGS "${CXX_FLAGS_TMP}")
 
@@ -62,7 +51,7 @@ if(test)
     include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
     add_executable(tests test/test.cc)
-    target_link_libraries(tests voltz std dl gtest gtest_main)
+    target_link_libraries(tests voltz dl gtest gtest_main)
 
     add_test(NAME tests COMMAND tests)
 endif()
