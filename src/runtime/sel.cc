@@ -10,7 +10,72 @@
 #include <string.h>
 #include <mutex>
 
-NUM vz_string_hash(const char* s) {
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+SEL selectors::Alloc;
+SEL selectors::Init;
+SEL selectors::Retain;
+SEL selectors::Release;
+SEL selectors::AddMethod_;
+SEL selectors::New;
+SEL selectors::Deinit;
+SEL selectors::SetSel_;
+SEL selectors::SetImp_;
+SEL selectors::sel;
+SEL selectors::imp;
+SEL selectors::Init__;
+SEL selectors::New__;
+SEL selectors::Subclass___;
+SEL selectors::Register;
+SEL selectors::Isa;
+SEL selectors::True;
+SEL selectors::False;
+SEL selectors::Count;
+SEL selectors::value;
+SEL selectors::ResolveMessageSend__;
+SEL selectors::UnrecognizedSelector_;
+SEL selectors::count;
+SEL selectors::handle;
+SEL selectors::rv;
+SEL selectors::message;
+SEL selectors::backtrace;
+SEL selectors::callstack;
+SEL selectors::excpstack;
+
+void voltz::InitSelectors() {
+    Alloc                 = GetSelector("Alloc");
+    Init                  = GetSelector("Init");
+    Retain                = GetSelector("Retain");
+    Release               = GetSelector("Release");
+    AddMethod_            = GetSelector("AddMethod:");
+    New                   = GetSelector("New");
+    Deinit                = GetSelector("Deinit");
+    SetSel_               = GetSelector("SetSel:");
+    SetImp_               = GetSelector("SetImp:");
+    sel                   = GetSelector("sel");
+    imp                   = GetSelector("imp");
+    Init__                = GetSelector("Init::");
+    New__                 = GetSelector("New::");
+    Subclass___           = GetSelector("Subclass:::");
+    Register              = GetSelector("Register");
+    Isa                   = GetSelector("Isa");
+    True                  = GetSelector("True");
+    False                 = GetSelector("False");
+    Count                 = GetSelector("Count");
+    value                 = GetSelector("value");
+    ResolveMessageSend__  = GetSelector("ResolveMessageSend::");
+    UnrecognizedSelector_ = GetSelector("UnrecognizedSelector:");
+    count                 = GetSelector("count");
+    rv                    = GetSelector("rv");
+    message               = GetSelector("message");
+    backtrace             = GetSelector("backtrace");
+    callstack             = GetSelector("callstack");
+    excpstack             = GetSelector("excpstack");
+}
+
+NUM voltz::HashString(const char* s) {
     int64_t hash = 0;
 
     for (; *s; ++s) {
@@ -26,8 +91,8 @@ NUM vz_string_hash(const char* s) {
     return (NUM) hash;
 }
 
-SEL vz_sel_getI(const char* value) {
-    NUM hash = vz_string_hash(value);
+SEL GetSelector(const char* value) {
+    NUM hash = HashString(value);
     hash = (int64_t) fmod(hash, vz_selTable_size);
     if (hash < 0) {
         hash *= -1;
@@ -36,8 +101,7 @@ SEL vz_sel_getI(const char* value) {
     VoltzVM.selmtx.lock();
 
     for (struct vz_selTable_entry* entry = VoltzVM.seltbl[(int64_t) hash];
-         entry != NULL;
-         entry = entry->next) {
+         entry != NULL; entry = entry->next) {
         if (strcmp(entry->sel->value, value) == 0) {
             VoltzVM.selmtx.unlock();
             return entry->sel;
@@ -58,20 +122,16 @@ SEL vz_sel_getI(const char* value) {
     return rv;
 }
 
-SEL (*vz_sel_get)(const char*) = vz_sel_getI;
+SEL (*voltz::GetSelector)(const char*) = ::GetSelector;
 
-id vz_sel_boxI(SEL sel) {
-    id selcls = vz_class_get("std::Selector");
-    id rv     = vz_msg_send(selcls, "Alloc", 0);
-    rv        = vz_msg_send(rv, "Init", 0);
-
-    vz_object_setIvar(rv, "value", (id) sel);
-
+id BoxSelector(SEL sel) {
+    id rv = SendMsg(Selector, Alloc, 0);
+    SetInstanceVariable(rv, value, (id) sel);
     return rv;
 }
 
-id (*vz_sel_box)(SEL) = vz_sel_boxI;
+id (*voltz::BoxSelector)(SEL) = ::BoxSelector;
 
-SEL vz_sel_unboxI(id obj) { return (SEL) vz_object_getIvar(obj, "value"); }
+SEL UnboxSelector(id obj) { return (SEL) GetInstanceVariable(obj, value); }
 
-SEL (*vz_sel_unbox)(id) = vz_sel_unboxI;
+SEL (*voltz::UnboxSelector)(id) = ::UnboxSelector;

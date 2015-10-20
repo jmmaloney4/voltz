@@ -7,24 +7,26 @@
 #include "voltz-internal.h"
 #include <string.h>
 
-id vz_string_boxI(const char* value) {
-    id strcls        = vz_class_get("std::String");
-    id rv            = vz_msg_send(strcls, "Alloc", 0);
-    rv               = vz_msg_send(rv, "Init", 0);
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+id BoxString(const char* value) {
+    id rv            = SendMsg(String, New, 0);
     rv->ivars[0].str = strdup(value);
     rv->ivars[1].num = strlen(value);
     return rv;
 }
 
-id (*vz_string_box)(const char*) = vz_string_boxI;
+id (*voltz::BoxString)(const char*) = ::BoxString;
 
-const char* vz_string_unboxI(id obj) {
+const char* UnboxString(id obj) {
     if (obj == nil) {
         return nullptr;
     }
     return strdup(obj->ivars[0].str);
 }
 
-const char* (*vz_string_unbox)(id) = vz_string_unboxI;
+const char* (*voltz::UnboxString)(id) = ::UnboxString;
 
 void vz_string_init() {}

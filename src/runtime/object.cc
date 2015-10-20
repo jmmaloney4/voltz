@@ -7,23 +7,22 @@
 #include "voltz-internal.h"
 #include <stdlib.h>
 
-id vz_object_alloc(NUM ivars) {
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+id voltz::AllocObject(NUM ivars) {
     return (id) malloc(sizeof(struct vz_object) + (sizeof(id) * ivars));
 }
 
-id vz_object_getIvarI(id obj, const char* name) {
-    SEL n = vz_sel_get(name);
-    return vz_object_getIvar_s(obj, n);
-}
-
-id vz_object_getIvar_sI(id obj, SEL name) {
+id GetInstanceVariable(id obj, SEL name) {
     if (obj == nil) {
         return nil;
     }
 
     for (id c = obj->isa; c != nil; c = c->ivars[0].obj) {
-        for (NUM k = 0; k < vz_class_ivarc(c); k++) {
-            if (vz_class_ivarn(c)[(int64_t) k] == name) {
+        for (NUM k = 0; k < GetClassInstanceVariableCount(c); k++) {
+            if (GetClassInstanceVariableNames(c)[(int64_t) k] == name) {
                 return obj->ivars[(int64_t) k].obj;
             }
         }
@@ -32,32 +31,55 @@ id vz_object_getIvar_sI(id obj, SEL name) {
     return nil;
 }
 
-void vz_object_setIvarI(id obj, const char* name, id value) {
-    vz_object_setIvar_s(obj, vz_sel_get(name), value);
-}
+id (*voltz::GetInstanceVariable)(id, SEL) = ::GetInstanceVariable;
 
-void vz_object_setIvar_sI(id obj, SEL name, id value) {
+void SetInstanceVariable(id obj, SEL name, id value) {
     if (obj == nil) {
         return;
     }
 
     for (id c = obj->isa; c != nil; c = c->ivars[0].obj) {
-        for (NUM k = 0; k < vz_class_ivarc(c); k++) {
-            if (vz_class_ivarn(c)[(int64_t) k] == name) {
+        for (NUM k = 0; k < GetClassInstanceVariableCount(c); k++) {
+            if (GetClassInstanceVariableNames(c)[(int64_t) k] == name) {
                 obj->ivars[(int64_t) k].obj = value;
             }
         }
     }
 }
 
-id vz_object_getTypeI(id obj) {
+void (*voltz::SetInstanceVariable)(id, SEL, id) = ::SetInstanceVariable;
+
+NUM GetNumberInstanceVariable(id obj, SEL name) {
     if (obj == nil) {
-        return nil;
+        return 0;
     }
-    return obj->isa;
+
+    for (id c = obj->isa; c != nil; c = c->ivars[0].obj) {
+        for (NUM k = 0; k < GetClassInstanceVariableCount(c); k++) {
+            if (GetClassInstanceVariableNames(c)[(int64_t) k] == name) {
+                return obj->ivars[(int64_t) k].num;
+            }
+        }
+    }
+
+    return 0;
 }
 
-id (*vz_object_getIvar)(id, const char*) = vz_object_getIvarI;
-id (*vz_object_getIvar_s)(id, SEL) = vz_object_getIvar_sI;
-void (*vz_object_setIvar)(id, const char*, id) = vz_object_setIvarI;
-void (*vz_object_setIvar_s)(id, SEL, id) = vz_object_setIvar_sI;
+NUM (*voltz::GetNumberInstanceVariable)(id, SEL) = ::GetNumberInstanceVariable;
+
+void SetNumberInstanceVariable(id obj, SEL name, NUM value) {
+    if (obj == nil) {
+        return;
+    }
+
+    for (id c = obj->isa; c != nil; c = c->ivars[0].obj) {
+        for (NUM k = 0; k < GetClassInstanceVariableCount(c); k++) {
+            if (GetClassInstanceVariableNames(c)[(int64_t) k] == name) {
+                obj->ivars[(int64_t) k].num = value;
+            }
+        }
+    }
+}
+
+void (*voltz::SetNumberInstanceVariable)(id, SEL,
+                                         NUM) = ::SetNumberInstanceVariable;

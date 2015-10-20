@@ -5,25 +5,19 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "voltz-internal.h"
-#include <stdlib.h>
 
 using namespace voltz;
 using namespace voltz::selectors;
 using namespace voltz::classes;
 
-id BoxNumber(NUM value) {
-    id rv            = SendMsg(Number, New, 0);
-    rv->ivars[0].num = value;
+id BoxByte(BYTE value) {
+    id rv            = SendMsg(Byte, New, 0);
+    rv->ivars[0].num = (NUM) value;
     return rv;
 }
 
-id (*voltz::BoxNumber)(NUM) = ::BoxNumber;
+id (*voltz::BoxByte)(BYTE) = BoxByte;
 
-NUM UnboxNumber(id obj) {
-    if (obj == nil) {
-        return 0;
-    }
-    return obj->ivars[0].num;
-}
+BYTE UnboxByte(id obj) { return (BYTE) obj->ivars[0].num; }
 
-NUM (*voltz::UnboxNumber)(id) = ::UnboxNumber;
+BYTE (*voltz::UnboxByte)(id) = UnboxByte;

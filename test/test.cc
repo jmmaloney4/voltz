@@ -7,10 +7,20 @@
 #include "runtime/voltz-internal.h"
 #include <gtest/gtest.h>
 
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+int main() { Main(0, NULL, NULL, NULL); }
+
+/*
 extern "C" bool VoltzModuleInitialize_std();
 
 void vz_linker_entry(id, id) {
-    VoltzModuleInitialize_std();
+    bool b = VoltzModuleInitialize_std();
+    if (!b) {
+        abort();
+    }
     ::testing::InitGoogleTest(&C_argc, (char**) C_argv);
     int rv = RUN_ALL_TESTS();
     exit(rv);
@@ -56,33 +66,18 @@ TEST(voltz, RetainRelease) {
     id obj    = vz_msg_send(objcls, "Alloc", 0);
     obj       = vz_msg_send(obj, "Init", 0);
 
-    id refs  = vz_msg_send(obj, "References", 0);
-    id weaks = vz_msg_send(obj, "WeakReferences", 0);
-    EXPECT_EQ(1, vz_num_unbox(refs));
-    EXPECT_EQ(0, vz_num_unbox(weaks));
-
-    vz_msg_send(refs, "Release", 0);
-    vz_msg_send(weaks, "Release", 0);
+    EXPECT_EQ(1, obj->refs);
+    EXPECT_EQ(0, obj->weaks);
 
     vz_msg_send(obj, "Retain", 0);
 
-    refs  = vz_msg_send(obj, "References", 0);
-    weaks = vz_msg_send(obj, "WeakReferences", 0);
-    EXPECT_EQ(2, vz_num_unbox(refs));
-    EXPECT_EQ(0, vz_num_unbox(weaks));
-
-    vz_msg_send(refs, "Release", 0);
-    vz_msg_send(weaks, "Release", 0);
+    EXPECT_EQ(2, obj->refs);
+    EXPECT_EQ(0, obj->weaks);
 
     vz_msg_send(obj, "Release", 0);
 
-    refs  = vz_msg_send(obj, "References", 0);
-    weaks = vz_msg_send(obj, "WeakReferences", 0);
-    EXPECT_EQ(1, vz_num_unbox(refs));
-    EXPECT_EQ(0, vz_num_unbox(weaks));
-
-    vz_msg_send(refs, "Release", 0);
-    vz_msg_send(weaks, "Release", 0);
+    EXPECT_EQ(1, obj->refs);
+    EXPECT_EQ(0, obj->weaks);
 
     vz_msg_send(obj, "Release", 0);
     vz_msg_send(objcls, "Release", 0);
@@ -116,7 +111,7 @@ TEST(voltz, BoolEvalMethod) {
     vz_msg_send(obj, "Release", 0);
 }
 
-TEST(voltz, ComparisonOperators) {
+TEST(voltz, ObjectComparisonOperators) {
     id objcls = vz_class_get("std::Object");
 
     id obj1 = vz_msg_send(objcls, "Alloc", 0);
@@ -156,38 +151,6 @@ TEST(voltz, ComparisonOperators) {
 
     tmp0 = vz_msg_send(obj1, "!==:", 1, obj2);
     EXPECT_EQ(true, vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, "<:", 1, obj1);
-    EXPECT_EQ(false, vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, "<:", 1, obj2);
-    EXPECT_EQ((obj1 < obj2), vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, ">:", 1, obj1);
-    EXPECT_EQ(false, vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, ">:", 1, obj2);
-    EXPECT_EQ((obj1 > obj2), vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, "<=:", 1, obj1);
-    EXPECT_EQ(true, vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, "<=:", 1, obj2);
-    EXPECT_EQ((obj1 <= obj2), vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, ">=:", 1, obj1);
-    EXPECT_EQ(true, vz_bool_unbox(tmp0));
-    vz_msg_send(tmp0, "Release", 0);
-
-    tmp0 = vz_msg_send(obj1, ">=:", 1, obj2);
-    EXPECT_EQ((obj1 >= obj2), vz_bool_unbox(tmp0));
     vz_msg_send(tmp0, "Release", 0);
 }
 
@@ -268,7 +231,7 @@ TEST(voltz, BoolOperators) {
     vz_msg_send(tmp0, "Release", 0);
 }
 
-TEST(voltz, Description) {
+TEST(voltz, ToString) {
     id objcls = vz_class_get("std::Object");
     id obj    = vz_msg_send(objcls, "Alloc", 0);
     obj       = vz_msg_send(obj, "Init", 0);
@@ -276,13 +239,13 @@ TEST(voltz, Description) {
     char buf[100 + strlen("std::Object")];
     sprintf(buf, "[std::Object:%p]", obj);
 
-    id des          = vz_msg_send(obj, "Description", 0);
+    id des          = vz_msg_send(obj, "String", 0);
     const char* str = vz_string_unbox(des);
 
     EXPECT_STREQ(buf, str);
 
     if (strcmp(buf, str) != 0) {
-        printf("Description: '%s'\n", str);
+        printf("String: '%s'\n", str);
     }
 
     vz_msg_send(objcls, "Release", 0);
@@ -307,20 +270,3 @@ TEST(voltz, RespondsTo) {
     vz_msg_send(r, "Release", 0);
 }
 */
-
-TEST(voltz, References) {
-    id objcls = vz_class_get("std::Object");
-    id obj    = vz_msg_send(objcls, "Alloc", 0);
-    obj       = vz_msg_send(obj, "Init", 0);
-
-    id rv = vz_msg_send(obj, "References", 0);
-    EXPECT_EQ(1, vz_num_unbox(rv));
-    vz_msg_send(rv, "Release", 0);
-
-    rv = vz_msg_send(obj, "WeakReferences", 0);
-    EXPECT_EQ(0, vz_num_unbox(rv));
-    vz_msg_send(rv, "Release", 0);
-
-    vz_msg_send(objcls, "Release", 0);
-    vz_msg_send(obj, "Release", 0);
-}

@@ -672,7 +672,7 @@ void vz_std_init() {
     vz_msg_send(name, "Release", 0);
     vz_msg_send(iname, "Release", 0);
     vz_msg_send(ivarc, "Release", 0);
-    
+
     numcls->ivars[3].sarr[0] = vz_sel_get("value");
 
     // Abs()
@@ -967,8 +967,7 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("NaN?"));
     imp = vz_imp_box(vz_def({
-        NUM num0 = vz_num_unbox(self);
-        return vz_bool_box(isnan(num0));
+
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);
     vz_msg_send(mthd, "SetImp:", 1, imp);
@@ -1321,7 +1320,7 @@ void vz_std_init() {
     mthd = vz_msg_send(mthd, "Init", 0);
     sel = vz_sel_box(vz_sel_get("Init"));
     imp = vz_imp_box(vz_def({
-        self = vz_msg_send(self, "Init::", 2, nil, nil);
+        self = vz_msg_send(self, "Init:", 1, nil);
         return self;
     }));
     vz_msg_send(mthd, "SetSel:", 1, sel);

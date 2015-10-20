@@ -8,14 +8,18 @@
 #include <ctime>
 #include <cstdio>
 
-double StartupTime;
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
 
-int main(int argc, const char** argv) {
+double voltz::StartupTime;
+
+void Main(int argc, const char** argv, const char* lib, const char* cls) {
 
     clock_t begin, end;
     begin = clock();
 
-    vz_bootstrap_runtime(argc, argv);
+    BootstrapRuntime(argc, argv);
 
     end = clock();
 
@@ -25,5 +29,12 @@ int main(int argc, const char** argv) {
     printf("Took %f seconds to startup.\n", StartupTime);
 #endif
 
-    vz_linker_entry(vz_num_box(argc), nil);
+    LoadModule("std");
+
+    LoadModule(lib);
+    id maincls = GetClass(cls);
+    id rv      = SendMsg(maincls, GetSelector("Main::"), 2, BoxNumber(argc), nil);
 }
+
+void (*voltz::Main)(int argc, const char** argv, const char* lib,
+                    const char* cls) = ::Main;

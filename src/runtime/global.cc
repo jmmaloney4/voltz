@@ -10,8 +10,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-id vz_global_getI(const char* str) {
-    NUM hash = vz_string_hash(str);
+using namespace voltz;
+using namespace voltz::selectors;
+using namespace voltz::classes;
+
+id GetGlobal(const char* str) {
+    NUM hash = HashString(str);
     hash = (int64_t) fmod(hash, vz_globalTable_size);
     if (hash < 0) {
         hash *= -1;
@@ -20,11 +24,10 @@ id vz_global_getI(const char* str) {
     VoltzVM.globalmtx.lock();
 
     for (struct vz_globalTable_entry* entry = VoltzVM.globaltbl[(int64_t) hash];
-         entry != nil;
-         entry = entry->next) {
+         entry != nil; entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
             VoltzVM.globalmtx.unlock();
-            return vz_msg_send(entry->value, "Retain", 0);
+            return SendMsg(entry->value, Retain, 0);
         }
     }
 
@@ -33,10 +36,10 @@ id vz_global_getI(const char* str) {
     return nil;
 }
 
-id (*vz_global_get)(const char*) = vz_global_getI;
+id (*voltz::GetGlobal)(const char*) = GetGlobal;
 
-void vz_global_setI(const char* str, id value) {
-    NUM hash = vz_string_hash(str);
+void SetGlobal(const char* str, id value) {
+    NUM hash = HashString(str);
     hash = (int64_t) fmod(hash, vz_globalTable_size);
     if (hash < 0) {
         hash *= -1;
@@ -45,23 +48,22 @@ void vz_global_setI(const char* str, id value) {
     VoltzVM.globalmtx.lock();
 
     for (struct vz_globalTable_entry* entry = VoltzVM.globaltbl[(int64_t) hash];
-         entry != nil;
-         entry = entry->next) {
+         entry != nil; entry = entry->next) {
         if (strcmp(entry->name, str) == 0) {
             id t         = entry->value;
-            entry->value = vz_msg_send(value, "Retain", 0);
-            vz_msg_send(t, "Release", 0);
+            entry->value = SendMsg(value, Retain, 0);
+            SendMsg(t, Release, 0);
         }
     }
 
     struct vz_globalTable_entry* entry = (struct vz_globalTable_entry*) malloc(
         sizeof(struct vz_globalTable_entry));
     entry->name  = strdup(str);
-    entry->value = vz_msg_send(value, "Retain", 0);
+    entry->value = SendMsg(value, Retain, 0);
     entry->next = VoltzVM.globaltbl[(int64_t) hash];
     VoltzVM.globaltbl[(int64_t) hash] = entry;
 
     VoltzVM.globalmtx.unlock();
 }
 
-void (*vz_global_set)(const char*, id) = vz_global_setI;
+void (*voltz::SetGlobal)(const char*, id) = SetGlobal;
